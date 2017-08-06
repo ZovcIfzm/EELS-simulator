@@ -66,6 +66,34 @@ class PhaseSpace{
 		this.chirp += changeChirp;
 		this.b += changeB;
 	}
+	/*void drawPhaseSpace(double v){ THIS ISNT FINISHED YET
+		auto window = new SimpleWindow(800, 800);
+		{ // introduce sub-scope
+			auto painter = window.draw(); // begin drawing
+			//draw here
+			painter.outlineColor = Color.red;
+			painter.fillColor = Color.red;
+			auto x = -sigmaZ;
+			while(x < sigmaZ)
+			{
+				double h = exp((pow(a*x,2)/(-2*pow(x,2)))-pow(v-a,2)/(2*(pow(a*x,2))))/(2*PI*pow(x*a*x,2));
+				painter.outlineColor = Color.red;
+				painter.drawLine(Point(to!int(x*400), to!int(((0.5 * h)+a*x)*400)), Point(to!int(x*400), to!int((a*x-(0.5 * h))*400)));
+				x += .0001; //accuracy
+			}
+		} // end scope, calling `painter`'s destructor, drawing to the screen.
+		window.eventLoop(0); // handle events
+	}*/
+	double getArea(double accuracy){
+		auto x = -VzIntDist; 
+		double area = 0;
+		while(x < VzIntDist)
+		{
+			area += exp((pow(chirp*x,2)/(-2*pow(x,2)))-pow(vel-chirp,2)/(2*(pow(chirp*x,2))))/(2*PI*pow(x*chirp*x,2));
+			x += accuracy; //accuracy
+		}
+		return area;
+	}
 /*Conservation Checking
 	consAValue needs to be integrated! 
 	This process only needs to be run as a sort of debug tool for the programmer- the program might not necessarily need it
