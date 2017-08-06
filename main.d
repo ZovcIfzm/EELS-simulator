@@ -26,6 +26,10 @@ class PhaseSpace{
 	void opticalMantipulationB(double change){//Is there a way to make one method but able to change both a and b for the specific object?
 		this.b = b + change;
 	}
+	void opticalMantipulation(double changeA, double changeB){
+		this.a += changeA;
+		this.b += changeB;
+	}
 /*Conservation Checking
 	Form A and B use different variables for sigma, zeta, and a.
 	consAValue needs to be integrated! 
