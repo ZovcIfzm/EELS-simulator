@@ -1,11 +1,53 @@
 import std.stdio, std.array, std.algorithm, std.conv, std.math;
+/*Math Conversion
+
+sigmaZ = width;		the width along the z axis
+sigmaVz = height;	the height along the Vz axis
+zetaZ = VzIntDist;	the distance between the two Vz intercepts				//I think since it is between z (distance) and Vz(relative difference in velocity)
+tau = zIntDist;		the distance between the two z intercepts				//Its important to write z and Vz, instead of x and y
+a = chirp;			the chirp. chirp = slope
+z = dist;			the distance from the origin-from the center of mass
+Vz = vel;			the difference in velocity from center of mass
+b = b;				the relationship between the chirp, zIntDist, and VzIntDist. (b=a(tau/zeta)^2)
+*/
+
+
+/*Important things to know
+
+	We will need to create a phase space simulation that not only has the shape of the phase space
+	but and VERY IMPORTANTLY
+	has the data gathered from hitting the specimen in each point. How to do that is the mystery. Will we have to do a coordinate system?
+	Or is this found in each individual phase space when it shatters
+
+	Objectives
+	Create a phase space simulator that simulates the phase space and collects data from hitting the specimen
+	in order to collect the data it needs to shatter
+	recombine the phase spaces at the end and collect the data
+
+	Time Table
+	Due September 19
+		Things to do
+	Finish free expansion
+	Figure out shattering
+		Recenter center of mass individually for each phase space
+	Figure out data containment
+	Figure out reactions between shatters phase spaces and how to account for them and how they change each other
+	Figure out how to recombine
+
+	LARGE PART NOT YET FIGURED OUT Figure out how to optimize the microscope through combinations of optics
+	Write an at most 18 pages (not including references) paper about our research
+		Total 1600 projects
+	Score top 300 for semi finalist
+	Score top 60 for regional finalist
+	Score top 6 (in team category) for national finalist 
+*/
+
 class PhaseSpace{
-	double sigmaZ, zetaZ, pos, a;
-	double sigmaVz, zetaVz, Vz, b, tau;
+	double width, height, VzIntDist, zIntDist, chirp, dist, vel, b;
 	double[][] data;
-    this(double v, double pos){
-    	data ~= [v];
-    	data ~= [pos];
+    this(double Vz, double z){
+    	data ~= [Vz];
+    	data ~= [z];
 	}
 	void currentPhaseSpace(){
 		writeln(text(data));
@@ -16,30 +58,25 @@ class PhaseSpace{
 		}
 	}
 	void freeExpansion(){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
-		this.zetaZ = sqrt(1/((1/pow(sigmaVz,2))+pow((b/tau),2)));
-		this.a = b*pow(zetaZ,2)/pow(tau,2);
-		this.sigmaZ = sqrt(1/((1/pow(tau,2))-pow(a/zetaZ,2)));
+		this.VzIntDist = sqrt(1/((1/pow(height,2))+pow((b/zIntDist),2)));
+		this.chirp = b*pow(VzIntDist,2)/pow(zIntDist,2);
+		this.VzIntDist = sqrt(1/((1/pow(zIntDist,2))-pow(chirp/VzIntDist,2)));
 	}
-	void opticalManipulationA(double change){
-		this.a = a + change;
-	}
-	void opticalMantipulationB(double change){//Is there a way to make one method but able to change both a and b for the specific object?
-		this.b = b + change;
-	}
-	void opticalMantipulation(double changeA, double changeB){
-		this.a += changeA;
+	void opticalMantipulation(double changeChirp, double changeB){
+		this.chirp += changeChirp;
 		this.b += changeB;
 	}
 /*Conservation Checking
-	Form A and B use different variables for sigma, zeta, and a.
 	consAValue needs to be integrated! 
 	This process only needs to be run as a sort of debug tool for the programmer- the program might not necessarily need it
 	-Should we have auto checkAreaConservation? 
 	-(More processing would be needed but as different variables are inputed the user can be warned if the program doesn't work and then it can be fixed)
+	Fa(z,vZ) = exp((pow(zeta,2)/(-2*pow(sigma,2)))-pow(v-a,2)/(2*(pow(zeta,2))))/(2*PI*pow(sigma*zeta,2));	Integration
+	Fa(dist, vel) = exp((pow(VzIntDist,2)/(-2*pow(width,2)))-pow(vel-chirp,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
 */
-	bool checkAreaConservation(double sigma, double zeta, double pos, double v, double a){
-		double consAValue = exp((pow(zeta,2)/(-2*pow(sigma,2)))-pow(v-a,2)/(2*(pow(zeta,2))))/(2*PI*pow(sigma*zeta,2));	//needs to be integrated
-		if(consAValue > 0.9 && consAValue < 1.1){//randomly decided range to account for integration error 
+	bool checkAreaConservation(double ){
+		
+		if(consAValue > 0.99 && consAValue < 1.01){//randomly decided range to account for integration error 
 			writeln("Area is conserved");
 			return true;
 		}
@@ -61,7 +98,7 @@ void main(){
 	space.currentPhaseSpace();
     //space.goForward(4);
     space.currentPhaseSpace();
-	space.checkAreaConservation(1,1,1,1,1);
+	space.checkAreaConservation(1,1);
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();
 }
