@@ -85,9 +85,9 @@ class PhaseSpace{
 		window.eventLoop(0); // handle events
 	}*/
 	double getArea(double accuracy){
-		auto x = -VzIntDist; 
+		auto x = -width; 
 		double area = 0;
-		while(x < VzIntDist)
+		while(x < width)
 		{
 			area += exp((pow(chirp*x,2)/(-2*pow(x,2)))-pow(vel-chirp,2)/(2*(pow(chirp*x,2))))/(2*PI*pow(x*chirp*x,2));
 			x += accuracy; //accuracy
