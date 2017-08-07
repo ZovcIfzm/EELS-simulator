@@ -46,7 +46,7 @@ class PhaseSpace{
 	//double width, height, VzIntDist, zIntDist, chirp, dist, vel, b;
 	double width = 1;
 	double height = 1;
-	double VzIntDist, zIntDist, chirp, dist, vel, b = 1;
+	double VzIntDist, zIntDist, chirp = .5, dist, vel, b = 1;
 	double[][] data;
     this(double Vz, double z){
     	data ~= [Vz];
@@ -99,7 +99,6 @@ class PhaseSpace{
 				x += accuracy; //accuracy
 			}
 			y += accuracy;
-			x = -width;
 		}
 		return area;
 	}
@@ -136,7 +135,7 @@ void main(){
     //space.goForward(4);
     space.currentPhaseSpace();
 	space.checkAreaConservation(1,1);
-	writeln(space.getArea(0.5));
+	writeln(space.getArea(0.05));
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();
 }
