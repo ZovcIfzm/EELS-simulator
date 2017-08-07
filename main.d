@@ -1,4 +1,4 @@
-import std.stdio, std.array, std.algorithm, std.conv, std.math;
+import std.stdio, std.array, std.algorithm, std.conv, std.math, std.datetime;
 /*Math Conversion
 
 sigmaZ = width;		the width along the z axis
@@ -131,11 +131,16 @@ class PhaseSpace{
 
 void main(){
 	auto space = new PhaseSpace(2.001, 5.009); //Random numbers
+	StopWatch sw;
+	
 	space.currentPhaseSpace();
     //space.goForward(4);
     space.currentPhaseSpace();
 	space.checkAreaConservation(1,1);
-	writeln(space.getArea(0.05));
+	sw.start();
+	writeln(space.getArea(0.00005));
+	sw.stop();
+	writeln("Took ",sw.peek().to!("msecs", real)(), "ms to run area method");
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();
 }
