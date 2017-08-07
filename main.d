@@ -43,7 +43,10 @@ b = b;				the relationship between the chirp, zIntDist, and VzIntDist. (b=a(tau/
 */
 
 class PhaseSpace{
-	double width, height, VzIntDist, zIntDist, chirp, dist, vel, b;
+	//double width, height, VzIntDist, zIntDist, chirp, dist, vel, b;
+	double width = 1;
+	double height = 1;
+	double VzIntDist, zIntDist, chirp, dist, vel, b = 1;
 	double[][] data;
     this(double Vz, double z){
     	data ~= [Vz];
@@ -67,15 +70,13 @@ class PhaseSpace{
 		this.b += changeB;
 	}
 	/*void drawPhaseSpace(double v){ THIS ISNT FINISHED YET
-		auto window = new SimpleWindow(800, 800);
-		{ // introduce sub-scope
+		auto window = new SimpleWindow(800, 800);{ // introduce sub-scope
 			auto painter = window.draw(); // begin drawing
 			//draw here
 			painter.outlineColor = Color.red;
 			painter.fillColor = Color.red;
 			auto x = -sigmaZ;
-			while(x < sigmaZ)
-			{
+			while(x < sigmaZ){
 				double h = exp((pow(a*x,2)/(-2*pow(x,2)))-pow(v-a,2)/(2*(pow(a*x,2))))/(2*PI*pow(x*a*x,2));
 				painter.outlineColor = Color.red;
 				painter.drawLine(Point(to!int(x*400), to!int(((0.5 * h)+a*x)*400)), Point(to!int(x*400), to!int((a*x-(0.5 * h))*400)));
@@ -85,25 +86,33 @@ class PhaseSpace{
 		window.eventLoop(0); // handle events
 	}*/
 	double getArea(double accuracy){
-		auto x = -width; 
+		auto x = -width;
+		auto y = -height;
 		double area = 0;
-		while(x < width)
-		{
-			area += exp((pow(chirp*x,2)/(-2*pow(x,2)))-pow(vel-chirp,2)/(2*(pow(chirp*x,2))))/(2*PI*pow(x*chirp*x,2));
-			x += accuracy; //accuracy
+		while(y < height){
+			/*if(x == 0) doesn't work in fixing it
+			{
+			x = 0.1;
+			}*/
+			while(x < width){
+				area += exp((pow(chirp*x,2)/(-2*pow(x,2)))-pow(y-chirp,2)/(2*(pow(chirp*x,2))))/(2*PI*pow(x*chirp*x,2));
+				x += accuracy; //accuracy
+			}
+			y += accuracy;
+			x = -width;
 		}
 		return area;
 	}
-/*Conservation Checking
+	/*Conservation Checking
 	consAValue needs to be integrated! 
 	This process only needs to be run as a sort of debug tool for the programmer- the program might not necessarily need it
 	-Should we have auto checkAreaConservation? 
 	-(More processing would be needed but as different variables are inputed the user can be warned if the program doesn't work and then it can be fixed)
 	Fa(z,vZ) = exp((pow(zeta,2)/(-2*pow(sigma,2)))-pow(v-a,2)/(2*(pow(zeta,2))))/(2*PI*pow(sigma*zeta,2));	Integration
 	Fa(dist, vel) = exp((pow(VzIntDist,2)/(-2*pow(width,2)))-pow(vel-chirp,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
-*/
-	bool checkAreaConservation(double ){
-		
+	*/
+	bool checkAreaConservation(double blah, double blah2){
+		double consAValue = 1;
 		if(consAValue > 0.99 && consAValue < 1.01){//randomly decided range to account for integration error 
 			writeln("Area is conserved");
 			return true;
@@ -113,8 +122,8 @@ class PhaseSpace{
 			writeln("Area:", consAValue);
 			return false;
 		}
-	bool checkVolumeConservation(){//Two checkAreaConservations but with different variables for form A and form B
-		/*if(checkAreaConservation() &&checkAreaConservation()){
+		bool checkVolumeConservation(){//Two checkAreaConservations but with different variables for form A and form B
+			/*if(checkAreaConservation() &&checkAreaConservation()){
 			writeln("Volume is conserved");*/
 			return true;
 		}
@@ -127,6 +136,7 @@ void main(){
     //space.goForward(4);
     space.currentPhaseSpace();
 	space.checkAreaConservation(1,1);
+	writeln(space.getArea(0.5));
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();
 }
