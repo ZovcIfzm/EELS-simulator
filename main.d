@@ -19,7 +19,7 @@ class PhaseSpace{
 	double height = 100;
 	double VzIntDist = 50;
 	double zIntDist = -50;
-	double chirp = -0.866; //(sqrt 0.75)
+	double chirp = 0.866; //(sqrt 0.75)
 	double b = -0.866;
 	double dist, vel;
 
@@ -86,7 +86,7 @@ class PhaseSpace{
 							painter.outlineColor = Color.red;
 							painter.fillColor = Color.red;
 						}
-						painter.drawLine(Point(to!int(x+300), to!int(y+300)), Point(to!int(x+301), to!int(y+301)));
+						painter.drawLine(Point(to!int(x+300), to!int(-y+300)), Point(to!int(x+301), to!int(-y+301)));
 					}
 					x += accuracy; //accuracy
 				}
