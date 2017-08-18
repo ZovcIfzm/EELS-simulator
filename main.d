@@ -1,4 +1,4 @@
-import std.stdio, std.array, std.algorithm, std.conv, std.math; //simpledisplay; //std.datetime;
+import std.stdio, std.array, std.algorithm, std.conv, std.math, arsd.simpledisplay;//simpledisplay; //std.datetime;
 /*		Math Conversion
 sigmaZ = width;		the width along the z axis
 sigmaVz = height;	the height along the Vz axis
@@ -14,20 +14,24 @@ Finish modelPhaseSpace code
 */
 
 class PhaseSpace{
-	double width = 1;
-	double height = 1;
-	double VzIntDist = 0.5;
-	double zIntDist = -0.5;
-	double chirp = 0.866; //(sqrt 0.75)
-	double b = 1;
+	//Initial Conditions of initial pulse
+	double width = 100;
+	double height = 100;
+	double VzIntDist = 50;
+	double zIntDist = -50;
+	double chirp = -0.866; //(sqrt 0.75)
+	double b = -0.866;
 	double dist, vel;
 
-	//UNFINISHED, need to read in values (like stdin.readln)
-	void defineVariableValues(){ //Main problem stdin.readln only works for strings and not doubles. 
+	void defineVariableValues(){
 		writeln("Please define in order VzIntDist, zintDist, chirp, and b in order");
+		VzIntDist = to!double(stdin.readln());
 		writeln(VzIntDist);
+		zIntDist = to!double(stdin.readln());
 		writeln(zIntDist);
+		chirp = to!double(stdin.readln());
 		writeln(chirp);
+		b = to!double(stdin.readln());
 		writeln(b);
 	}
 
@@ -43,38 +47,55 @@ class PhaseSpace{
 		this.b += changeB;
 	}
 
-	/*void modelPhaseSpace(double accuracy){
-		auto window = new SimpleWindow(3*width, 3*height);{ // introduce sub-scope
-		auto painter = window.draw(); // begin drawing
-		//draw here
-		//	painter.outlineColor = Color.red;
-		//	painter.fillColor = Color.red;
-		//	auto x = -sigmaZ;
-		//	while(x < sigmaZ){
-		//		double h = exp((pow(a*x,2)/(-2*pow(x,2)))-pow(v-a,2)/(2*(pow(a*x,2))))/(2*PI*pow(x*a*x,2));
-		//		painter.outlineColor = Color.red;
-		//		painter.drawLine(Point(to!int(x*400), to!int(((0.5 * h)+a*x)*400)), Point(to!int(x*400), to!int((a*x-(0.5 * h))*400)));
-		//		x += .0001; //accuracy
-		//	}	
-		auto x = -width;
-		auto y = -height;
-		while(y < height){
-			if(x == 0){//If statement possibly unneeded
-				x = 0.1;
-			}
-			while(x < width){
-				double h = exp((pow(chirp*x,2)/(-2*pow(x,2)))-pow(y-chirp,2)/(2*(pow(chirp*x,2))))/(2*PI*pow(x*y,2));
-				if(h>0.372){ //Value at F(1,1)
-					painter.drawLine(Point(x), Point(y));
-				}
-				x += accuracy; //accuracy
-			}
-			y += accuracy;
-		}
-	} // end scope, calling `painter`'s destructor, drawing to the screen.
-		window.eventLoop(0); // handle events
-	}*/
+	void modelPhaseSpace(double accuracy){
+		auto window = new SimpleWindow(to!int(6*width), to!int(6*height)); 
+		{// introduce sub-scope
+			auto painter = window.draw(); // begin drawing
+			//draw here
+			//	painter.outlineColor = Color.red;
+			//	painter.fillColor = Color.red;
+			//	auto x = -sigmaZ;
+			//	while(x < sigmaZ){
+			//		double h = exp((pow(a*x,2)/(-2*pow(x,2)))-pow(v-a,2)/(2*(pow(a*x,2))))/(2*PI*pow(x*a*x,2));
+			//		painter.outlineColor = Color.red;
+			//		painter.drawLine(Point(to!int(x*400), to!int(((0.5 * h)+a*x)*400)), Point(to!int(x*400), to!int((a*x-(0.5 * h))*400)));
+			//		x += .0001; //accuracy
+			//	}	
+			auto x = -3*width;
+			auto y = -3*height;
+			painter.outlineColor = Color.yellow;
+			painter.fillColor = Color.yellow;
 
+			painter.drawLine(Point(to!int(60), to!int(60)), Point(to!int(50), to!int(50)));
+			while(y < 3*height){
+				while(x < 3*width){//Issues with scaling for some reason ( should have to be 7772 at 10^12, but is only 7772 at 10^14, further it doesn't reach values it should closer to center
+					double h = 10000000000000*exp((-1*pow(x,2)/(2*pow(width,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
+					if(h>7772){ //Value at F(100,87)
+						painter.outlineColor = Color.blue;
+						painter.fillColor = Color.blue;
+						if(h>20000){
+							painter.outlineColor = Color.green;
+							painter.fillColor = Color.green;
+						}
+						if(h>42340){
+							painter.outlineColor = Color.yellow;
+							painter.fillColor = Color.yellow;
+						}
+						if(h>52670)
+						{
+							painter.outlineColor = Color.red;
+							painter.fillColor = Color.red;
+						}
+						painter.drawLine(Point(to!int(x+300), to!int(y+300)), Point(to!int(x+301), to!int(y+301)));
+					}
+					x += accuracy; //accuracy
+				}
+				x = -3*width;
+				y += accuracy;
+			}
+		} // end scope, calling `painter`'s destructor, drawing to the screen.
+		window.eventLoop(0);// handle events
+	}
 	//Conservation Checking
 	bool checkAreaConservation(double widthHeight, double intDist){
 		double consValue = 1;
@@ -116,6 +137,8 @@ void main(){
 	//writeln(initialPulse.getArea(0.00005));
 	//sw.stop();
 	//writeln("Took ",sw.peek().to!("msecs", real)(), "ms to run area method");
+	//initialPulse.freeExpansion(1);
+	initialPulse.modelPhaseSpace(1);
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();
 }
