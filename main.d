@@ -16,11 +16,11 @@ Finish modelPhaseSpace code
 class PhaseSpace{
 	//Initial Conditions of initial pulse
 	double width = 100;
-	double height = 100;
+	double height = 87;
 	double VzIntDist = 50;
 	double zIntDist = -50;
 	double chirp = 0.866; //(sqrt 0.75)
-	double b = -0.866;
+	double b = 0.866;
 	double dist, vel;
 
 	void defineVariableValues(){
@@ -38,8 +38,12 @@ class PhaseSpace{
 	void freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 		this.b += time;
 		this.VzIntDist = sqrt(1/((1/pow(height,2))+pow((b/zIntDist),2)));
+		writeln(VzIntDist);
 		this.chirp = b*pow(VzIntDist,2)/pow(zIntDist,2);
-		this.VzIntDist = sqrt(1/((1/pow(zIntDist,2))-pow(chirp/VzIntDist,2)));
+		writeln(chirp);
+		writeln(b);
+		this.width = sqrt(1/((1/pow(zIntDist,2))-pow(chirp/VzIntDist,2)));
+		writeln(width);
 	}
 
 	void opticalMantipulation(double changeChirp, double changeB){
@@ -70,18 +74,18 @@ class PhaseSpace{
 			while(y < 3*height){
 				while(x < 3*width){//Issues with scaling for some reason ( should have to be 7772 at 10^12, but is only 7772 at 10^14, further it doesn't reach values it should closer to center
 					double h = 10000000000000*exp((-1*pow(x,2)/(2*pow(width,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
-					if(h>7772){ //Value at F(100,87)
+					if(h>7722){ //Value at F(100,87)
 						painter.outlineColor = Color.blue;
 						painter.fillColor = Color.blue;
-						if(h>20000){
+						if(h>11236){
 							painter.outlineColor = Color.green;
 							painter.fillColor = Color.green;
 						}
-						if(h>42340){
+						if(h>12339){
 							painter.outlineColor = Color.yellow;
 							painter.fillColor = Color.yellow;
 						}
-						if(h>52670)
+						if(h>12668)
 						{
 							painter.outlineColor = Color.red;
 							painter.fillColor = Color.red;
@@ -137,7 +141,7 @@ void main(){
 	//writeln(initialPulse.getArea(0.00005));
 	//sw.stop();
 	//writeln("Took ",sw.peek().to!("msecs", real)(), "ms to run area method");
-	//initialPulse.freeExpansion(1);
+	initialPulse.freeExpansion(1);
 	initialPulse.modelPhaseSpace(1);
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();
