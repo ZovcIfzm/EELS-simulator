@@ -1,19 +1,22 @@
-import std.stdio, std.array, std.algorithm, std.conv, std.math, arsd.simpledisplay;//simpledisplay; //std.datetime;
+import std.stdio, std.array, std.algorithm, std.conv, std.math, arsd.simpledisplay; //std.datetime;
 /*		Math Conversion
 sigmaZ = width;		the width along the z axis
 sigmaVz = height;	the height along the Vz axis
 zetaZ = VzIntDist;	the distance between the two Vz intercepts				//I think since it is between z (distance) and Vz(relative difference in velocity)
-tau = zIntDist;		the distance between the two z intercepts				//Its important to write z and Vz, instead of x and y
+psi = zIntDist;		the distance between the two z intercepts				//Its important to write z and Vz, instead of x and y
 a = chirp;			the chirp. chirp = slope
 z = dist;			the distance from the origin-from the center of mass
 Vz = vel;			the difference in velocity from center of mass
 b = b;				the relationship between the chirp, zIntDist, and VzIntDist. (b=a(tau/zeta)^2)
 
 Objectives
-Finish modelPhaseSpace code
+Fix modelPhaseSpace code
+Finish opticalManipulation method
+Fragment Phase Space
 */
 
 class PhaseSpace{
+	this(){}//Empty Constructor
 	//Initial Conditions of initial pulse
 	double width = 100;
 	double height = 87;
@@ -46,9 +49,8 @@ class PhaseSpace{
 		writeln(width);
 	}
 
-	void opticalMantipulation(double changeChirp, double changeB){
+	void opticalManipulation(double changeChirp){
 		this.chirp += changeChirp;
-		this.b += changeB;
 	}
 
 	void modelPhaseSpace(double accuracy){
@@ -56,20 +58,10 @@ class PhaseSpace{
 		{// introduce sub-scope
 			auto painter = window.draw(); // begin drawing
 			//draw here
-			//	painter.outlineColor = Color.red;
-			//	painter.fillColor = Color.red;
-			//	auto x = -sigmaZ;
-			//	while(x < sigmaZ){
-			//		double h = exp((pow(a*x,2)/(-2*pow(x,2)))-pow(v-a,2)/(2*(pow(a*x,2))))/(2*PI*pow(x*a*x,2));
-			//		painter.outlineColor = Color.red;
-			//		painter.drawLine(Point(to!int(x*400), to!int(((0.5 * h)+a*x)*400)), Point(to!int(x*400), to!int((a*x-(0.5 * h))*400)));
-			//		x += .0001; //accuracy
-			//	}	
 			auto x = -3*width;
 			auto y = -3*height;
 			painter.outlineColor = Color.yellow;
 			painter.fillColor = Color.yellow;
-
 			painter.drawLine(Point(to!int(60), to!int(60)), Point(to!int(50), to!int(50)));
 			while(y < 3*height){
 				while(x < 3*width){//Issues with scaling for some reason ( should have to be 7772 at 10^12, but is only 7772 at 10^14, further it doesn't reach values it should closer to center
@@ -100,10 +92,11 @@ class PhaseSpace{
 		} // end scope, calling `painter`'s destructor, drawing to the screen.
 		window.eventLoop(0);// handle events
 	}
+
 	//Conservation Checking
 	bool checkAreaConservation(double widthHeight, double intDist){
-		double consValue = 1;
-		if(consValue > 0.99 && consValue < 1.01){//randomly decided range to account for integration error 
+		double consValue = widthHeight*intDist;
+		if(consValue > 0.9999 && consValue < 1.0001){//randomly decided range to account for data error 
 			writeln("Area is conserved");
 			return true;
 		}
@@ -131,21 +124,34 @@ class PhaseSpace{
 }
 
 void main(){
-	auto initialPulse = new PhaseSpace(2.001, 5.009); //Random numbers
-	//StopWatch sw;
-	initialPulse.currentPhaseSpace();
-    //initialPulse.goForward(4);
-	initialPulse.currentPhaseSpace();
-	initialPulse.checkAreaConservation(1,1);
-	//sw.start();
-	//writeln(initialPulse.getArea(0.00005));
-	//sw.stop();
-	//writeln("Took ",sw.peek().to!("msecs", real)(), "ms to run area method");
-	initialPulse.freeExpansion(1);
+	auto initialPulse = new PhaseSpace(); //Random numbers
+	writeln("Modeling Initial Pulse...");
 	initialPulse.modelPhaseSpace(1);
-	writeln("End of Program, enter anything to continue");
+	writeln("How long is free expansion?");
 	string input = stdin.readln();
+	initialPulse.freeExpansion(to!double(input));
+	initialPulse.modelPhaseSpace(1);
+	writeln("How much did the optical lens alter the chirp?");
+	input = stdin.readln();
+	//initialPulse.opticalManipulation(to!double(input)); Need to finish
+	//initialPulse.modelPhaseSpace(1);
+	writeln("End of Program, enter anything to continue");
+	input = stdin.readln();
 }
+
+
+
+//Tidbits of code
+//StopWatch sw;
+//initialPulse.currentPhaseSpace();
+//initialPulse.goForward(4);
+//initialPulse.currentPhaseSpace();
+//initialPulse.checkAreaConservation(1,1);
+//sw.start();
+//writeln(initialPulse.getArea(0.00005));
+//sw.stop();
+//writeln("Took ",sw.peek().to!("msecs", real)(), "ms to run area method");
+
 
 
 /*Important things to know
