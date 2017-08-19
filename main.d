@@ -65,24 +65,24 @@ class PhaseSpace{
 			painter.drawLine(Point(to!int(60), to!int(60)), Point(to!int(50), to!int(50)));
 			while(y < 3*height){
 				while(x < 3*width){//Issues with scaling for some reason ( should have to be 7772 at 10^12, but is only 7772 at 10^14, further it doesn't reach values it should closer to center
-					double h = 10000000000000*exp((-1*pow(x,2)/(2*pow(width,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
-					if(h>7722){ //Value at F(100,87)
+					double h = 1000000000000*exp((-1*pow(x,2)/(2*pow(width,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
+					if(h>3861){ //Value at F(100,87)
 						painter.outlineColor = Color.blue;
 						painter.fillColor = Color.blue;
-						if(h>11236){
+						if(h>5618){
 							painter.outlineColor = Color.green;
 							painter.fillColor = Color.green;
 						}
-						if(h>12339){
+						if(h>6170){
 							painter.outlineColor = Color.yellow;
 							painter.fillColor = Color.yellow;
 						}
-						if(h>12668)
+						if(h>6334)
 						{
 							painter.outlineColor = Color.red;
 							painter.fillColor = Color.red;
 						}
-						painter.drawLine(Point(to!int(x+300), to!int(-y+300)), Point(to!int(x+301), to!int(-y+301)));
+						painter.drawLine(Point(to!int(x+(width*3)), to!int(-y+(height*3))), Point(to!int(x+(width*3)+1), to!int(-y+(height*3)+1)));
 					}
 					x += accuracy; //accuracy
 				}
