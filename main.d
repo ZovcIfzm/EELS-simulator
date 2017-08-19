@@ -129,7 +129,7 @@ void main(){
 	initialPulse.modelPhaseSpace(1);
 	writeln("How long is free expansion?");
 	string input = stdin.readln();
-	initialPulse.freeExpansion(to!double(input));
+	initialPulse.freeExpansion(parse!double(input));
 	initialPulse.modelPhaseSpace(1);
 	writeln("How much did the optical lens alter the chirp?");
 	input = stdin.readln();
