@@ -15,18 +15,11 @@ Finish opticalManipulation method
 Fragment Phase Space
 */
 
-PhaseSpace[10] phaseSpaces;
-
 class PhaseSpace{
 	double width, height, VzIntDist, zIntDist, chirp, b;
 	this(double widthC, double heightC, double VzIntDistC, double zIntDistC, double chirpC, double bC){
 		width=widthC, height=heightC, VzIntDist=VzIntDistC, zIntDist=zIntDistC, chirp=chirpC, b=bC;
 	}
-	/*this( const &obj);
-	{
-
-	}/*
-
 	/*void defineVariableValues(){
 		writeln("Please define in order VzIntDist, zintDist, chirp, and b in order");
 		VzIntDist = parse!double(stdin.readln());
@@ -39,7 +32,7 @@ class PhaseSpace{
 		writeln(b);
 	}*/
 
-	void freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
+	PhaseSpace freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 		this.b += time;
 		this.VzIntDist = sqrt(1/((1/pow(height,2))+pow((b/zIntDist),2)));
 		writeln(VzIntDist);
@@ -48,13 +41,21 @@ class PhaseSpace{
 		writeln(b);
 		this.width = sqrt(1/((1/pow(zIntDist,2))-pow(chirp/VzIntDist,2)));
 		writeln(width);
+		return this;
 	}
-
-	void opticalManipulation(double changeChirp){
+	PhaseSpace[] split(int spaces){
+		PhaseSpace[] phaseSpaces;
+		for(int i = 0; i<spaces; i++){
+			phaseSpaces ~= new PhaseSpace(this.width, this.height/spaces*(to!double(i)+1), this.VzIntDist, this.zIntDist, this.chirp, this.b);
+		}
+		return phaseSpaces;
+	}
+	PhaseSpace opticalManipulation(double changeChirp){
 		this.chirp += changeChirp;
+		return this;
 	}
 
-	void modelPhaseSpace(double accuracy){
+	PhaseSpace modelPhaseSpace(double accuracy){
 		auto window = new SimpleWindow(to!int(6*width), to!int(6*height)); 
 		{// introduce sub-scope
 			auto painter = window.draw(); // begin drawing
@@ -87,6 +88,7 @@ class PhaseSpace{
 			}
 		} // end scope, calling `painter`'s destructor, drawing to the screen.
 		window.eventLoop(0);// handle events
+		return this;
 	}
 
 	//Conservation Checking
@@ -102,54 +104,27 @@ class PhaseSpace{
 			return false;
 		}
 	}
-
-	//Data storage, can be used in splitting
-	double[][] data;				
-	/*this(double Vz, double z){
-    	data ~= [Vz];
-    	data ~= [z];
-	}*/
-	void currentPhaseSpace(){
-		writeln(text(data));
-	}
-	void goForward(double dt){ //just here temporarily
-		foreach (ref items; data) { // overwrite value
-    		foreach (ref item; items)  item *= dt;
-		}
-	}
 }
 
-//class scanningPhaseSpace : PhaseSpace{//Before hitting specimen
-//}
-	
-void split(double number, PhaseSpace ps){
-	for(int i = 0;i < number;i++)
-	{
-		PhaseSpace newPhaseSpace = new PhaseSpace(ps.width, ps.height/number*(to!double(i)+1), ps.VzIntDist, ps.zIntDist, ps.chirp, ps.b);
-		PhaseSpace * ptr = &newPhaseSpace;
-		phaseSpaces[i+1] = *ptr;
-	}
-}
 
 void main(){
-	phaseSpaces[0] = (new PhaseSpace(100,87,50,-50,0.866,0.866));
+	auto initialPulse = new PhaseSpace(100,87,50,-50,0.866,0.866);
 	//auto initialPulse = new PhaseSpace(100, 87, 50, -50, 0.866, 0.866);
 	writeln("Modeling Initial Pulse...");
-	phaseSpaces[0].modelPhaseSpace(1);
+	initialPulse.modelPhaseSpace(1);
 	writeln("How long is free expansion?");
 	string input = stdin.readln();
-	phaseSpaces[0].freeExpansion(parse!double(input));
-	phaseSpaces[0].modelPhaseSpace(1);
-	split(3, phaseSpaces[0]);
-	phaseSpaces[1].modelPhaseSpace(1);
-	phaseSpaces[2].modelPhaseSpace(1);
-	phaseSpaces[3].modelPhaseSpace(1);
-	writeln("How much did the optical lens alter the chirp?");
+	initialPulse.freeExpansion(parse!double(input)).modelPhaseSpace(1);
+	auto splitPhases = initialPulse.split(3);
+	foreach (PhaseSpace space; splitPhases) {
+    	space.modelPhaseSpace(1);
+	}
+	/*writeln("How much did the optical lens alter the chirp?");
 	input = stdin.readln();
-	//initialPulse.opticalManipulation(parse!double(input)); Need to finish
-	//initialPulse.modelPhaseSpace(1);
+	initialPulse.opticalManipulation(parse!double(input)); Need to finish
+	initialPulse.modelPhaseSpace(1);
 	writeln("End of Program, enter anything to continue");
-	input = stdin.readln();
+	input = stdin.readln();*/
 }
 
 
@@ -164,7 +139,6 @@ void main(){
 //writeln(initialPulse.getArea(0.00005));
 //sw.stop();
 //writeln("Took ",sw.peek().to!("msecs", real)(), "ms to run area method");
-
 
 
 /*Important things to know
