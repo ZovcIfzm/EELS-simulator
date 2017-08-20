@@ -15,28 +15,29 @@ Finish opticalManipulation method
 Fragment Phase Space
 */
 
-class PhaseSpace{
-	this(){}//Empty Constructor
-	//Initial Conditions of initial pulse
-	double width = 100;
-	double height = 87;
-	double VzIntDist = 50;
-	double zIntDist = -50;
-	double chirp = 0.866; //(sqrt 0.75)
-	double b = 0.866;
-	double dist, vel;
+PhaseSpace[10] phaseSpaces;
 
-	void defineVariableValues(){
-		writeln("Please define in order VzIntDist, zintDist, chirp, and b in order");
-		VzIntDist = to!double(stdin.readln());
-		writeln(VzIntDist);
-		zIntDist = to!double(stdin.readln());
-		writeln(zIntDist);
-		chirp = to!double(stdin.readln());
-		writeln(chirp);
-		b = to!double(stdin.readln());
-		writeln(b);
+class PhaseSpace{
+	double width, height, VzIntDist, zIntDist, chirp, b;
+	this(double widthC, double heightC, double VzIntDistC, double zIntDistC, double chirpC, double bC){
+		width=widthC, height=heightC, VzIntDist=VzIntDistC, zIntDist=zIntDistC, chirp=chirpC, b=bC;
 	}
+	/*this( const &obj);
+	{
+
+	}/*
+
+	/*void defineVariableValues(){
+		writeln("Please define in order VzIntDist, zintDist, chirp, and b in order");
+		VzIntDist = parse!double(stdin.readln());
+		writeln(VzIntDist);
+		zIntDist = parse!double(stdin.readln());
+		writeln(zIntDist);
+		chirp = parse!double(stdin.readln());
+		writeln(chirp);
+		b = parse!double(stdin.readln());
+		writeln(b);
+	}*/
 
 	void freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 		this.b += time;
@@ -57,28 +58,23 @@ class PhaseSpace{
 		auto window = new SimpleWindow(to!int(6*width), to!int(6*height)); 
 		{// introduce sub-scope
 			auto painter = window.draw(); // begin drawing
-			//draw here
-			auto x = -3*width;
-			auto y = -3*height;
-			painter.outlineColor = Color.yellow;
-			painter.fillColor = Color.yellow;
-			painter.drawLine(Point(to!int(60), to!int(60)), Point(to!int(50), to!int(50)));
-			while(y < 3*height){
-				while(x < 3*width){//Issues with scaling for some reason ( should have to be 7772 at 10^12, but is only 7772 at 10^14, further it doesn't reach values it should closer to center
+			double x, y;
+			x = -width - 10, y = -height - 10;
+			while(y < height + 10){
+				while(x < width + 10){
 					double h = 1000000000000*exp((-1*pow(x,2)/(2*pow(width,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
 					if(h>3861){ //Value at F(100,87)
 						painter.outlineColor = Color.blue;
 						painter.fillColor = Color.blue;
-						if(h>5618){
+						if(h>5618){//Value at F(50,43)
 							painter.outlineColor = Color.green;
 							painter.fillColor = Color.green;
 						}
-						if(h>6170){
+						if(h>6170){//Value at F(25,21)
 							painter.outlineColor = Color.yellow;
 							painter.fillColor = Color.yellow;
 						}
-						if(h>6334)
-						{
+						if(h>6334){//Value at F(10,9)
 							painter.outlineColor = Color.red;
 							painter.fillColor = Color.red;
 						}
@@ -109,10 +105,10 @@ class PhaseSpace{
 
 	//Data storage, can be used in splitting
 	double[][] data;				
-    this(double Vz, double z){
+	/*this(double Vz, double z){
     	data ~= [Vz];
     	data ~= [z];
-	}
+	}*/
 	void currentPhaseSpace(){
 		writeln(text(data));
 	}
@@ -123,17 +119,34 @@ class PhaseSpace{
 	}
 }
 
+//class scanningPhaseSpace : PhaseSpace{//Before hitting specimen
+//}
+	
+void split(double number, PhaseSpace ps){
+	for(int i = 0;i < number;i++)
+	{
+		PhaseSpace newPhaseSpace = new PhaseSpace(ps.width, ps.height/number*(to!double(i)+1), ps.VzIntDist, ps.zIntDist, ps.chirp, ps.b);
+		PhaseSpace * ptr = &newPhaseSpace;
+		phaseSpaces[i+1] = *ptr;
+	}
+}
+
 void main(){
-	auto initialPulse = new PhaseSpace(); //Random numbers
+	phaseSpaces[0] = (new PhaseSpace(100,87,50,-50,0.866,0.866));
+	//auto initialPulse = new PhaseSpace(100, 87, 50, -50, 0.866, 0.866);
 	writeln("Modeling Initial Pulse...");
-	initialPulse.modelPhaseSpace(1);
+	phaseSpaces[0].modelPhaseSpace(1);
 	writeln("How long is free expansion?");
 	string input = stdin.readln();
-	initialPulse.freeExpansion(parse!double(input));
-	initialPulse.modelPhaseSpace(1);
+	phaseSpaces[0].freeExpansion(parse!double(input));
+	phaseSpaces[0].modelPhaseSpace(1);
+	split(3, phaseSpaces[0]);
+	phaseSpaces[1].modelPhaseSpace(1);
+	phaseSpaces[2].modelPhaseSpace(1);
+	phaseSpaces[3].modelPhaseSpace(1);
 	writeln("How much did the optical lens alter the chirp?");
 	input = stdin.readln();
-	//initialPulse.opticalManipulation(to!double(input)); Need to finish
+	//initialPulse.opticalManipulation(parse!double(input)); Need to finish
 	//initialPulse.modelPhaseSpace(1);
 	writeln("End of Program, enter anything to continue");
 	input = stdin.readln();
