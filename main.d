@@ -10,27 +10,17 @@ Vz = vel;			the difference in velocity from center of mass
 b = b;				the relationship between the chirp, zIntDist, and VzIntDist. (b=a(tau/zeta)^2)
 
 Objectives
-Fix modelPhaseSpace code
 Finish opticalManipulation method
 Fragment Phase Space
 */
+double totalPulseEnergy, electronAmount, 
+	distCT1, distT12, distT2L1, distL1A, distAT3, distT3S, distST4, distT4L2, distL2A, distAT5, distT5C;
 
 class PhaseSpace{
 	double width, height, VzIntDist, zIntDist, chirp, b;
 	this(double widthC, double heightC, double VzIntDistC, double zIntDistC, double chirpC, double bC){
 		width=widthC, height=heightC, VzIntDist=VzIntDistC, zIntDist=zIntDistC, chirp=chirpC, b=bC;
 	}
-	/*void defineVariableValues(){
-		writeln("Please define in order VzIntDist, zintDist, chirp, and b in order");
-		VzIntDist = parse!double(stdin.readln());
-		writeln(VzIntDist);
-		zIntDist = parse!double(stdin.readln());
-		writeln(zIntDist);
-		chirp = parse!double(stdin.readln());
-		writeln(chirp);
-		b = parse!double(stdin.readln());
-		writeln(b);
-	}*/
 
 	PhaseSpace freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 		this.b += time;
@@ -46,7 +36,7 @@ class PhaseSpace{
 	PhaseSpace[] split(int spaces){
 		PhaseSpace[] phaseSpaces;
 		for(int i = 0; i<spaces; i++){
-			phaseSpaces ~= new PhaseSpace(this.width, this.height/spaces*(to!double(i)+1), this.VzIntDist, this.zIntDist, this.chirp, this.b);
+			phaseSpaces ~= new PhaseSpace(this.height/this.chirp, this.height/spaces*(to!double(i)+1), this.VzIntDist, this.zIntDist, this.chirp, this.b);
 		}
 		return phaseSpaces;
 	}
@@ -60,13 +50,17 @@ class PhaseSpace{
 		{// introduce sub-scope
 			auto painter = window.draw(); // begin drawing
 			double x, y;
-			x = -width - 10, y = -height - 10;
-			while(y < height + 10){
-				while(x < width + 10){
+			x = -3*width, y = -3*height;
+			while(y < 3*height){
+				while(x < 3*width){
 					double h = 1000000000000*exp((-1*pow(x,2)/(2*pow(width,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
-					if(h>3861){ //Value at F(100,87)
-						painter.outlineColor = Color.blue;
-						painter.fillColor = Color.blue;
+					if(h>71){ //Value at F(300,260)
+						painter.outlineColor = Color.white;
+						painter.fillColor = Color.white;					
+						if(h>3861){ //Value at F(100,87)
+							painter.outlineColor = Color.blue;
+							painter.fillColor = Color.blue;
+						}
 						if(h>5618){//Value at F(50,43)
 							painter.outlineColor = Color.green;
 							painter.fillColor = Color.green;
@@ -108,8 +102,8 @@ class PhaseSpace{
 
 
 void main(){
-	auto initialPulse = new PhaseSpace(100,87,50,-50,0.866,0.866);
-	//auto initialPulse = new PhaseSpace(100, 87, 50, -50, 0.866, 0.866);
+	auto initialPulse = new PhaseSpace(100,86.6,50,50,0.866,0.866);
+	//auto initialPulse = new PhaseSpace(100, 87, 50, 50, 0.866, 0.866);
 	writeln("Modeling Initial Pulse...");
 	initialPulse.modelPhaseSpace(1);
 	writeln("How long is free expansion?");
@@ -128,25 +122,11 @@ void main(){
 }
 
 
-
-//Tidbits of code
-//StopWatch sw;
-//initialPulse.currentPhaseSpace();
-//initialPulse.goForward(4);
-//initialPulse.currentPhaseSpace();
-//initialPulse.checkAreaConservation(1,1);
-//sw.start();
-//writeln(initialPulse.getArea(0.00005));
-//sw.stop();
-//writeln("Took ",sw.peek().to!("msecs", real)(), "ms to run area method");
-
-
 /*Important things to know
 
 We will need to create a phase space simulation that not only has the shape of the phase space
 but and VERY IMPORTANTLY
-has the data gathered from hitting the specimen in each point. How to do that is the mystery. Will we have to do a coordinate system?
-Or is this found in each individual phase space when it shatters
+has the data gathered from hitting the specimen in each point.
 
 Objectives
 Create a phase space simulator that simulates the phase space and collects data from hitting the specimen
@@ -160,13 +140,13 @@ Finish free expansion
 Figure out shattering
 Recenter center of mass individually for each phase space
 Figure out data containment
-Figure out reactions between shatters phase spaces and how to account for them and how they change each other
 Figure out how to recombine
 
 LARGE PART NOT YET FIGURED OUT Figure out how to optimize the microscope through combinations of optics
 Write an at most 18 pages (not including references) paper about our research
 Total 1600 projects
 Score top 300 for semi finalist (top 18.75%)
-Score top 60 for regional finalist
-Score top 6 (in team category) for national finalist 
+Score top 60 for regional finalist (top 3.75%)
+Score top 6 (in team category) for national finalist (top 0.375%) top (0.65% of team projects)
+Score first (in team category) (top 0.0625%) top (0.125% of team projects)
 */
