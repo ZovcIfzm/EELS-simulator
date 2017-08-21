@@ -36,7 +36,7 @@ class PhaseSpace{
 	PhaseSpace[] split(int spaces){
 		PhaseSpace[] phaseSpaces;
 		for(int i = 0; i<spaces; i++){
-			phaseSpaces ~= new PhaseSpace(this.height/this.chirp, this.height/spaces*(to!double(i)+1), this.VzIntDist, this.zIntDist, this.chirp, this.b);
+			phaseSpaces ~= new PhaseSpace(this.height/this.chirp, this.height/spaces*(i+1), this.VzIntDist, this.zIntDist, this.chirp, this.b);
 		}
 		return phaseSpaces;
 	}
@@ -80,7 +80,7 @@ class PhaseSpace{
 				x = -3*width;
 				y += accuracy;
 			}
-		} // end scope, calling `painter`'s destructor, drawing to the screen.
+		} // end scope, calling `painter`'s, drawing to the screen.
 		window.eventLoop(0);// handle events
 		return this;
 	}
