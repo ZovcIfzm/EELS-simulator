@@ -1,5 +1,4 @@
-import std.stdio, std.file, std.conv, arsd.dom, main;
-
+import std.stdio, std.file, std.conv, arsd.dom, arsd.script, arsd.jsvar, main;
 class Script
 {
 	Document file;
@@ -29,7 +28,7 @@ class Script
 				space.opticalManipulation(to!double(statement.getAttribute("chirp")));
 				break;
 			case "script":
-				space.opticalManipulation(to!double(statement.getAttribute("chirp")));
+				
 				break;
 			case "split":
 				auto spaces = space.split(to!int(statement.getAttribute("portions")));
