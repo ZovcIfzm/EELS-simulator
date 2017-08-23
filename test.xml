@@ -1,0 +1,11 @@
+<space width="100" height="86.6" VzIntDist="50" zIntDist="50" chirp="0.866" b="0.866">
+	<model accuracy="1"></model>
+	<freeExpansion time="1"></freeExpansion>
+	<model accuracy="1"></model>
+	<lens chirp="2"></lens> <!--This is a comment-->
+	<split portions="3">
+		<model accuracy="1"></model>
+		<freeExpansion time="1"></freeExpansion>
+		<model accuracy="1"></model>
+	</split>
+</space>

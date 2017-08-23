@@ -1,4 +1,4 @@
-import std.stdio, std.array, std.algorithm, std.conv, std.math, arsd.simpledisplay; //std.datetime;
+import std.stdio, std.array, std.algorithm, std.conv, std.math, arsd.simpledisplay, script; //std.datetime;
 /*		Math Conversion
 sigmaZ = width;		the width along the z axis
 sigmaVz = height;	the height along the Vz axis
@@ -102,7 +102,9 @@ class PhaseSpace{
 
 
 void main(){
-	auto initialPulse = new PhaseSpace(100,86.6,50,50,0.866,0.866);
+	auto test = new Script("test.xml");
+	test.run();
+	/*auto initialPulse = new PhaseSpace(100,86.6,50,50,0.866,0.866);
 	//auto initialPulse = new PhaseSpace(100, 87, 50, 50, 0.866, 0.866);
 	writeln("Modeling Initial Pulse...");
 	initialPulse.modelPhaseSpace(1);
@@ -112,13 +114,13 @@ void main(){
 	auto splitPhases = initialPulse.split(3);
 	foreach (PhaseSpace space; splitPhases) {
     	space.modelPhaseSpace(1);
-	}
+	}*/
 	/*writeln("How much did the optical lens alter the chirp?");
 	input = stdin.readln();
 	initialPulse.opticalManipulation(parse!double(input)); Need to finish
-	initialPulse.modelPhaseSpace(1);
+	initialPulse.modelPhaseSpace(1);*/
 	writeln("End of Program, enter anything to continue");
-	input = stdin.readln();*/
+	input = stdin.readln();
 }
 
 
