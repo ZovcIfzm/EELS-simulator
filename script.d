@@ -28,6 +28,9 @@ class Script
 			case "lens":
 				space.opticalManipulation(to!double(statement.getAttribute("chirp")));
 				break;
+			case "script":
+				space.opticalManipulation(to!double(statement.getAttribute("chirp")));
+				break;
 			case "split":
 				auto spaces = space.split(to!int(statement.getAttribute("portions")));
 				foreach(Element tag; statement.childNodes()){

@@ -120,7 +120,7 @@ void main(){
 	initialPulse.opticalManipulation(parse!double(input)); Need to finish
 	initialPulse.modelPhaseSpace(1);*/
 	writeln("End of Program, enter anything to continue");
-	input = stdin.readln();
+	string input = stdin.readln();
 }
 
 
