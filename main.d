@@ -3,11 +3,11 @@ import std.stdio, std.array, std.algorithm, std.conv, std.math, arsd.simpledispl
 sigmaZ = width;		the width along the z axis
 sigmaVz = height;	the height along the Vz axis
 zetaZ = VzIntDist;	the distance between the two Vz intercepts				//I think since it is between z (distance) and Vz(relative difference in velocity)
-psi = zIntDist;		the distance between the two z intercepts				//Its important to write z and Vz, instead of x and y
+tau = zIntDist;		the distance between the two z intercepts				//Its important to write z and Vz, instead of x and y
 a = chirp;			the chirp. chirp = slope
+b = b;				the relationship between the chirp, zIntDist, and VzIntDist. (b=a(tau/zeta)^2)
 z = dist;			the distance from the origin-from the center of mass
 Vz = vel;			the difference in velocity from center of mass
-b = b;				the relationship between the chirp, zIntDist, and VzIntDist. (b=a(tau/zeta)^2)
 
 Objectives
 Finish opticalManipulation method
@@ -18,14 +18,26 @@ double totalPulseEnergy, electronAmount,
 
 class PhaseSpace{
 	double width, height, VzIntDist, zIntDist, chirp, b;
+	//double emmittence - ability to find other varaibles in terms of these three
+	//double emmittenceD - same but for depth
+	double depth, depthVelocity, VxIntDist, xIntDist, chirpD, bD;
 	this(double widthC, double heightC, double VzIntDistC, double zIntDistC, double chirpC, double bC){
+		// double depthC, double depthVelocityC, double VxIntDistC, double xIntDistC, double chirpDC, double bDC){
 		width=widthC, height=heightC, VzIntDist=VzIntDistC, zIntDist=zIntDistC, chirp=chirpC, b=bC;
+		//depth=depthC, depthVelocity=depthVelocityC, VxIntDist=VxIntDistC, xIntDist=xIntDistC, chirpD=chirpDC, bD=bDC;
 	}
 
 	PhaseSpace freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 		this.b += time;
-		this.VzIntDist = sqrt(1/((1/pow(height,2))+pow((b/zIntDist),2)));
-		writeln(VzIntDist);
+		if(chirp>0){
+			this.VzIntDist = sqrt(1/((1/pow(height,2))+pow((b/zIntDist),2)));
+			writeln(VzIntDist);
+
+		}
+		if(chirp<0){
+			this.zIntDist = b/(sqrt((1/pow(VzIntDist,2))-(1/pow(height,2))));
+			writeln(zIntDist);
+		}
 		this.chirp = b*pow(VzIntDist,2)/pow(zIntDist,2);
 		writeln(chirp);
 		writeln(b);
@@ -84,6 +96,33 @@ class PhaseSpace{
 		window.eventLoop(0);// handle events
 		return this;
 	}
+	double getSplitIntensity(double accuracy, int numSections, int sectionNum, double height, double width){
+		//Gets intensity % proportionally to 1 (like if its gets .5 its 50% of total intensity)
+		//search with xSearch & ySearch = +- 5.803*width or height to get the total intensity of the phase space (equal to 1)
+		double xSearchLB; double xSearchUB; double ySearchLB; double ySearchUB;
+		xSearchLB = -width + (width*2/numSections)*(sectionNum-1);
+		xSearchUB = width - (width*2/numSections)*(numSections - sectionNum);
+		ySearchLB = -height + (height*2/numSections)*(sectionNum-1);
+		ySearchUB = height - (height*2/numSections)*(numSections - sectionNum);
+		/*xSearchLB = -5.803*width;
+		xSearchUB = 5.803*width;
+		ySearchLB = -5.803*height;
+		ySearchUB = 5.803*height;*/
+
+		auto x = xSearchLB;
+		auto y = ySearchLB;
+		double intensityRatio = 0;
+		while(y < ySearchUB){
+			while(x < xSearchUB){
+				intensityRatio += pow(accuracy,2)*exp((-1*pow(x,2)/(2*pow(width,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
+				x += accuracy;
+			}
+			y += accuracy;
+			x = xSearchLB;
+		}
+		intensityRatio = intensityRatio*5000;
+		return intensityRatio;
+	}
 
 	//Conservation Checking
 	bool checkAreaConservation(double widthHeight, double intDist){
@@ -105,7 +144,9 @@ void main(){
 	auto test = new Script("test.xml");
 	test.run();
 	/*auto initialPulse = new PhaseSpace(100,86.6,50,50,0.866,0.866);
-	//auto initialPulse = new PhaseSpace(100, 87, 50, 50, 0.866, 0.866);
+	writeln(initialPulse.getSplitIntensity(1,3,1,initialPulse.height, initialPulse.width));
+	writeln(initialPulse.getSplitIntensity(1,3,2,initialPulse.height, initialPulse.width));
+	writeln(initialPulse.getSplitIntensity(1,3,3,initialPulse.height, initialPulse.width));
 	writeln("Modeling Initial Pulse...");
 	initialPulse.modelPhaseSpace(1);
 	writeln("How long is free expansion?");
