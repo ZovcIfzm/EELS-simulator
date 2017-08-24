@@ -11,7 +11,7 @@ class Script
 		foreach(Element t; this.file.getElementsByTagName("space")){
 			this.space = new PhaseSpace(to!double(t.getAttribute("width")), to!double(t.getAttribute("height")), 
 				to!double(t.getAttribute("VzIntDist")), to!double(t.getAttribute("zIntDist")), 
-				to!double(t.getAttribute("chirp")), to!double(t.getAttribute("b")));
+				to!double(t.getAttribute("chirp")), to!double(t.getAttribute("b")), to!double(t.getAttribute("intensity")), to!double(t.getAttribute("intensityRatio")));
 			foreach(Element tag; t.childNodes())
 				this.byNode(tag, this.space);
 		}
@@ -19,7 +19,7 @@ class Script
 	void byNode(Element statement, PhaseSpace space){
 		switch (statement.tagName) {
 			case "model":
-				space.modelPhaseSpace(to!double(statement.getAttribute("accuracy"))); 
+				space.modelPhaseSpace(to!double(statement.getAttribute("accuracy")), space); 
 				break;
 			case "freeexpansion":
 				space.freeExpansion(to!double(statement.getAttribute("time")));
