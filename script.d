@@ -19,7 +19,7 @@ class Script
 	void byNode(Element statement, PhaseSpace space){
 		switch (statement.tagName) {
 			case "model":
-				space.modelPhaseSpace(to!double(statement.getAttribute("accuracy")), space); 
+				space.modelPhaseSpace(to!double(statement.getAttribute("accuracy"))); 
 				break;
 			case "freeexpansion":
 				space.freeExpansion(to!double(statement.getAttribute("time")));

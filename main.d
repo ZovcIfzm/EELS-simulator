@@ -59,7 +59,7 @@ class PhaseSpace{
 		return this;
 	}
 
-	PhaseSpace modelPhaseSpace(double accuracy, PhaseSpace ps){
+	PhaseSpace modelPhaseSpace(double accuracy){
 		auto window = new SimpleWindow(to!int(6*width), to!int(6*height)); 
 		{// introduce sub-scope;
 			auto painter = window.draw(); // begin drawing
@@ -67,7 +67,7 @@ class PhaseSpace{
 			x = -3*width, y = -3*height;
 			while(y < 3*height){
 				while(x < 3*width){
-					double h = ps.intensityRatio*1000000000000*exp((-1*pow(x,2)/(2*pow(width,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
+					double h = this.intensityRatio*1000000000000*exp((-1*pow(x,2)/(2*pow(width,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
 					if(h>71){ //Value at F(300,260)
 						painter.outlineColor = Color.white;
 						painter.fillColor = Color.white;					
@@ -99,23 +99,28 @@ class PhaseSpace{
 		return this;
 	}
 
-	double getSplitIntensityRatio(double accuracy, int numSections, int sectionNum, double height, double width){
+	double getSplitIntensityRatio(double accuracy, int numSections, double sectionNum, double height, double width){
 		//Gets intensity % proportionally to 1 (like if its gets .5 its 50% of total intensity)
 		//search with xSearch & ySearch = +- 5.803*width or height to get the total intensity of the phase space (equal to 1)
-		double xSearchLB; double xSearchUB; double ySearchLB; double ySearchUB;
-		xSearchLB = -width + (width*2/numSections)*(sectionNum-1);
-		xSearchUB = width - (width*2/numSections)*(numSections - sectionNum);
-		ySearchLB = -height + (height*2/numSections)*(sectionNum-1);
-		ySearchUB = height - (height*2/numSections)*(numSections - sectionNum);
-		/*xSearchLB = -5.803*width;
+		double xSearchLB; double xSearchUB; 
+		double ySearchLB; double ySearchUB;	
+		//xSearchLB = -width + (width*2/numSections)*(sectionNum-1);
+		//xSearchUB = width - (width*2/numSections)*(numSections - sectionNum);
+		ySearchLB = -5.803*height + ((5.803*height*2/numSections)*(sectionNum-1));
+		ySearchUB = 5.803*height - (5.803*height*2/numSections)*(numSections - sectionNum);
+		xSearchLB = -5.803*width;
 		xSearchUB = 5.803*width;
-		ySearchLB = -5.803*height;
-		ySearchUB = 5.803*height;*/
+		//ySearchLB = -5.803*height;
+		//ySearchUB = 5.803*height;
 
 		auto x = xSearchLB;
 		auto y = ySearchLB;
+		//double x = -width;
 		double intensityRatio = 0;
-		while(y < ySearchUB){
+		if(numSections==sectionNum){
+			ySearchUB += 1;
+		}
+		while(y < ySearchUB-1){
 			while(x < xSearchUB){
 				intensityRatio += pow(accuracy,2)*exp((-1*pow(x,2)/(2*pow(width,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
 				x += accuracy;
@@ -124,7 +129,7 @@ class PhaseSpace{
 			x = xSearchLB;
 		}
 		intensityRatio = intensityRatio*5000;
-		return intensityRatio;
+		return intensityRatio;		
 	}
 
 	//Conservation Checking
@@ -146,27 +151,31 @@ class PhaseSpace{
 void main(){
 	//auto test = new Script("test.xml");
 	//test.run();
-	/*auto initialPulse = new PhaseSpace(100,86.6,50,50,0.866,0.866, 100, 1);
-	writeln(initialPulse.getSplitIntensityRatio(1,1,1,initialPulse.height, initialPulse.width));
-	writeln(initialPulse.getSplitIntensityRatio(1,3,1,initialPulse.height, initialPulse.width));
-	writeln(initialPulse.getSplitIntensityRatio(1,3,2,initialPulse.height, initialPulse.width));
-	writeln(initialPulse.getSplitIntensityRatio(1,3,3,initialPulse.height, initialPulse.width));
+	auto initialPulse = new PhaseSpace(100,86.6,50,50,0.866,0.866, 100, 1);
+	double finInfo = 0;
+	int numSectionsC = 1005;//Max amount before it stops working (cant do above 1005)
+	for(int j=1;j<numSectionsC+1;j++){
+		writeln((initialPulse.getSplitIntensityRatio(1,numSectionsC,j,initialPulse.height, initialPulse.width)));
+		finInfo += (initialPulse.getSplitIntensityRatio(1,numSectionsC,j,initialPulse.height, initialPulse.width));
+	}
+	writeln((initialPulse.getSplitIntensityRatio(1,numSectionsC,1,initialPulse.height, initialPulse.width)));
+	writeln(finInfo);
 	writeln("Modeling Initial Pulse...");
-	initialPulse.modelPhaseSpace(1,initialPulse);
+	initialPulse.modelPhaseSpace(1);
 	writeln("How long is free expansion?");
 	string input = stdin.readln();
-	initialPulse.freeExpansion(parse!double(input)).modelPhaseSpace(1,initialPulse);
+	initialPulse.freeExpansion(parse!double(input)).modelPhaseSpace(1);
 	auto splitPhases = initialPulse.split(3);
 	foreach (PhaseSpace space; splitPhases) {
-    	space.modelPhaseSpace(1,space);
+    	space.modelPhaseSpace(1);
 		writeln(space.intensityRatio);
-	}*/
+	}
 	/*writeln("How much did the optical lens alter the chirp?");
 	input = stdin.readln();
 	initialPulse.opticalManipulation(parse!double(input)); Need to finish
 	initialPulse.modelPhaseSpace(1);*/
 	writeln("End of Program, enter anything to continue");
-	string input = stdin.readln();
+	input = stdin.readln();
 }
 
 
