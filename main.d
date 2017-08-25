@@ -170,11 +170,11 @@ class PhaseSpace{
 
 
 void main(){
-	//auto test = new Script("test.xml");
-	//test.run();
-	auto initialPulse = new PhaseSpace(100,86.6,50,50,0.866,0.866, 100, 1);
+	auto test = new Script("test.xml");
+	test.run();
+	/*auto initialPulse = new PhaseSpace(100,86.6,50,50,0.866,0.866, 100, 1);
 	initialPulse.printPhaseSpace();
-	/*double finInfo = 0;
+	double finInfo = 0;
 	int numSectionsC = 1005;//Max amount before it stops working (cant do above 1005)
 	for(int j=1;j<numSectionsC+1;j++){
 		writeln((initialPulse.getSplitIntensityRatio(1,numSectionsC,j,initialPulse.height, initialPulse.width)));
@@ -186,14 +186,14 @@ void main(){
 	initialPulse.modelPhaseSpace(1);
 	writeln("How long is free expansion?");
 	string input = stdin.readln();
-	initialPulse.freeExpansion(parse!double(input)).modelPhaseSpace(1);*/
+	initialPulse.freeExpansion(parse!double(input)).modelPhaseSpace(1);
 	auto splitPhases = initialPulse.split(3);
-	/*foreach (PhaseSpace space; splitPhases) {
+	foreach (PhaseSpace space; splitPhases) {
     	space.modelPhaseSpace(1);
 		writeln(space.intensityRatio);
-	}*/
+	}
 	new PhaseSpace(splitPhases).printPhaseSpace();
-	/*writeln("How much did the optical lens alter the chirp?");
+	writeln("How much did the optical lens alter the chirp?");
 	input = stdin.readln();
 	initialPulse.opticalManipulation(parse!double(input)); Need to finish
 	initialPulse.modelPhaseSpace(1);*/

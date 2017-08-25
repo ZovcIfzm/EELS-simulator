@@ -12,8 +12,7 @@ class Script
 			this.space = new PhaseSpace(to!double(t.getAttribute("width")), to!double(t.getAttribute("height")), 
 				to!double(t.getAttribute("VzIntDist")), to!double(t.getAttribute("zIntDist")), 
 				to!double(t.getAttribute("chirp")), to!double(t.getAttribute("b")), to!double(t.getAttribute("intensity")), to!double(t.getAttribute("intensityRatio")));
-			foreach(Element tag; t.childNodes())
-				this.byNode(tag, this.space);
+				this.byNode(t.childNodes()[0], this.space);
 		}
 	}
 	void byNode(Element statement, PhaseSpace space){
@@ -27,18 +26,22 @@ class Script
 			case "lens":
 				space.opticalManipulation(to!double(statement.getAttribute("chirp")));
 				break;
+			case "print":
+				space.printPhaseSpace();
+				break;
 			case "script":
 				
 				break;
 			case "split":
 				auto spaces = space.split(to!int(statement.getAttribute("portions")));
-				foreach(Element tag; statement.childNodes()){
-					foreach(PhaseSpace s; spaces){
-						this.byNode(tag, s);
-					}
+				foreach(PhaseSpace s; spaces){
+					this.byNode(statement.childNodes()[0], s);
 				}
+				space = new PhaseSpace(spaces);
 				break;
 			default: break;
 		}
+		if(statement.nextSibling)
+			this.byNode(statement.nextSibling, space);
 	}
 }
