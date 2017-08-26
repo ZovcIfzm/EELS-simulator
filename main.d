@@ -15,7 +15,7 @@ Fragment Phase Space
 */
 double totalEnergy = 100, electronAmount, 
 	distCT1, distT12, distT2L1, distL1A, distAT3, distT3S, distST4, distT4L2, distL2A, distAT5, distT5C;
-
+int count = 0;
 class PhaseSpace{
 	double width, height, VzIntDist, zIntDist, chirp, b, totalPulseEnergy = 0, intensityRatio = 0;
 	//double emmittence - ability to find other varaibles in terms of these three
@@ -70,10 +70,10 @@ class PhaseSpace{
 		PhaseSpace[] phaseSpaces;
 		double spacesD = (to!double(spaces));
 		for(int i = 0; i<spaces+1; i++){
-			double intensityRatio = getSplitIntensityRatio(1, spaces, i, this.height, this.width);
-			//writeln("----" ,i);
+			double intensityRatio = getSplitIntensityRatio(1005/spacesD, spaces, i, this.height, this.width);
 			phaseSpaces ~= new PhaseSpace((this.height/this.chirp)/spacesD, this.height/spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatio, intensityRatio);
 		}
+		count = spaces;
 		return phaseSpaces;
 	}
 	PhaseSpace opticalManipulation(double changeChirp){
@@ -126,39 +126,25 @@ class PhaseSpace{
 		//search with xSearch & ySearch = +- 5.803*width or height to get the total intensity of the phase space (equal to 1)
 		double xSearchLB; double xSearchUB; 
 		double ySearchLB; double ySearchUB;	
-		//xSearchLB = -width + (width*2/numSections)*(sectionNum-1);
-		//xSearchUB = width - (width*2/numSections)*(numSections - sectionNum);
 		ySearchLB = -5.803*height + ((5.803*height*2/numSections)*(sectionNum-1));
 		ySearchUB = 5.803*height - (5.803*height*2/numSections)*(numSections - sectionNum);
 		xSearchLB = -5.803*width;
 		xSearchUB = 5.803*width;
-		//ySearchLB = -5.803*height;
-		//ySearchUB = 5.803*height;
 		double x = xSearchLB;
 		double y = ySearchLB;
-		//double x = -width;
-		writeln(ySearchLB);
-		writeln(ySearchUB);
-		//int count = 0;
 		double intensityRatio = 0;
 		if(numSections==sectionNum){
 			ySearchUB += 1;
 		}
 		while(y < ySearchUB-0.0001){
-			//count++;
 			while(x < xSearchUB){
 				intensityRatio += pow(accuracy,2)*exp((-1*pow(x,2)/(2*pow(width,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
-				//writeln(intensityRatio);
-			//	count++;
 				x += accuracy;
 			}
 			y += accuracy;
 			x = xSearchLB;
 		}
-		//count++;
-		//writeln(count);
 		intensityRatio = intensityRatio*5000;
-		//writeln(intensityRatio);
 		return intensityRatio;		
 	}
 
@@ -182,6 +168,7 @@ class PhaseSpace{
 void main(){
 	auto test = new Script("test.xml");
 	test.run();
+	writeln("Total fragmentated phase spaces",count);//For testing purposes
 	/*auto initialPulse = new PhaseSpace(100,86.6,50,50,0.866,0.866, 100, 1);
 	initialPulse.printPhaseSpace();
 	double finInfo = 0;
