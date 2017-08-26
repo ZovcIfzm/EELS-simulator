@@ -1,6 +1,6 @@
 <space width="100" height="86.6" VzIntDist="50" zIntDist="50" chirp="0.866" b="0.866" intensity="100" intensityRatio="1">
 	<print></print>
-	<split portions="3">
+	<split portions="1005">
 		<print></print>
 	</split>
 	<print></print>

@@ -47,7 +47,7 @@ class PhaseSpace{
 		writeln("chirp: ", chirp);
 		writeln("b: ", b);
 		writeln("totalPulseEnergy: ", totalPulseEnergy);
-		writeln("intensityRatio: ", width);
+		writeln("intensityRatio: ", intensityRatio);
 	}
 	PhaseSpace freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 		this.b += time;
@@ -68,9 +68,11 @@ class PhaseSpace{
 	}
 	PhaseSpace[] split(int spaces){
 		PhaseSpace[] phaseSpaces;
-		for(int i = 0; i<spaces; i++){
-			double intensityRatio = getSplitIntensityRatio(1,spaces,i+1, this.height, this.width);
-			phaseSpaces ~= new PhaseSpace((this.height/this.chirp)/spaces, this.height/spaces, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatio, intensityRatio);
+		double spacesD = (to!double(spaces));
+		for(int i = 0; i<spaces+1; i++){
+			double intensityRatio = getSplitIntensityRatio(1, spaces, i, this.height, this.width);
+			//writeln("----" ,i);
+			phaseSpaces ~= new PhaseSpace((this.height/this.chirp)/spacesD, this.height/spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatio, intensityRatio);
 		}
 		return phaseSpaces;
 	}
@@ -119,7 +121,7 @@ class PhaseSpace{
 		return this;
 	}
 
-	double getSplitIntensityRatio(double accuracy, int numSections, double sectionNum, double height, double width){
+	double getSplitIntensityRatio(double accuracy, double numSections, double sectionNum, double height, double width){
 		//Gets intensity % proportionally to 1 (like if its gets .5 its 50% of total intensity)
 		//search with xSearch & ySearch = +- 5.803*width or height to get the total intensity of the phase space (equal to 1)
 		double xSearchLB; double xSearchUB; 
@@ -132,23 +134,31 @@ class PhaseSpace{
 		xSearchUB = 5.803*width;
 		//ySearchLB = -5.803*height;
 		//ySearchUB = 5.803*height;
-
-		auto x = xSearchLB;
-		auto y = ySearchLB;
+		double x = xSearchLB;
+		double y = ySearchLB;
 		//double x = -width;
+		writeln(ySearchLB);
+		writeln(ySearchUB);
+		//int count = 0;
 		double intensityRatio = 0;
 		if(numSections==sectionNum){
 			ySearchUB += 1;
 		}
-		while(y < ySearchUB-1){
+		while(y < ySearchUB-0.0001){
+			//count++;
 			while(x < xSearchUB){
 				intensityRatio += pow(accuracy,2)*exp((-1*pow(x,2)/(2*pow(width,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(width*VzIntDist,2));
+				//writeln(intensityRatio);
+			//	count++;
 				x += accuracy;
 			}
 			y += accuracy;
 			x = xSearchLB;
 		}
+		//count++;
+		//writeln(count);
 		intensityRatio = intensityRatio*5000;
+		//writeln(intensityRatio);
 		return intensityRatio;		
 	}
 
@@ -176,11 +186,12 @@ void main(){
 	initialPulse.printPhaseSpace();
 	double finInfo = 0;
 	int numSectionsC = 1005;//Max amount before it stops working (cant do above 1005)
-	for(int j=1;j<numSectionsC+1;j++){
-		writeln((initialPulse.getSplitIntensityRatio(1,numSectionsC,j,initialPulse.height, initialPulse.width)));
+	for(int j = 1;j<numSectionsC+1; j++){
+	//	writeln((initialPulse.getSplitIntensityRatio(1,numSectionsC,j,initialPulse.height, initialPulse.width)));
+	//	writeln(j);
 		finInfo += (initialPulse.getSplitIntensityRatio(1,numSectionsC,j,initialPulse.height, initialPulse.width));
 	}
-	writeln((initialPulse.getSplitIntensityRatio(1,numSectionsC,1,initialPulse.height, initialPulse.width)));
+
 	writeln(finInfo);*/
 	/*writeln("Modeling Initial Pulse...");
 	initialPulse.modelPhaseSpace(1);
@@ -189,8 +200,8 @@ void main(){
 	initialPulse.freeExpansion(parse!double(input)).modelPhaseSpace(1);
 	auto splitPhases = initialPulse.split(3);
 	foreach (PhaseSpace space; splitPhases) {
-    	space.modelPhaseSpace(1);
-		writeln(space.intensityRatio);
+	space.modelPhaseSpace(1);
+	writeln(space.intensityRatio);
 	}
 	new PhaseSpace(splitPhases).printPhaseSpace();
 	writeln("How much did the optical lens alter the chirp?");
