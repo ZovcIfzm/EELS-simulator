@@ -32,6 +32,12 @@ class PhaseSpace{
 		this.zIntDist = spaces[0].zIntDist;
 		this.chirp = spaces[0].chirp;
 		this.b = spaces[0].b;
+		this.hDepth = spaces[0].hDepth;
+		this.hDepthVelocity = spaces[0].hDepthVelocity;
+		this.VxIntDist = spaces[0].VxIntDist;
+		this.xIntDist = spaces[0].xIntDist;
+		this.chirpT = spaces[0].chirpT;
+		this.bT = spaces[0].bT;
 		foreach(PhaseSpace space; taskPool.parallel(spaces)){
 			this.totalPulseEnergy += space.totalPulseEnergy;
 			this.intensityRatio += space.intensityRatio;
@@ -40,12 +46,12 @@ class PhaseSpace{
 		this.hHeight = spaces[0].hHeight * spaces.length * (1/chirp);
 	}
 	void printPhaseSpace(){
-		writeln("hWidth: ", hWidth, " hDepth: ", hDepth);
-		writeln("hHeight: ", hHeight, " hDepthVelocity: ", hDepthVelocity);
-		writeln("VzIntDist: ", VzIntDist, " VxIntDist: ", VxIntDist);
-		writeln("zIntDist: ", zIntDist, " zIntDist: ", zIntDist);
-		writeln("chirp: ", chirp, " chirpT: ", chirpT);
-		writeln("b: ", b, " bT: ", bT);
+		writeln("hWidth: ", hWidth, "  ",    " hDepth: ", hDepth);
+		writeln("hHeight: ", hHeight, " ",   " hDepthVelocity: ", hDepthVelocity);
+		writeln("VzIntDist: ", VzIntDist,    " VxIntDist: ", VxIntDist);
+		writeln("zIntDist: ", zIntDist, " ", " zIntDist: ", zIntDist);
+		writeln("chirp: ", chirp, " ",       " chirpT: ", chirpT);
+		writeln("b: ", b, "     ",            " bT: ", bT);
 		writeln("totalPulseEnergy: ", totalPulseEnergy);
 		writeln("intensityRatio: ", intensityRatio);
 		writeln("");
