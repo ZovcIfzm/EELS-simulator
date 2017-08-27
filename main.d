@@ -29,7 +29,7 @@ class PhaseSpace{
 	//double emmittenceD - same but for hDepth
 	double hDepth, hDepthVelocity, VxIntDist, xIntDist, chirpD, bD;
 	this(double hWidthC, double hHeightC, double VzIntDistC, double zIntDistC, double chirpC, double bC, double totalPulseEnergyC, double intensityRatioC){
-		// double hDepthC, double hDepthVelocityC, double VxIntDistC, double xIntDistC, double chirpDC, double bDC){
+		//double hDepthC, double hDepthVelocityC, double VxIntDistC, double xIntDistC, double chirpDC, double bDC){
 		hWidth=hWidthC, hHeight=hHeightC, VzIntDist=VzIntDistC, zIntDist=zIntDistC, chirp=chirpC, b=bC, totalPulseEnergy=totalPulseEnergyC, intensityRatio=intensityRatioC;
 		//hDepth=hDepthC, hDepthVelocity=hDepthVelocityC, VxIntDist=VxIntDistC, xIntDist=xIntDistC, chirpD=chirpDC, bD=bDC;
 	}
@@ -142,8 +142,8 @@ class PhaseSpace{
 		}
 		while(y < ySearchUB-0.0001){
 			while(x < xSearchUB){
-				intensityRatio += accuracy*accuracy*exp1((-1*x*x/(2*hWidth*hWidth))-((y-chirp*x)*(y-chirp*x)/(2*VzIntDist*VzIntDist)))/(twoPI*(hWidth*VzIntDist*hWidth*VzIntDist));
-				x += accuracy;
+				intensityRatio += accuracy*exp1((-1*x*x/(2*hWidth*hWidth))-((y-chirp*x)*(y-chirp*x)/(2*VzIntDist*VzIntDist)))/(twoPI*(hWidth*VzIntDist*hWidth*VzIntDist));
+				x += 1;
 			}
 			y += accuracy;
 			x = xSearchLB;
