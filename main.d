@@ -15,6 +15,7 @@ Fragment Phase Space
 */
 double totalEnergy = 100, electronAmount, 
 	distCT1, distT12, distT2L1, distL1A, distAT3, distT3S, distST4, distT4L2, distL2A, distAT5, distT5C;
+double twoPI = 2*PI;
 int count = 0;
 double exp1(double x) {
   x = 1.0 + x / 256.0;
@@ -141,7 +142,7 @@ class PhaseSpace{
 		}
 		while(y < ySearchUB-0.0001){
 			while(x < xSearchUB){
-				intensityRatio += accuracy*accuracy*exp1((-1*x*x/(2*hWidth*hWidth))-((y-chirp*x)*(y-chirp*x)/(2*VzIntDist*VzIntDist)))/(2*PI*(hWidth*VzIntDist*hWidth*VzIntDist));
+				intensityRatio += accuracy*accuracy*exp1((-1*x*x/(2*hWidth*hWidth))-((y-chirp*x)*(y-chirp*x)/(2*VzIntDist*VzIntDist)))/(twoPI*(hWidth*VzIntDist*hWidth*VzIntDist));
 				x += accuracy;
 			}
 			y += accuracy;
