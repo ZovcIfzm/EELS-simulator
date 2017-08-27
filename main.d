@@ -9,8 +9,7 @@ b = b;				the relationship between the chirp, zIntDist, and VzIntDist. (b=a(tau/
 z = dist;			the distance from the origin-from the center of mass
 Vz = vel;			the difference in velocity from center of mass
 */
-double totalEnergy = 100, electronAmount, 
-	distCT1, distT12, distT2L1, distL1A, distAT3, distT3S, distST4, distT4L2, distL2A, distAT5, distT5C;
+double totalEnergy = 100, electronAmount;
 double twoPI = 2*PI;
 int count = 0;
 double exp1(double x) {
@@ -43,7 +42,7 @@ class PhaseSpace{
 			this.intensityRatio += space.intensityRatio;
 		}
 		this.hWidth = spaces[0].hWidth * spaces.length;
-		this.hHeight = spaces[0].hHeight * spaces.length * (1/chirp);
+		this.hHeight = spaces[0].hHeight * spaces.length; //If you add a * 1/chirp here sometimes it doesn't process it for some reason
 	}
 	void printPhaseSpace(){
 		writeln("hWidth: ", hWidth, "  ",    " hDepth: ", hDepth);
@@ -54,6 +53,9 @@ class PhaseSpace{
 		writeln("b: ", b, "     ",            " bT: ", bT);
 		writeln("totalPulseEnergy: ", totalPulseEnergy);
 		writeln("intensityRatio: ", intensityRatio);
+		writeln("");
+		writeln("Longitudinal Emmittence Conserved: ", checkAreaConservation(hWidth, VzIntDist, hHeight, zIntDist));
+		writeln("Transverse Emmittence Conserved: ", checkAreaConservation(hDepth, VxIntDist, hDepthVelocity, xIntDist));
 		writeln("");
 	}
 	PhaseSpace freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
@@ -126,7 +128,7 @@ class PhaseSpace{
 						}
 						painter.drawLine(Point(to!int(x+(hWidth*3)), to!int(-y+(hHeight*3))), Point(to!int(x+(hWidth*3)+1), to!int(-y+(hHeight*3)+1)));
 					}
-					x += accuracy; //accuracy
+					x += accuracy;
 				}
 				x = -3*hWidth;
 				y += accuracy;
@@ -159,15 +161,14 @@ class PhaseSpace{
 		return intensityRatio*5000;		
 	}
 	//Conservation Checking - Emittence based
-	bool checkAreaConservation(double hWidthHeightDepth, double intDist){
-		double consValue = hWidthHeightDepth*intDist;
-		if(consValue > 0.9999 && consValue < 1.0001){//randomly decided range to account for data error 
-			writeln("Area is conserved");
+	bool checkAreaConservation(double hDimensionW, double intDistH, double hDimensionH, double intDistW){
+		double consValue = hDimensionW*intDistH;
+		double consValue2 = hDimensionH*intDistW;
+		if(consValue > 4999 && consValue < 5001  && consValue2 > 4329 && consValue2 < 4331){//randomly decided range to account for data error
 			return true;
 		}
 		else{
-			writeln("Area is not conserved");
-			writeln("Area:", consValue);
+			writeln("Area1: ", consValue, "  Area2: ", consValue2);
 			return false;
 		}
 	}
@@ -175,7 +176,7 @@ class PhaseSpace{
 void main(){
 	auto test = new Script("test.xml");
 	test.run();
-	writeln("Total fragmentated phase spaces",count);//For testing purposes
+	writeln("Total Fragmentated Phase Spaces: ",count);//For testing purposes
 	/*auto initialPulse = new PhaseSpace(100,86.6,50,50,0.866,0.866, 100, 1);
 	initialPulse.printPhaseSpace();
 	double finInfo = 0;
