@@ -150,8 +150,8 @@ class PhaseSpace{
 		}
 		while(y < ySearchUB-0.0001){
 			while(x < xSearchUB){
-				intensityRatio += accuracy*exp((-1*x*x/(2*hWidth*hWidth))-((y-chirp*x)*(y-chirp*x)/(2*VzIntDist*VzIntDist)))/(twoPI*(hWidth*VzIntDist*hWidth*VzIntDist));
-				x += 1;
+				intensityRatio += 112*accuracy*exp((-1*x*x/(2*hWidth*hWidth))-((y-chirp*x)*(y-chirp*x)/(2*VzIntDist*VzIntDist)))/(twoPI*(hWidth*VzIntDist*hWidth*VzIntDist));
+				x += 112;
 			}
 			y += accuracy;
 			x = xSearchLB;
@@ -218,13 +218,16 @@ in order to collect the data it needs to shatter
 recombine the phase spaces at the end and collect the data
 
 Time Table
+Siemens Competition
 Due September 19
-Things to do
-Finish free expansion
-Figure out shattering
+-Things to do
+Figure out shattering (secondary splitting)
 Recenter center of mass individually for each phase space
 Figure out data containment
-Figure out how to recombine
+Figure out how to recombine after shattering
+
+Michigan ISEF Qualification Fair 
+Due March 15
 
 LARGE PART NOT YET FIGURED OUT Figure out how to optimize the microscope through combinations of optics
 Write an at most 18 pages (not including references) paper about our research
