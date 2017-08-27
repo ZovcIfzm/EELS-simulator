@@ -1,4 +1,4 @@
-<space width="100" height="86.6" VzIntDist="50" zIntDist="50" chirp="0.866" b="0.866" intensity="100" intensityRatio="1">
+<space hWidth="100" hHeight="86.6" VzIntDist="50" zIntDist="50" chirp="0.866" b="0.866" intensity="100" intensityRatio="1">
 	<print></print>
 	<split portions="2050">
 		<print></print>

@@ -1,15 +1,13 @@
 import std.stdio, std.file, std.conv, arsd.dom, arsd.script, arsd.jsvar, main;
-class Script
-{
+class Script{
 	Document file;
 	PhaseSpace space;
-	this(string fn)
-	{
+	this(string fn){
 		this.file = new Document(readText(fn));
 	}
 	void run(){
 		foreach(Element t; this.file.getElementsByTagName("space")){
-			this.space = new PhaseSpace(to!double(t.getAttribute("width")), to!double(t.getAttribute("height")), 
+			this.space = new PhaseSpace(to!double(t.getAttribute("hWidth")), to!double(t.getAttribute("hHeight")), 
 				to!double(t.getAttribute("VzIntDist")), to!double(t.getAttribute("zIntDist")), 
 				to!double(t.getAttribute("chirp")), to!double(t.getAttribute("b")), to!double(t.getAttribute("intensity")), to!double(t.getAttribute("intensityRatio")));
 				this.byNode(t.childNodes()[0], this.space);
