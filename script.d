@@ -39,8 +39,10 @@ class Script{
 				break;
 			case "split":
 				auto spaces = space.split(to!int(statement.getAttribute("portions")));
-				foreach(PhaseSpace s; spaces){
-					this.byNode(statement.childNodes()[0], s);
+				if(statement.childNodes()[0]){
+					foreach(PhaseSpace s; spaces){
+						this.byNode(statement.childNodes()[0], s);
+					}
 				}
 				space = new PhaseSpace(spaces);
 				break;

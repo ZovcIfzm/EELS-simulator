@@ -16,6 +16,12 @@ Fragment Phase Space
 double totalEnergy = 100, electronAmount, 
 	distCT1, distT12, distT2L1, distL1A, distAT3, distT3S, distST4, distT4L2, distL2A, distAT5, distT5C;
 int count = 0;
+double exp1(double x) {
+  x = 1.0 + x / 256.0;
+  x *= x; x *= x; x *= x; x *= x;
+  x *= x; x *= x; x *= x; x *= x;
+  return x;
+}
 class PhaseSpace{
 	double hWidth, hHeight, VzIntDist, zIntDist, chirp, b, totalPulseEnergy = 0, intensityRatio = 0;
 	//double emmittence - ability to find other varaibles in terms of these three
@@ -135,7 +141,7 @@ class PhaseSpace{
 		}
 		while(y < ySearchUB-0.0001){
 			while(x < xSearchUB){
-				intensityRatio += pow(accuracy,2)*exp((-1*pow(x,2)/(2*pow(hWidth,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(hWidth*VzIntDist,2));
+				intensityRatio += accuracy*accuracy*exp1((-1*x*x/(2*hWidth*hWidth))-((y-chirp*x)*(y-chirp*x)/(2*VzIntDist*VzIntDist)))/(2*PI*(hWidth*VzIntDist*hWidth*VzIntDist));
 				x += accuracy;
 			}
 			y += accuracy;
