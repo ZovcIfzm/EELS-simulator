@@ -31,7 +31,7 @@ class PhaseSpace{
 		this.zIntDist = spaces[0].zIntDist;
 		this.chirp = spaces[0].chirp;
 		this.b = spaces[0].b;
-		foreach(PhaseSpace space; spaces){
+		foreach(PhaseSpace space; taskPool.parallel(spaces)){
 			this.totalPulseEnergy += space.totalPulseEnergy;
 			this.intensityRatio += space.intensityRatio;
 		}
