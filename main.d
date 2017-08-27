@@ -142,7 +142,7 @@ class PhaseSpace{
 		}
 		while(y < ySearchUB-0.0001){
 			while(x < xSearchUB){
-				intensityRatio += accuracy*exp1((-1*x*x/(2*hWidth*hWidth))-((y-chirp*x)*(y-chirp*x)/(2*VzIntDist*VzIntDist)))/(twoPI*(hWidth*VzIntDist*hWidth*VzIntDist));
+				intensityRatio += accuracy*exp((-1*x*x/(2*hWidth*hWidth))-((y-chirp*x)*(y-chirp*x)/(2*VzIntDist*VzIntDist)))/(twoPI*(hWidth*VzIntDist*hWidth*VzIntDist));
 				x += 1;
 			}
 			y += accuracy;
