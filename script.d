@@ -1,4 +1,4 @@
-import std.stdio, std.file, std.conv, arsd.dom, arsd.script, arsd.jsvar, main;
+import std.stdio, std.file, std.conv, std.datetime, arsd.dom, arsd.script, arsd.jsvar, main;
 class Script{
 	Document file;
 	PhaseSpace space;
@@ -30,8 +30,12 @@ class Script{
 			case "distance":
 				space.freeExpansion(to!double(statement.innerText));
 				break;
-			case "script":
-				
+			case "time":
+				StopWatch sw;
+				sw.start();
+				this.byNode(statement.childNodes()[0], space);
+				sw.stop();
+				writeln("Took ",sw.peek().to!("msecs", real)(), "ms to run");
 				break;
 			case "split":
 				auto spaces = space.split(to!int(statement.getAttribute("portions")));
