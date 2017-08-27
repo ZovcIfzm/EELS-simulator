@@ -10,7 +10,7 @@ z = dist;			the distance from the origin-from the center of mass
 Vz = vel;			the difference in velocity from center of mass
 
 Objectives
-Finish opticalManipulation method
+Finish RFLens method
 Fragment Phase Space
 */
 double totalEnergy = 100, electronAmount, 
@@ -58,18 +58,29 @@ class PhaseSpace{
 	}
 	PhaseSpace freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 		this.b += time;
+		this.bD += time;
 		if(chirp>0){
 			this.VzIntDist = sqrt(1/((1/pow(hHeight,2))+pow((b/zIntDist),2)));
+			//writeln(VzIntDist);
+		}
+		if(chirpD>0){
+			this.VxIntDist = sqrt(1/((1/pow(hDepthVelocity,2))+pow((bD/xIntDist),2)));
 			//writeln(VzIntDist);
 		}
 		if(chirp<0){
 			this.zIntDist = b/(sqrt((1/pow(VzIntDist,2))-(1/pow(hHeight,2))));
 			//writeln(zIntDist);
 		}
+		if(chirpD<0){
+			this.xIntDist = bD/(sqrt((1/pow(VxIntDist,2))-(1/pow(hDepthVelocity,2))));
+			//writeln(zIntDist);
+		}
 		this.chirp = b*pow(VzIntDist,2)/pow(zIntDist,2);
+		this.chirpD = bD*pow(VxIntDist,2)/pow(xIntDist,2);
 		//writeln(chirp);
 		//writeln(b);
 		this.hWidth = sqrt(1/((1/pow(zIntDist,2))-pow(chirp/VzIntDist,2)));
+		this.hDepth = sqrt(1/((1/pow(xIntDist,2))-pow(chirpD/VxIntDist,2)));
 		//writeln(hWidth);
 		return this;
 	}
@@ -84,8 +95,12 @@ class PhaseSpace{
 		count = spaces;
 		return phaseSpaces;
 	}
-	PhaseSpace opticalManipulation(double changeChirp){
+	PhaseSpace RFLens(double changeChirp){
 		this.chirp += changeChirp;
+		return this;
+	}
+	PhaseSpace magLens(double changeChirpD){
+		this.chirpD += changeChirpD;
 		return this;
 	}
 	PhaseSpace modelPhaseSpace(double accuracy){
@@ -191,7 +206,7 @@ void main(){
 	new PhaseSpace(splitPhases).printPhaseSpace();
 	writeln("How much did the optical lens alter the chirp?");
 	input = stdin.readln();
-	initialPulse.opticalManipulation(parse!double(input)); Need to finish
+	initialPulse.RFLens(parse!double(input)); Need to finish
 	initialPulse.modelPhaseSpace(1);*/
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();
