@@ -48,6 +48,7 @@ class PhaseSpace{
 		writeln("b: ", b);
 		writeln("totalPulseEnergy: ", totalPulseEnergy);
 		writeln("intensityRatio: ", intensityRatio);
+		writeln("");
 	}
 	PhaseSpace freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 		this.b += time;
