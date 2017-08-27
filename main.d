@@ -70,9 +70,8 @@ class PhaseSpace{
 	PhaseSpace[] split(int spaces){
 		PhaseSpace[] phaseSpaces;
 		double spacesD = (to!double(spaces));
-		double intensityRatio = 0;
 		foreach (i; taskPool.parallel(new int[spaces])) {
-			intensityRatio = getSplitIntensityRatio(1005/spacesD, spaces, i, this.hHeight, this.hWidth);
+			double intensityRatio = getSplitIntensityRatio(1005/spacesD, spaces, i, this.hHeight, this.hWidth);
 			phaseSpaces ~= new PhaseSpace((this.hHeight/this.chirp)/spacesD, this.hHeight/spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatio, intensityRatio);
 		}
 		count = spaces;
@@ -123,13 +122,11 @@ class PhaseSpace{
 	}
 	double getSplitIntensityRatio(double accuracy, double numSections, double sectionNum, double hHeight, double hWidth){
 		//Gets intensity % proportionally to 1 (like if its gets .5 its 50% of total intensity)
-		//search with xSearch & ySearch = +- 5.803*hWidth or hHeight to get the total intensity of the phase space (equal to 1)
-		double xSearchLB; double xSearchUB; 
-		double ySearchLB; double ySearchUB;	
-		ySearchLB = -5.803*hHeight + ((5.803*hHeight*2/numSections)*(sectionNum-1));
-		ySearchUB = 5.803*hHeight - (5.803*hHeight*2/numSections)*(numSections - sectionNum);
-		xSearchLB = -5.803*hWidth;
-		xSearchUB = 5.803*hWidth;
+		//search with xSearch & ySearch = +- 5.803*hWidth or hHeight to get the total intensity of the phase space (equal to 1)	
+		double ySearchLB = -5.803*hHeight + ((5.803*hHeight*2/numSections)*(sectionNum-1));
+		double ySearchUB = 5.803*hHeight - (5.803*hHeight*2/numSections)*(numSections - sectionNum);
+		double xSearchLB = -5.803*hWidth;
+		double xSearchUB = 5.803*hWidth;
 		double x = xSearchLB;
 		double y = ySearchLB;
 		double intensityRatio = 0;
@@ -144,8 +141,7 @@ class PhaseSpace{
 			y += accuracy;
 			x = xSearchLB;
 		}
-		intensityRatio = intensityRatio*5000;
-		return intensityRatio;		
+		return intensityRatio*5000;		
 	}
 	//Conservation Checking
 	bool checkAreaConservation(double hWidthHeight, double intDist){
