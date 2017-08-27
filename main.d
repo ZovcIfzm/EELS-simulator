@@ -60,17 +60,17 @@ class PhaseSpace{
 		this.b += time;
 		if(chirp>0){
 			this.VzIntDist = sqrt(1/((1/pow(hHeight,2))+pow((b/zIntDist),2)));
-			writeln(VzIntDist);
+			//writeln(VzIntDist);
 		}
 		if(chirp<0){
 			this.zIntDist = b/(sqrt((1/pow(VzIntDist,2))-(1/pow(hHeight,2))));
-			writeln(zIntDist);
+			//writeln(zIntDist);
 		}
 		this.chirp = b*pow(VzIntDist,2)/pow(zIntDist,2);
-		writeln(chirp);
-		writeln(b);
+		//writeln(chirp);
+		//writeln(b);
 		this.hWidth = sqrt(1/((1/pow(zIntDist,2))-pow(chirp/VzIntDist,2)));
-		writeln(hWidth);
+		//writeln(hWidth);
 		return this;
 	}
 	PhaseSpace[] split(int spaces){
