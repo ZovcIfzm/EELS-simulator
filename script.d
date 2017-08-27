@@ -11,7 +11,7 @@ class Script{
 				to!double(t.getAttribute("VzIntDist")), to!double(t.getAttribute("zIntDist")), 
 				to!double(t.getAttribute("chirp")), to!double(t.getAttribute("b")), to!double(t.getAttribute("intensity")), to!double(t.getAttribute("intensityRatio")),
 				to!double(t.getAttribute("hDepth")), to!double(t.getAttribute("hDepthVelocity")), to!double(t.getAttribute("VxIntDist")), to!double(t.getAttribute("xIntDist")),
-				to!double(t.getAttribute("chirpD")), to!double(t.getAttribute("bD")));
+				to!double(t.getAttribute("chirpT")), to!double(t.getAttribute("bT")));
 				this.byNode(t.childNodes()[0], this.space);
 		}
 	}

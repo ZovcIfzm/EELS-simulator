@@ -1,4 +1,4 @@
-import std.stdio, std.array, std.algorithm, std.conv, std.math, std.parallelism, arsd.simpledisplay, script; //std.datetime;
+import std.stdio, std.array, std.algorithm, std.conv, std.math, std.parallelism, arsd.simpledisplay, script;
 /*		Math Conversion
 sigmaZ = hWidth;		the hWidth along the z axis
 sigmaVz = hHeight;	the hHeight along the Vz axis
@@ -8,10 +8,6 @@ a = chirp;			the chirp. chirp = slope
 b = b;				the relationship between the chirp, zIntDist, and VzIntDist. (b=a(tau/zeta)^2)
 z = dist;			the distance from the origin-from the center of mass
 Vz = vel;			the difference in velocity from center of mass
-
-Objectives
-Finish RFLens method
-Fragment Phase Space
 */
 double totalEnergy = 100, electronAmount, 
 	distCT1, distT12, distT2L1, distL1A, distAT3, distT3S, distST4, distT4L2, distL2A, distAT5, distT5C;
@@ -25,13 +21,11 @@ double exp1(double x) {
 }
 class PhaseSpace{
 	double hWidth, hHeight, VzIntDist, zIntDist, chirp, b, totalPulseEnergy = 0, intensityRatio = 0;
-	//double emmittence - ability to find other varaibles in terms of these three
-	//double emmittenceD - same but for hDepth
-	double hDepth, hDepthVelocity, VxIntDist, xIntDist, chirpD, bD;
+	double hDepth, hDepthVelocity, VxIntDist, xIntDist, chirpT, bT;
 	this(double hWidthC, double hHeightC, double VzIntDistC, double zIntDistC, double chirpC, double bC, double totalPulseEnergyC, double intensityRatioC,
-		double hDepthC, double hDepthVelocityC, double VxIntDistC, double xIntDistC, double chirpDC, double bDC){
+		double hDepthC, double hDepthVelocityC, double VxIntDistC, double xIntDistC, double chirpTC, double bTC){
 		hWidth=hWidthC, hHeight=hHeightC, VzIntDist=VzIntDistC, zIntDist=zIntDistC, chirp=chirpC, b=bC, totalPulseEnergy=totalPulseEnergyC, intensityRatio=intensityRatioC,
-		hDepth=hDepthC, hDepthVelocity=hDepthVelocityC, VxIntDist=VxIntDistC, xIntDist=xIntDistC, chirpD=chirpDC, bD=bDC;
+		hDepth=hDepthC, hDepthVelocity=hDepthVelocityC, VxIntDist=VxIntDistC, xIntDist=xIntDistC, chirpT=chirpTC, bT=bTC;
 	}
 	this(PhaseSpace[] spaces){
 		this.VzIntDist = spaces[0].VzIntDist;
@@ -46,42 +40,35 @@ class PhaseSpace{
 		this.hHeight = spaces[0].hHeight * spaces.length * (1/chirp);
 	}
 	void printPhaseSpace(){
-		writeln("hWidth: ", hWidth);
-		writeln("hHeight: ", hHeight);
-		writeln("VzIntDist: ", VzIntDist);
-		writeln("zIntDist: ", zIntDist);
-		writeln("chirp: ", chirp);
-		writeln("b: ", b);
+		writeln("hWidth: ", hWidth, " hDepth: ", hDepth);
+		writeln("hHeight: ", hHeight, " hDepthVelocity: ", hDepthVelocity);
+		writeln("VzIntDist: ", VzIntDist, " VxIntDist: ", VxIntDist);
+		writeln("zIntDist: ", zIntDist, " zIntDist: ", zIntDist);
+		writeln("chirp: ", chirp, " chirpT: ", chirpT);
+		writeln("b: ", b, " bT: ", bT);
 		writeln("totalPulseEnergy: ", totalPulseEnergy);
 		writeln("intensityRatio: ", intensityRatio);
 		writeln("");
 	}
 	PhaseSpace freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 		this.b += time;
-		this.bD += time;
+		this.bT += time;
 		if(chirp>0){
 			this.VzIntDist = sqrt(1/((1/pow(hHeight,2))+pow((b/zIntDist),2)));
-			//writeln(VzIntDist);
 		}
-		if(chirpD>0){
-			this.VxIntDist = sqrt(1/((1/pow(hDepthVelocity,2))+pow((bD/xIntDist),2)));
-			//writeln(VzIntDist);
+		if(chirpT>0){
+			this.VxIntDist = sqrt(1/((1/pow(hDepthVelocity,2))+pow((bT/xIntDist),2)));
 		}
 		if(chirp<0){
 			this.zIntDist = b/(sqrt((1/pow(VzIntDist,2))-(1/pow(hHeight,2))));
-			//writeln(zIntDist);
 		}
-		if(chirpD<0){
-			this.xIntDist = bD/(sqrt((1/pow(VxIntDist,2))-(1/pow(hDepthVelocity,2))));
-			//writeln(zIntDist);
+		if(chirpT<0){
+			this.xIntDist = bT/(sqrt((1/pow(VxIntDist,2))-(1/pow(hDepthVelocity,2))));
 		}
 		this.chirp = b*pow(VzIntDist,2)/pow(zIntDist,2);
-		this.chirpD = bD*pow(VxIntDist,2)/pow(xIntDist,2);
-		//writeln(chirp);
-		//writeln(b);
+		this.chirpT = bT*pow(VxIntDist,2)/pow(xIntDist,2);
 		this.hWidth = sqrt(1/((1/pow(zIntDist,2))-pow(chirp/VzIntDist,2)));
-		this.hDepth = sqrt(1/((1/pow(xIntDist,2))-pow(chirpD/VxIntDist,2)));
-		//writeln(hWidth);
+		this.hDepth = sqrt(1/((1/pow(xIntDist,2))-pow(chirpT/VxIntDist,2)));
 		return this;
 	}
 	PhaseSpace[] split(int spaces){
@@ -90,7 +77,7 @@ class PhaseSpace{
 		foreach (i; taskPool.parallel(new int[spaces])) {
 			double intensityRatio = getSplitIntensityRatio(1005/spacesD, spaces, i, this.hHeight, this.hWidth);
 			phaseSpaces ~= new PhaseSpace((this.hHeight/this.chirp)/spacesD, this.hHeight/spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatio, intensityRatio,
-										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpD, this.bD);
+										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT);
 		}
 		count = spaces;
 		return phaseSpaces;
@@ -99,8 +86,8 @@ class PhaseSpace{
 		this.chirp += changeChirp;
 		return this;
 	}
-	PhaseSpace magLens(double changeChirpD){
-		this.chirpD += changeChirpD;
+	PhaseSpace magLens(double changechirpT){
+		this.chirpT += changechirpT;
 		return this;
 	}
 	PhaseSpace modelPhaseSpace(double accuracy){
@@ -165,9 +152,9 @@ class PhaseSpace{
 		}
 		return intensityRatio*5000;		
 	}
-	//Conservation Checking
-	bool checkAreaConservation(double hWidthHeight, double intDist){
-		double consValue = hWidthHeight*intDist;
+	//Conservation Checking - Emittence based
+	bool checkAreaConservation(double hWidthHeightDepth, double intDist){
+		double consValue = hWidthHeightDepth*intDist;
 		if(consValue > 0.9999 && consValue < 1.0001){//randomly decided range to account for data error 
 			writeln("Area is conserved");
 			return true;
@@ -188,8 +175,8 @@ void main(){
 	double finInfo = 0;
 	int numSectionsC = 1005;//Max amount before it stops working (cant do above 1005)
 	for(int j = 1;j<numSectionsC+1; j++){
-	//	writeln((initialPulse.getSplitIntensityRatio(1,numSectionsC,j,initialPulse.hHeight, initialPulse.hWidth)));
-	//	writeln(j);
+		//writeln((initialPulse.getSplitIntensityRatio(1,numSectionsC,j,initialPulse.hHeight, initialPulse.hWidth)));
+		//writeln(j);
 		finInfo += (initialPulse.getSplitIntensityRatio(1,numSectionsC,j,initialPulse.hHeight, initialPulse.hWidth));
 	}
 	writeln(finInfo);*/
@@ -204,9 +191,9 @@ void main(){
 	writeln(space.intensityRatio);
 	}
 	new PhaseSpace(splitPhases).printPhaseSpace();
-	writeln("How much did the optical lens alter the chirp?");
+	writeln("How much did the RF Lens alter the chirp?");
 	input = stdin.readln();
-	initialPulse.RFLens(parse!double(input)); Need to finish
+	initialPulse.RFLens(parse!double(input));
 	initialPulse.modelPhaseSpace(1);*/
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();
