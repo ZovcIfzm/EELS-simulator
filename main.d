@@ -28,10 +28,10 @@ class PhaseSpace{
 	//double emmittence - ability to find other varaibles in terms of these three
 	//double emmittenceD - same but for hDepth
 	double hDepth, hDepthVelocity, VxIntDist, xIntDist, chirpD, bD;
-	this(double hWidthC, double hHeightC, double VzIntDistC, double zIntDistC, double chirpC, double bC, double totalPulseEnergyC, double intensityRatioC){
-		//double hDepthC, double hDepthVelocityC, double VxIntDistC, double xIntDistC, double chirpDC, double bDC){
-		hWidth=hWidthC, hHeight=hHeightC, VzIntDist=VzIntDistC, zIntDist=zIntDistC, chirp=chirpC, b=bC, totalPulseEnergy=totalPulseEnergyC, intensityRatio=intensityRatioC;
-		//hDepth=hDepthC, hDepthVelocity=hDepthVelocityC, VxIntDist=VxIntDistC, xIntDist=xIntDistC, chirpD=chirpDC, bD=bDC;
+	this(double hWidthC, double hHeightC, double VzIntDistC, double zIntDistC, double chirpC, double bC, double totalPulseEnergyC, double intensityRatioC,
+		double hDepthC, double hDepthVelocityC, double VxIntDistC, double xIntDistC, double chirpDC, double bDC){
+		hWidth=hWidthC, hHeight=hHeightC, VzIntDist=VzIntDistC, zIntDist=zIntDistC, chirp=chirpC, b=bC, totalPulseEnergy=totalPulseEnergyC, intensityRatio=intensityRatioC,
+		hDepth=hDepthC, hDepthVelocity=hDepthVelocityC, VxIntDist=VxIntDistC, xIntDist=xIntDistC, chirpD=chirpDC, bD=bDC;
 	}
 	this(PhaseSpace[] spaces){
 		this.VzIntDist = spaces[0].VzIntDist;
@@ -44,7 +44,6 @@ class PhaseSpace{
 		}
 		this.hWidth = spaces[0].hWidth * spaces.length;
 		this.hHeight = spaces[0].hHeight * spaces.length * (1/chirp);
-
 	}
 	void printPhaseSpace(){
 		writeln("hWidth: ", hWidth);
@@ -79,7 +78,8 @@ class PhaseSpace{
 		double spacesD = (to!double(spaces));
 		foreach (i; taskPool.parallel(new int[spaces])) {
 			double intensityRatio = getSplitIntensityRatio(1005/spacesD, spaces, i, this.hHeight, this.hWidth);
-			phaseSpaces ~= new PhaseSpace((this.hHeight/this.chirp)/spacesD, this.hHeight/spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatio, intensityRatio);
+			phaseSpaces ~= new PhaseSpace((this.hHeight/this.chirp)/spacesD, this.hHeight/spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatio, intensityRatio,
+										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpD, this.bD);
 		}
 		count = spaces;
 		return phaseSpaces;
