@@ -1,4 +1,4 @@
-import std.stdio, std.array, std.algorithm, std.conv, std.math, arsd.simpledisplay, script; //std.datetime;
+import std.stdio, std.array, std.algorithm, std.conv, std.math, std.parallelism, arsd.simpledisplay, script; //std.datetime;
 /*		Math Conversion
 sigmaZ = hWidth;		the hWidth along the z axis
 sigmaVz = hHeight;	the hHeight along the Vz axis
@@ -70,8 +70,9 @@ class PhaseSpace{
 	PhaseSpace[] split(int spaces){
 		PhaseSpace[] phaseSpaces;
 		double spacesD = (to!double(spaces));
-		for(int i = 0; i<spaces+1; i++){
-			double intensityRatio = getSplitIntensityRatio(1005/spacesD, spaces, i, this.hHeight, this.hWidth);
+		double intensityRatio = 0;
+		foreach (i; taskPool.parallel(new int[spaces])) {
+			intensityRatio = getSplitIntensityRatio(1005/spacesD, spaces, i, this.hHeight, this.hWidth);
 			phaseSpaces ~= new PhaseSpace((this.hHeight/this.chirp)/spacesD, this.hHeight/spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatio, intensityRatio);
 		}
 		count = spaces;
