@@ -27,6 +27,9 @@ class Script{
 			case "print":
 				space.printPhaseSpace();
 				break;
+			case "distance":
+				space.freeExpansion(to!double(statement.innerText));
+				break;
 			case "script":
 				
 				break;
