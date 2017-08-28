@@ -1,4 +1,4 @@
-import std.stdio, std.array, std.algorithm, std.conv, std.math, std.parallelism, arsd.simpledisplay, script;
+import std.stdio, std.array, std.algorithm, std.conv, std.math, std.parallelism, std.range, arsd.simpledisplay, script;
 /*		Math Conversion
 sigmaZ = hWidth;		the hWidth along the z axis
 sigmaVz = hHeight;	the hHeight along the Vz axis
@@ -81,13 +81,18 @@ class PhaseSpace{
 	}
 	PhaseSpace[] split(int spaces){
 		PhaseSpace[] phaseSpaces;
-		double spacesD = (to!double(spaces));
-		foreach (i; taskPool.parallel(new int[spaces])) {
-			double intensityRatio = getSplitIntensityRatio(1005/spacesD, spaces, i, this.hHeight, this.hWidth);
-			phaseSpaces ~= new PhaseSpace((this.hHeight/this.chirp)/spacesD, this.hHeight/spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatio, intensityRatio,
+		phaseSpaces.length = spaces;
+		double spacesD = 1/(to!double(spaces));
+		double[] intensityRatios;
+		intensityRatios.length = spaces;
+		foreach (i, ref elem; parallel(intensityRatios)) {
+			intensityRatios[i] = getSplitIntensityRatio(1005*spacesD, spaces, i, this.hHeight, this.hWidth);
+		}
+		foreach (i, ref elem; phaseSpaces) {
+			phaseSpaces[i] = new PhaseSpace((this.hHeight/this.chirp)*spacesD, this.hHeight*spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatios[i], intensityRatios[i],
 										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT);
 		}
-		count = spaces;
+		count += spaces;
 		return phaseSpaces;
 	}
 	PhaseSpace RFLens(double changeChirp){
@@ -147,12 +152,14 @@ class PhaseSpace{
 		double x = xSearchLB;
 		double y = ySearchLB;
 		double intensityRatio = 0;
+		double VzIntDistsq = VzIntDist*VzIntDist;
+		double hWidthsq = hWidth*hWidth;
 		if(numSections==sectionNum){
 			ySearchUB += 1;
 		}
 		while(y < ySearchUB-0.0001){
 			while(x < xSearchUB){
-				intensityRatio += 112*accuracy*exp((-1*x*x/(2*hWidth*hWidth))-((y-chirp*x)*(y-chirp*x)/(2*VzIntDist*VzIntDist)))/(twoPI*(hWidth*VzIntDist*hWidth*VzIntDist));
+				intensityRatio += 112*accuracy*exp1((-1*x*x/(2*hWidthsq))-((y-chirp*x)*(y-chirp*x)/(2*VzIntDistsq)))/(twoPI*(hWidthsq*VzIntDistsq));
 				x += 112;
 			}
 			y += accuracy;

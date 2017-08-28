@@ -1,0 +1,1 @@
+rdmd -O -inline -release -noboundscheck --build-only main.d

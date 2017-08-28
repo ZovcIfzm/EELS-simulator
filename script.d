@@ -1,4 +1,4 @@
-import std.stdio, std.file, std.conv, std.datetime, arsd.dom, arsd.script, arsd.jsvar, main;
+import std.stdio, std.file, std.conv, std.datetime, std.parallelism, arsd.dom, arsd.script, arsd.jsvar, main;
 class Script{
 	Document file;
 	PhaseSpace space;
@@ -44,7 +44,7 @@ class Script{
 				break;
 			case "split":
 				auto spaces = space.split(to!int(statement.getAttribute("portions")));
-				if(statement.childNodes()[0]){
+				if(statement.childNodes()){
 					foreach(PhaseSpace s; spaces){
 						this.byNode(statement.childNodes()[0], s);
 					}
