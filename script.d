@@ -43,9 +43,9 @@ class Script{
 				writeln("Took ",sw.peek().to!("msecs", real)(), "ms to run");
 				break;
 			case "split":
-				auto spaces = space.split(to!int(statement.getAttribute("portions")));
-				if(statement.childNodes()){
-					foreach(PhaseSpace s; spaces){
+				auto spaces = space.split(to!long(statement.getAttribute("portions")));
+				if(statement.childNodes.length > 1){
+					foreach (ref s; spaces) {
 						this.byNode(statement.childNodes()[0], s);
 					}
 				}

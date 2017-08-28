@@ -77,12 +77,12 @@ class PhaseSpace{
 		this.hDepth = sqrt(1/((1/pow(xIntDist,2))-pow(chirpT/VxIntDist,2)));
 		return this;
 	}
-	PhaseSpace[] split(int spaces){
+	PhaseSpace[] split(long spaces){
 		PhaseSpace[] phaseSpaces;
-		phaseSpaces.length = spaces;
+		phaseSpaces.length = to!int(spaces);
 		double spacesD = 1/(to!double(spaces));
 		double[] intensityRatios;
-		intensityRatios.length = spaces;
+		intensityRatios.length = to!int(spaces);
 		foreach (i, ref elem; parallel(intensityRatios)) {
 			elem = getSplitIntensityRatio(1005*spacesD, spaces, i, this.hHeight, this.hWidth);
 		}
