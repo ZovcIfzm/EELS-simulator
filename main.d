@@ -37,10 +37,8 @@ class PhaseSpace{
 		this.xIntDist = spaces[0].xIntDist;
 		this.chirpT = spaces[0].chirpT;
 		this.bT = spaces[0].bT;
-		foreach(PhaseSpace space; taskPool.parallel(spaces)){
-			this.totalPulseEnergy += space.totalPulseEnergy;
-			this.intensityRatio += space.intensityRatio;
-		}
+		this.totalPulseEnergy = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.totalPulseEnergy"(spaces));
+		this.intensityRatio = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.intensityRatio"(spaces));
 		this.hWidth = spaces[0].hWidth * spaces.length;
 		this.hHeight = spaces[0].hHeight * spaces.length; //If you add a * 1/chirp here sometimes it doesn't process it for some reason
 	}
@@ -86,10 +84,10 @@ class PhaseSpace{
 		double[] intensityRatios;
 		intensityRatios.length = spaces;
 		foreach (i, ref elem; parallel(intensityRatios)) {
-			intensityRatios[i] = getSplitIntensityRatio(1005*spacesD, spaces, i, this.hHeight, this.hWidth);
+			elem = getSplitIntensityRatio(1005*spacesD, spaces, i, this.hHeight, this.hWidth);
 		}
 		foreach (i, ref elem; phaseSpaces) {
-			phaseSpaces[i] = new PhaseSpace((this.hHeight/this.chirp)*spacesD, this.hHeight*spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatios[i], intensityRatios[i],
+			elem = new PhaseSpace((this.hHeight/this.chirp)*spacesD, this.hHeight*spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatios[i], intensityRatios[i],
 										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT);
 		}
 		count += spaces;
