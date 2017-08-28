@@ -2,7 +2,6 @@
     hDepth="100" hDepthVelocity="86.6" VxIntDist="50" xIntDist="50" chirpT="0.866" bT="0.866">
     <print></print>
     <time>
-      <split portions="100000000">
       </split>
       <print></print>
     </time>
