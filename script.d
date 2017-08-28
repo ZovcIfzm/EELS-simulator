@@ -23,10 +23,10 @@ class Script{
 			case "freeexpansion":
 				space.freeExpansion(to!double(statement.getAttribute("time")));
 				break;
-			case "RFLens":
+			case "rflens":
 				space.RFLens(to!double(statement.getAttribute("power")));
 				break;
-			case "magLens":
+			case "maglens":
 				space.magLens(to!double(statement.getAttribute("power")));
 				break;
 			case "print":
