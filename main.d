@@ -1,6 +1,6 @@
 import std.stdio, std.array, std.algorithm, std.conv, std.math, std.parallelism, std.range, arsd.simpledisplay, script;
 /*		Math Conversion
-sigmaZ = hWidth;		the hWidth along the z axis
+sigmaZ = hWidth;	the hWidth along the z axis
 sigmaVz = hHeight;	the hHeight along the Vz axis
 zetaZ = VzIntDist;	the distance between the two Vz intercepts				//I think since it is between z (distance) and Vz(relative difference in velocity)
 tau = zIntDist;		the distance between the two z intercepts				//Its important to write z and Vz, instead of x and y
@@ -55,27 +55,6 @@ class PhaseSpace{
 		writeln("Transverse Emmittence Conserved: ", checkAreaConservation(hDepth, VxIntDist, hDepthVelocity, xIntDist));
 		writeln("");
 	}
-	PhaseSpace freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
-		this.b += time;
-		this.bT += time;
-		if(chirp>0){
-			this.VzIntDist = sqrt(1/((1/pow(hHeight,2))+pow((b/zIntDist),2)));
-		}
-		if(chirpT>0){
-			this.VxIntDist = sqrt(1/((1/pow(hDepthVelocity,2))+pow((bT/xIntDist),2)));
-		}
-		if(chirp<0){
-			this.zIntDist = b/(sqrt((1/pow(VzIntDist,2))-(1/pow(hHeight,2))));
-		}
-		if(chirpT<0){
-			this.xIntDist = bT/(sqrt((1/pow(VxIntDist,2))-(1/pow(hDepthVelocity,2))));
-		}
-		this.chirp = b*pow(VzIntDist,2)/pow(zIntDist,2);
-		this.chirpT = bT*pow(VxIntDist,2)/pow(xIntDist,2);
-		this.hWidth = sqrt(1/((1/pow(zIntDist,2))-pow(chirp/VzIntDist,2)));
-		this.hDepth = sqrt(1/((1/pow(xIntDist,2))-pow(chirpT/VxIntDist,2)));
-		return this;
-	}
 	PhaseSpace[] split(long spaces){
 		PhaseSpace[] phaseSpaces;
 		phaseSpaces.length = to!int(spaces);
@@ -92,14 +71,7 @@ class PhaseSpace{
 		count += spaces;
 		return phaseSpaces;
 	}
-	PhaseSpace RFLens(double changeChirp){
-		this.chirp += changeChirp;
-		return this;
-	}
-	PhaseSpace magLens(double changechirpT){
-		this.chirpT += changechirpT;
-		return this;
-	}
+
 	PhaseSpace modelPhaseSpace(double accuracy){
 		auto window = new SimpleWindow(to!int(6*hWidth), to!int(6*hHeight)); 
 		{// introduce sub-scope;
@@ -165,6 +137,35 @@ class PhaseSpace{
 		}
 		return intensityRatio*5000;		
 	}
+	PhaseSpace freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
+		this.b += time;
+		this.bT += time;
+		if(chirp>0){
+			this.VzIntDist = sqrt(1/((1/pow(hHeight,2))+pow((b/zIntDist),2)));
+		}
+		if(chirpT>0){
+			this.VxIntDist = sqrt(1/((1/pow(hDepthVelocity,2))+pow((bT/xIntDist),2)));
+		}
+		if(chirp<0){
+			this.zIntDist = b/(sqrt((1/pow(VzIntDist,2))-(1/pow(hHeight,2))));
+		}
+		if(chirpT<0){
+			this.xIntDist = bT/(sqrt((1/pow(VxIntDist,2))-(1/pow(hDepthVelocity,2))));
+		}
+		this.chirp = b*pow(VzIntDist,2)/pow(zIntDist,2);
+		this.chirpT = bT*pow(VxIntDist,2)/pow(xIntDist,2);
+		this.hWidth = sqrt(1/((1/pow(zIntDist,2))-pow(chirp/VzIntDist,2)));
+		this.hDepth = sqrt(1/((1/pow(xIntDist,2))-pow(chirpT/VxIntDist,2)));
+		return this;
+	}
+	PhaseSpace RFLens(double changeChirp){
+		this.chirp += changeChirp;
+		return this;
+	}
+	PhaseSpace magLens(double changechirpT){
+		this.chirpT += changechirpT;
+		return this;
+	}
 	//Conservation Checking - Emittence based
 	bool checkAreaConservation(double hDimensionW, double intDistH, double hDimensionH, double intDistW){
 		double consValue = hDimensionW*intDistH;
@@ -181,32 +182,7 @@ class PhaseSpace{
 void main(){
 	auto test = new Script("test.xml");
 	test.run();
-	writeln("Total Fragmentated Phase Spaces: ",count);//For testing purposes
-	/*auto initialPulse = new PhaseSpace(100,86.6,50,50,0.866,0.866, 100, 1);
-	initialPulse.printPhaseSpace();
-	double finInfo = 0;
-	int numSectionsC = 1005;//Max amount before it stops working (cant do above 1005)
-	for(int j = 1;j<numSectionsC+1; j++){
-		//writeln((initialPulse.getSplitIntensityRatio(1,numSectionsC,j,initialPulse.hHeight, initialPulse.hWidth)));
-		//writeln(j);
-		finInfo += (initialPulse.getSplitIntensityRatio(1,numSectionsC,j,initialPulse.hHeight, initialPulse.hWidth));
-	}
-	writeln(finInfo);*/
-	/*writeln("Modeling Initial Pulse...");
-	initialPulse.modelPhaseSpace(1);
-	writeln("How long is free expansion?");
-	string input = stdin.readln();
-	initialPulse.freeExpansion(parse!double(input)).modelPhaseSpace(1);
-	auto splitPhases = initialPulse.split(3);
-	foreach (PhaseSpace space; splitPhases) {
-	space.modelPhaseSpace(1);
-	writeln(space.intensityRatio);
-	}
-	new PhaseSpace(splitPhases).printPhaseSpace();
-	writeln("How much did the RF Lens alter the chirp?");
-	input = stdin.readln();
-	initialPulse.RFLens(parse!double(input));
-	initialPulse.modelPhaseSpace(1);*/
+	writeln("Total Fragmentated Phase Spaces: ", count);
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();
 }
