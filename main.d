@@ -1,13 +1,13 @@
 import std.stdio, std.array, std.algorithm, std.conv, std.math, std.parallelism, std.range, arsd.simpledisplay, script;
 
-double totalEnergy = 100, electronAmount;
-int count = 0;
+double totalEnergy = 100E3, electronAmount = 1;
 double exp1(double x) {
   x = 1.0 + x / 256.0;
   x *= x; x *= x; x *= x; x *= x;
   x *= x; x *= x; x *= x; x *= x;
   return x;
 }
+int count = 0;
 class PhaseSpace{
 	double hWidth, hHeight, VzIntDist, zIntDist, chirp, b, totalPulseEnergy = 0, intensityRatio = 0;
 	double hDepth, hDepthVelocity, VxIntDist, xIntDist, chirpT, bT;
@@ -39,7 +39,7 @@ class PhaseSpace{
 		double[] intensityRatios;
 		intensityRatios.length = to!int(spaces);
 		foreach (i, ref elem; parallel(intensityRatios)) {
-			elem = getSplitIntensityRatio(1005*spacesD, spaces, i, this.hHeight, this.hWidth);
+			elem = getSplitintensityRatio(1005*spacesD, spaces, i, this.hHeight, this.hWidth);
 		}
 		foreach (i, ref elem; phaseSpaces) {
 			elem = new PhaseSpace((this.hHeight/this.chirp)*spacesD, this.hHeight*spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatios[i], intensityRatios[i],
@@ -56,7 +56,7 @@ class PhaseSpace{
 			x = -3*hWidth, y = -3*hHeight;
 			while(y < 3*hHeight){
 				while(x < 3*hWidth){
-					double h = this.intensityRatio*1000000000000*exp((-1*pow(x,2)/(2*pow(hWidth,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(hWidth*VzIntDist,2));
+					double h = this.intensityRatio*1E12*exp((-1*pow(x,2)/(2*pow(hWidth,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(hWidth*VzIntDist,2));
 					if(h>71){ //Value at F(300,260)
 						painter.outlineColor = Color.white;
 						painter.fillColor = Color.white;					
@@ -87,7 +87,7 @@ class PhaseSpace{
 		window.eventLoop(0);// handle events
 		return this;
 	}
-	double getSplitIntensityRatio(double accuracy, double numSections, double sectionNum, double hHeight, double hWidth){
+	double getSplitintensityRatio(double accuracy, double numSections, double sectionNum, double hHeight, double hWidth){
 		//Gets intensity % proportionally to 1 (like if its gets .5 its 50% of total intensity)
 		//search with xSearch & ySearch = +- 5.803*hWidth or hHeight to get the total intensity of the phase space (equal to 1)	
 		double ySearchLB = -5.803*hHeight + ((5.803*hHeight*2/numSections)*(sectionNum-1));

@@ -1,4 +1,4 @@
-import std.stdio, std.file, std.conv, std.datetime, std.parallelism, arsd.dom, arsd.script, arsd.jsvar, main;
+import std.stdio, std.file, std.conv, std.datetime, std.math, std.parallelism, arsd.dom, arsd.script, arsd.jsvar, main;
 class Script{
 	Document file;
 	PhaseSpace space;
@@ -21,7 +21,7 @@ class Script{
 				space.modelPhaseSpace(to!double(statement.getAttribute("accuracy"))); 
 				break;
 			case "freeexpansion":
-				space.freeExpansion(to!double(statement.getAttribute("time")));
+				space.freeExpansion(to!double(statement.getAttribute("dist"))/sqrt(2*totalEnergy/(9.11*1E-31*electronAmount)));//FIX issues with scope of creating a predefined constant 
 				break;
 			case "rflens":
 				space.RFLens(to!double(statement.getAttribute("power")));
@@ -33,7 +33,7 @@ class Script{
 				space.printPhaseSpace();
 				break;
 			case "distance":
-				space.freeExpansion(to!double(statement.innerText));
+				space.freeExpansion(to!double(statement.innerText)/sqrt(2*totalEnergy/(9.11*1E-31*electronAmount)));//such as double convToTime = sqrt(2*totalEnergy/(9.11*1E-31*electronAmount));
 				break;
 			case "time":
 				StopWatch sw;
