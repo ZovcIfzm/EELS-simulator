@@ -1,14 +1,5 @@
 import std.stdio, std.array, std.algorithm, std.conv, std.math, std.parallelism, std.range, arsd.simpledisplay, script;
-/*		Math Conversion
-sigmaZ = hWidth;	the hWidth along the z axis
-sigmaVz = hHeight;	the hHeight along the Vz axis
-zetaZ = VzIntDist;	the distance between the two Vz intercepts				//I think since it is between z (distance) and Vz(relative difference in velocity)
-tau = zIntDist;		the distance between the two z intercepts				//Its important to write z and Vz, instead of x and y
-a = chirp;			the chirp. chirp = slope
-b = b;				the relationship between the chirp, zIntDist, and VzIntDist. (b=a(tau/zeta)^2)
-z = dist;			the distance from the origin-from the center of mass
-Vz = vel;			the difference in velocity from center of mass
-*/
+
 double totalEnergy = 100, electronAmount;
 int count = 0;
 double exp1(double x) {
@@ -41,20 +32,6 @@ class PhaseSpace{
 		this.hWidth = spaces[0].hWidth * spaces.length;
 		this.hHeight = spaces[0].hHeight * spaces.length; //If you add a * 1/chirp here sometimes it doesn't process it for some reason
 	}
-	void printPhaseSpace(){
-		writeln("hWidth: ", hWidth, "  ",    " hDepth: ", hDepth);
-		writeln("hHeight: ", hHeight, " ",   " hDepthVelocity: ", hDepthVelocity);
-		writeln("VzIntDist: ", VzIntDist,    " VxIntDist: ", VxIntDist);
-		writeln("zIntDist: ", zIntDist, " ", " zIntDist: ", zIntDist);
-		writeln("chirp: ", chirp, " ",       " chirpT: ", chirpT);
-		writeln("b: ", b, "     ",            " bT: ", bT);
-		writeln("totalPulseEnergy: ", totalPulseEnergy);
-		writeln("intensityRatio: ", intensityRatio);
-		writeln("");
-		writeln("Longitudinal Emmittence Conserved: ", checkAreaConservation(hWidth, VzIntDist, hHeight, zIntDist));
-		writeln("Transverse Emmittence Conserved: ", checkAreaConservation(hDepth, VxIntDist, hDepthVelocity, xIntDist));
-		writeln("");
-	}
 	PhaseSpace[] split(long spaces){
 		PhaseSpace[] phaseSpaces;
 		phaseSpaces.length = to!int(spaces);
@@ -71,7 +48,6 @@ class PhaseSpace{
 		count += spaces;
 		return phaseSpaces;
 	}
-
 	PhaseSpace modelPhaseSpace(double accuracy){
 		auto window = new SimpleWindow(to!int(6*hWidth), to!int(6*hHeight)); 
 		{// introduce sub-scope;
@@ -178,6 +154,20 @@ class PhaseSpace{
 			return false;
 		}
 	}
+	void printPhaseSpace(){
+		writeln("hWidth: ", hWidth, "  ",    " hDepth: ", hDepth);
+		writeln("hHeight: ", hHeight, " ",   " hDepthVelocity: ", hDepthVelocity);
+		writeln("VzIntDist: ", VzIntDist,    " VxIntDist: ", VxIntDist);
+		writeln("zIntDist: ", zIntDist, " ", " zIntDist: ", zIntDist);
+		writeln("chirp: ", chirp, " ",       " chirpT: ", chirpT);
+		writeln("b: ", b, "     ",            " bT: ", bT);
+		writeln("totalPulseEnergy: ", totalPulseEnergy);
+		writeln("intensityRatio: ", intensityRatio);
+		writeln("");
+		writeln("Longitudinal Emmittence Conserved: ", checkAreaConservation(hWidth, VzIntDist, hHeight, zIntDist));
+		writeln("Transverse Emmittence Conserved: ", checkAreaConservation(hDepth, VxIntDist, hDepthVelocity, xIntDist));
+		writeln("");
+	}
 }
 void main(){
 	auto test = new Script("test.xml");
@@ -186,36 +176,3 @@ void main(){
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();
 }
-
-
-/*Important things to know
-
-We will need to create a phase space simulation that not only has the shape of the phase space
-but and VERY IMPORTANTLY
-has the data gathered from hitting the specimen in each point.
-
-Objectives
-Create a phase space simulator that simulates the phase space and collects data from hitting the specimen
-in order to collect the data it needs to shatter
-recombine the phase spaces at the end and collect the data
-
-Time Table
-Siemens Competition
-Due September 19
--Things to do
-Figure out shattering (secondary splitting)
-Recenter center of mass individually for each phase space
-Figure out data containment
-Figure out how to recombine after shattering
-
-Michigan ISEF Qualification Fair 
-Due March 15
-
-LARGE PART NOT YET FIGURED OUT Figure out how to optimize the microscope through combinations of optics
-Write an at most 18 pages (not including references) paper about our research
-Total 1600 projects
-Score top 300 for semi finalist (top 18.75%)
-Score top 60 for regional finalist (top 3.75%)
-Score top 6 (in team category) for national finalist (top 0.375%) top (0.65% of team projects)
-Score first (in team category) (top 0.0625%) top (0.125% of team projects)
-*/
