@@ -10,7 +10,6 @@ z = dist;			the distance from the origin-from the center of mass
 Vz = vel;			the difference in velocity from center of mass
 */
 double totalEnergy = 100, electronAmount;
-double twoPI = 2*PI;
 int count = 0;
 double exp1(double x) {
   x = 1.0 + x / 256.0;
@@ -150,14 +149,15 @@ class PhaseSpace{
 		double x = xSearchLB;
 		double y = ySearchLB;
 		double intensityRatio = 0;
-		double VzIntDistsq = VzIntDist*VzIntDist;
-		double hWidthsq = hWidth*hWidth;
+		double negTwohWidthsq = -2*hWidth*hWidth;
+		double twoVzIntDistsq = 2*VzIntDist*VzIntDist;
+		double twoPIhWidthsqVzIntDistsq = 2*PI*(hWidth*hWidth*VzIntDist*VzIntDist);
 		if(numSections==sectionNum){
-			ySearchUB += 1;
+			ySearchUB += 0.0001;
 		}
 		while(y < ySearchUB-0.0001){
 			while(x < xSearchUB){
-				intensityRatio += 112*accuracy*exp1((-1*x*x/(2*hWidthsq))-((y-chirp*x)*(y-chirp*x)/(2*VzIntDistsq)))/(twoPI*(hWidthsq*VzIntDistsq));
+				intensityRatio += 112*accuracy*exp1((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq);
 				x += 112;
 			}
 			y += accuracy;
