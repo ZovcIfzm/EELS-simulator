@@ -3,7 +3,23 @@
     <print></print>
     <time>
       <split portions="1000">
-      	<split portions="1000"></split>
+      	<split portions="1000">
+          <distance dist="1"></distance>
+          <magLens power="1"></magLens>
+          <distance dist="1"></distance>
+          <magLens power="1"></magLens>
+          <distance dist="1"></distance>
+          <RFLens power="1"></RFLens>
+          <distance dist="1"></distance>
+          <magLens power="1"></magLens>
+          <distance dist="1"></distance>
+          <magLens power="1"></magLens>
+          <distance dist="1"></distance>
+          <RFLens power="1"></RFLens>
+          <distance dist="1"></distance>
+          <magLens power="1"></magLens>
+          <distance dist="1"></distance>
+        </split>
       </split>
       <print></print>
     </time>

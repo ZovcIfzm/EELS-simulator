@@ -33,7 +33,7 @@ class Script{
 				space.printPhaseSpace();
 				break;
 			case "distance":
-				space.freeExpansion(to!double(statement.innerText)/sqrt(2*totalEnergy/(9.11*1E-31*electronAmount)));//such as double convToTime = sqrt(2*totalEnergy/(9.11*1E-31*electronAmount));
+				space.freeExpansion(to!double(statement.getAttribute("dist"))/sqrt(2*totalEnergy/(9.11*1E-31*electronAmount)));//such as double convToTime = sqrt(2*totalEnergy/(9.11*1E-31*electronAmount));
 				break;
 			case "time":
 				StopWatch sw;
