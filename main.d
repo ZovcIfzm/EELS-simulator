@@ -1,6 +1,6 @@
 import std.stdio, std.array, std.algorithm, std.conv, std.math, std.parallelism, std.range, arsd.simpledisplay, script;
 
-double totalEnergy = 100E3, electronAmount = 1;
+double totalEnergy = 100E3, electronAmount = 1.0;
 double exp1(double x) {
   x = 1.0 + x / 256.0;
   x *= x; x *= x; x *= x; x *= x;

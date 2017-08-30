@@ -2,26 +2,24 @@
     hDepth="100" hDepthVelocity="86.6" VxIntDist="50" xIntDist="50" chirpT="0.866" bT="0.866">
     <print></print>
     <time>
-      <split portions="1000">
-       <split portions="1000">
-          <distance dist="1"></distance>
+    	<model accuracy="1"></model>
+          
           <magLens power="1"></magLens>
-          <distance dist="1"></distance>
+          
           <magLens power="1"></magLens>
-          <distance dist="1"></distance>
+          
           <RFLens power="1"></RFLens>
-          <distance dist="1"></distance>
+          
           <magLens power="1"></magLens>
-          <distance dist="1"></distance>
+          
           <magLens power="1"></magLens>
-          <distance dist="1"></distance>
+          
           <RFLens power="1"></RFLens>
-          <distance dist="1"></distance>
+          
           <magLens power="1"></magLens>
-          <distance dist="1"></distance>
-        </split>
-      </split>
+          
       <print></print>
+      <model accuracy="1"></model>
     </time>
 </space>
         <!--
