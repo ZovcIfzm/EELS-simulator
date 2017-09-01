@@ -3,21 +3,21 @@
     <print></print>
     <time>
     	<model accuracy="1"></model>
-          
+          <distance dist="1481684.7"></distance> <!-- distance in micrometers-->
           <magLens power="1"></magLens>
-          
+          <distance dist="1481684.7"></distance>
           <magLens power="1"></magLens>
-          
+          <distance dist="1481684.7"></distance>
           <RFLens power="1"></RFLens>
-          
+          <distance dist="1481684.7"></distance>
           <magLens power="1"></magLens>
-          
+          <distance dist="1481684.7"></distance>
           <magLens power="1"></magLens>
-          
+          <distance dist="1481684.7"></distance>
           <RFLens power="1"></RFLens>
-          
-          <magLens power="1"></magLens>
-          
+          <distance dist="1481684.7"></distance>
+          <magLens power="1"></magLens>-->
+          <distance dist="1481684.7"></distance>
       <print></print>
       <model accuracy="1"></model>
     </time>
