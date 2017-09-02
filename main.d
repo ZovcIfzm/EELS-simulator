@@ -1,6 +1,6 @@
 import std.stdio, std.array, std.algorithm, std.conv, std.math, std.parallelism, std.range, arsd.simpledisplay, script;
 
-double totalEnergy = 100E3, electronAmount = 1.0;
+double totalEnergy = 100E3, electronAmount = 100E3;
 double exp1(double x) {
   x = 1.0 + x / 256.0;
   x *= x; x *= x; x *= x; x *= x;
@@ -11,10 +11,11 @@ int count = 0;
 class PhaseSpace{
 	double hWidth, hHeight, VzIntDist, zIntDist, chirp, b, totalPulseEnergy = 0, intensityRatio = 0;
 	double hDepth, hDepthVelocity, VxIntDist, xIntDist, chirpT, bT;
+	double vZC = 0, zC = 0;
 	this(double hWidthC, double hHeightC, double VzIntDistC, double zIntDistC, double chirpC, double bC, double totalPulseEnergyC, double intensityRatioC,
-		double hDepthC, double hDepthVelocityC, double VxIntDistC, double xIntDistC, double chirpTC, double bTC){
+		double hDepthC, double hDepthVelocityC, double VxIntDistC, double xIntDistC, double chirpTC, double bTC, double vZCC, double zCC){
 		hWidth=hWidthC, hHeight=hHeightC, VzIntDist=VzIntDistC, zIntDist=zIntDistC, chirp=chirpC, b=bC, totalPulseEnergy=totalPulseEnergyC, intensityRatio=intensityRatioC,
-		hDepth=hDepthC, hDepthVelocity=hDepthVelocityC, VxIntDist=VxIntDistC, xIntDist=xIntDistC, chirpT=chirpTC, bT=bTC;
+		hDepth=hDepthC, hDepthVelocity=hDepthVelocityC, VxIntDist=VxIntDistC, xIntDist=xIntDistC, chirpT=chirpTC, bT=bTC, vZC=vZCC, zC=zCC;
 	}
 	this(PhaseSpace[] spaces){
 		this.VzIntDist = spaces[0].VzIntDist;
@@ -30,7 +31,9 @@ class PhaseSpace{
 		this.totalPulseEnergy = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.totalPulseEnergy"(spaces));
 		this.intensityRatio = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.intensityRatio"(spaces));
 		this.hWidth = spaces[0].hWidth * spaces.length;
-		this.hHeight = spaces[0].hHeight * spaces.length; //If you add a * 1/chirp here sometimes it doesn't process it for some reason
+		this.hHeight = spaces[0].hHeight * spaces.length; //If you add a * 1/chirp here sometimes it doesn't process it for some reason, a 1/chirp isn't needed here anyway but its an odd mystery why its only sometimes processed
+		this.vZC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.vZC"(spaces));
+		this.zC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.zC"(spaces));
 	}
 	PhaseSpace[] split(long spaces){
 		PhaseSpace[] phaseSpaces;
@@ -39,11 +42,11 @@ class PhaseSpace{
 		double[] intensityRatios;
 		intensityRatios.length = to!int(spaces);
 		foreach (i, ref elem; parallel(intensityRatios)) {
-			elem = getSplitintensityRatio(1005*spacesD, spaces, i, this.hHeight, this.hWidth);
+			elem = getSplitintensityRatio(1005*spacesD, spaces, i+1, this.hHeight, this.hWidth);
 		}
 		foreach (i, ref elem; phaseSpaces) {
 			elem = new PhaseSpace((this.hHeight/this.chirp)*spacesD, this.hHeight*spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatios[i], intensityRatios[i],
-										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT);
+										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT, this.hHeight-(hHeight*2/spaces)*(i+0.5), this.hWidth-(hWidth*2/spaces)*(i+0.5));
 		}
 		count += spaces;
 		return phaseSpaces;
@@ -143,10 +146,10 @@ class PhaseSpace{
 		return this;
 	}
 	//Conservation Checking - Emittence based
-	bool checkAreaConservation(double hDimensionW, double intDistH, double hDimensionH, double intDistW){
+	bool checkAreaConservation(double hDimensionW, double intDistH, double hDimensionH, double intDistW){//Needs to be reworked, both cons1&2 should describe the same emmittence- be the same value, however height and width are different but the intDist are the same
 		double consValue = hDimensionW*intDistH;
 		double consValue2 = hDimensionH*intDistW;
-		if(consValue > 4999 && consValue < 5001  && consValue2 > 4329 && consValue2 < 4331){//randomly decided range to account for data error
+		if(consValue > 4329 && consValue < 4331  && consValue2 > 4329 && consValue2 < 4331){//randomly decided range to account for data error
 			return true;
 		}
 		else{
@@ -158,9 +161,10 @@ class PhaseSpace{
 		writeln("hWidth: ", hWidth, "  ",    " hDepth: ", hDepth);
 		writeln("hHeight: ", hHeight, " ",   " hDepthVelocity: ", hDepthVelocity);
 		writeln("VzIntDist: ", VzIntDist,    " VxIntDist: ", VxIntDist);
-		writeln("zIntDist: ", zIntDist, " ", " zIntDist: ", zIntDist);
+		writeln("zIntDist: ", zIntDist, " ", " xIntDist: ", xIntDist);
 		writeln("chirp: ", chirp, " ",       " chirpT: ", chirpT);
-		writeln("b: ", b, "     ",            " bT: ", bT);
+		writeln("b: ", b, "     ",           " bT: ", bT);
+		writeln("VzC: ", vZC, "   ",         "zC: ", zC);
 		writeln("totalPulseEnergy: ", totalPulseEnergy);
 		writeln("intensityRatio: ", intensityRatio);
 		writeln("");

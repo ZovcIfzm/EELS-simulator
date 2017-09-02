@@ -1,10 +1,11 @@
 <space hWidth="100" hHeight="86.6" VzIntDist="50" zIntDist="50" chirp="0.866" b="0.866" intensity="100" intensityRatio="1"
-    hDepth="100" hDepthVelocity="86.6" VxIntDist="50" xIntDist="50" chirpT="0.866" bT="0.866">
+    hDepth="100" hDepthVelocity="86.6" VxIntDist="50" xIntDist="50" chirpT="0.866" bT="0.866" vZC="0" zC="0">
     <print></print>
     <time>
     	<model accuracy="1"></model>
-          <distance dist="1481684.7"></distance> <!-- distance in micrometers-->
-          <magLens power="1"></magLens>
+        <split portions="10000">
+        <!--<distance dist="1481684.7"></distance> distance in micrometers-->
+          <!--<magLens power="1"></magLens>
           <distance dist="1481684.7"></distance>
           <magLens power="1"></magLens>
           <distance dist="1481684.7"></distance>
@@ -16,8 +17,11 @@
           <distance dist="1481684.7"></distance>
           <RFLens power="1"></RFLens>
           <distance dist="1481684.7"></distance>
-          <magLens power="1"></magLens>-->
+          <magLens power="1"></magLens>
           <distance dist="1481684.7"></distance>
+          <model accuracy="1"></model>
+          <print></print>-->
+        </split>
       <print></print>
       <model accuracy="1"></model>
     </time>
