@@ -1,5 +1,17 @@
-import std.stdio, std.array, std.algorithm, std.conv, std.math, std.parallelism, std.range, arsd.simpledisplay, script;
-
+import std.stdio, std.array, std.algorithm, std.conv, std.math, std.parallelism, std.range, std.string, std.file, arsd.simpledisplay, script;
+double[][] readSpec(string filename){
+	double[][] toReturn;
+	toReturn.length = 2;
+	auto lines = readText(filename).splitLines();
+	foreach(string line; lines){
+			string[] nums = line.split(",");
+			if(isNumeric(nums[0].strip())){
+				toReturn[0] ~= to!double(nums[0].strip());
+				toReturn[1] ~= to!double(nums[1].strip());
+			}
+	}
+	return toReturn;
+}
 double totalEnergy = 100E3, electronAmount = 100E3;
 double exp1(double x) {
   x = 1.0 + x / 256.0;
@@ -176,6 +188,7 @@ class PhaseSpace{
 void main(){
 	auto test = new Script("test.xml");
 	test.run();
+	writeln(readSpec("hexogon BN-powder-eels.sl0"));
 	writeln("Total Fragmentated Phase Spaces: ", count);
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();
