@@ -80,6 +80,10 @@ class PhaseSpace{
 				while(x < 3*hWidth){
 					double map( double x, double in_min,double in_max, double out_min, double out_max)
 					{
+					if(x< in_min)
+					{
+						x = in_min;
+					}
 						return (100*(x - in_min) / (in_max - in_min) * (in_max - in_min) / (out_max - out_min) + out_min); 
 					}
 					double h = this.intensityRatio*1E12*exp((-1*pow(x,2)/(2*pow(hWidth,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(hWidth*VzIntDist,2));
