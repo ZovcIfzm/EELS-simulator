@@ -77,9 +77,18 @@ class PhaseSpace{
 			x = -3*hWidth, y = -3*hHeight;
 			while(y < 3*hHeight){
 				while(x < 3*hWidth){
+					double map( double x, double in_min,double in_max, double out_min, double out_max)
+					{
+						return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min; 
+					}
 					double h = this.intensityRatio*1E12*exp((-1*pow(x,2)/(2*pow(hWidth,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(hWidth*VzIntDist,2));
-				painter.Color(map(h, 3861.0, 6366.2, 0.0, 255.0), 0, 0);
-				painter.drawLine(Point(to!int(x+(hWidth*3)), to!int(-y+(hHeight*3))), Point(to!int(x+(hWidth*3)+1), to!int(-y+(hHeight*3)+1)));
+					double a, b, c, d;
+					a = 3861.0;
+					b = 6366.2;
+					c = 0.0;
+					d = 255.0;
+					painter.outlineColor(Color( to!int(map(h, a, b, c, d)), 0, 0));
+					painter.drawLine(Point(to!int(x+(hWidth*3)), to!int(-y+(hHeight*3))), Point(to!int(x+(hWidth*3)+1), to!int(-y+(hHeight*3)+1)));
 				
 					x += accuracy;
 				}
