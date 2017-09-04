@@ -18,6 +18,7 @@ double[][] readSpec(string filename){
 	}
 	return toReturn;
 }
+double[][] spectroTable;
 double totalEnergy = 100E3, electronAmount = 100E3;
 double exp1(double x) {
   x = 1.0 + x / 256.0;
@@ -176,7 +177,7 @@ class PhaseSpace{
 void main(){
 	auto test = new Script("test.xml");
 	test.run();
-	writeln(readSpec("hexogon BN-powder-eels.sl0"));
+	spectroTable = readSpec("hexogon BN-powder-eels.sl0");
 	writeln("Total Fragmentated Phase Spaces: ", count);
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();
