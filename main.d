@@ -78,27 +78,9 @@ class PhaseSpace{
 			while(y < 3*hHeight){
 				while(x < 3*hWidth){
 					double h = this.intensityRatio*1E12*exp((-1*pow(x,2)/(2*pow(hWidth,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(hWidth*VzIntDist,2));
-					if(h>71){ //Value at F(300,260)
-						painter.outlineColor = Color.white;
-						painter.fillColor = Color.white;					
-						if(h>3861){ //Value at F(100,87)
-							painter.outlineColor = Color.blue;
-							painter.fillColor = Color.blue;
-						}
-						if(h>5618){//Value at F(50,43)
-							painter.outlineColor = Color.green;
-							painter.fillColor = Color.green;
-						}
-						if(h>6170){//Value at F(25,21)
-							painter.outlineColor = Color.yellow;
-							painter.fillColor = Color.yellow;
-						}
-						if(h>6334){//Value at F(10,9)
-							painter.outlineColor = Color.red;
-							painter.fillColor = Color.red;
-						}
-						painter.drawLine(Point(to!int(x+(hWidth*3)), to!int(-y+(hHeight*3))), Point(to!int(x+(hWidth*3)+1), to!int(-y+(hHeight*3)+1)));
-					}
+				painter.Color(map(h, 3861.0, 6366.2, 0.0, 255.0), 0, 0);
+				painter.drawLine(Point(to!int(x+(hWidth*3)), to!int(-y+(hHeight*3))), Point(to!int(x+(hWidth*3)+1), to!int(-y+(hHeight*3)+1)));
+				
 					x += accuracy;
 				}
 				x = -3*hWidth;
