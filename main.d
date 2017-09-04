@@ -10,6 +10,12 @@ double[][] readSpec(string filename){
 				toReturn[1] ~= to!double(nums[1].strip());
 			}
 	}
+	double sum = 0;
+	foreach(double dat; toReturn[1])
+		sum += dat;
+	foreach (i, ref elem; toReturn[1]) {
+		toReturn[1][i] = elem/sum;
+	}
 	return toReturn;
 }
 double totalEnergy = 100E3, electronAmount = 100E3;
