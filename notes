@@ -9,13 +9,13 @@ z = dist;			the distance from the origin-from the center of mass
 Vz = vel;			the difference in velocity from center of mass
 
 Distance/Velocity/Time Conversions
-1/2(mv^2)=totalEnergy					kg*m/s=eV			Kinetic Energy = Total Energy (Same thing)
-v=sqrt(2totalEnergy/(m*electronAmont))	m/s = sqrt(eV/kg)	Basic simplification
-v=sqrt(2(100,000)/(9.11E-31*100,000))	m/s = sqrt(m^2/s^2) Adding values
-v=1.4816847e+15							m/s = m/s
-v=1481684.7								uM/fs = uM/fs
-
+Relativistic velocity
+v=164.35								uM/fs
 t=dist/v								fs = uM/(uM/fs)	
+
+
+xPost[ij]=xPre[ij]+D*Ke*VzPre[ij]
+D=dx/dE
 
 	Important things to know
 

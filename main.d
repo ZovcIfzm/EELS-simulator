@@ -174,10 +174,17 @@ class PhaseSpace{
 		writeln("");
 	}
 }
+void electronLossCalculations(PhaseSpace[][] spaces){
+	for(int i = 0;i<spaces.length;i++){
+		for(int j = 0;spaces[i].length;j++){
+			spaces[i][j].totalPulseEnergy -= spectroTable[1][j];
+		}
+	}
+}
 void main(){
+	spectroTable = readSpec("hexogon BN-powder-eels.sl0");
 	auto test = new Script("test.xml");
 	test.run();
-	spectroTable = readSpec("hexogon BN-powder-eels.sl0");
 	writeln("Total Fragmentated Phase Spaces: ", count);
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();
