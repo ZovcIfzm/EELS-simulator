@@ -51,6 +51,15 @@ class Script{
 				}
 				space = new PhaseSpace(spaces);
 				break;
+			case "shatter":
+				auto spaces2 = space.shatter();
+				if(statement.childNodes.length > 1){
+					foreach (ref h; spaces2) {
+						this.byNode(statement.childNodes()[0], h);
+					}
+				}
+				space = new PhaseSpace(spaces2);
+				break;
 			default: break;
 		}
 		if(statement.nextSibling)

@@ -26,6 +26,12 @@ double exp1(double x) {
   x *= x; x *= x; x *= x; x *= x;
   return x;
 }
+double map( double x, double in_min,double in_max, double out_min, double out_max){
+	if(x < in_min){
+		x = in_min;
+	}
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min; 
+}
 int count = 0;
 class PhaseSpace{
 	double hWidth, hHeight, VzIntDist, zIntDist, chirp, b, totalPulseEnergy = 0, intensityRatio = 0;
@@ -57,47 +63,44 @@ class PhaseSpace{
 	PhaseSpace[] split(long spaces){
 		PhaseSpace[] phaseSpaces;
 		phaseSpaces.length = to!int(spaces);
-		double spacesD = 1/(to!double(spaces));
+		double spacesD = (to!double(spaces));
 		double[] intensityRatios;
 		intensityRatios.length = to!int(spaces);
 		foreach (i, ref elem; parallel(intensityRatios)) {
-			elem = getSplitintensityRatio(1005*spacesD, spaces, i+1, this.hHeight, this.hWidth);
+			elem = getSplitintensityRatio(1005/spacesD, spaces, i+1, this.hHeight, this.hWidth);
 		}
 		foreach (i, ref elem; phaseSpaces) {
-			elem = new PhaseSpace((this.hHeight/this.chirp)*spacesD, this.hHeight*spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatios[i], intensityRatios[i],
-										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT, this.hHeight-(hHeight*2/spaces)*(i+0.5), this.hWidth-(hWidth*2/spaces)*(i+0.5));
+			elem = new PhaseSpace((this.hHeight/this.chirp)/spacesD, this.hHeight/spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatios[i], intensityRatios[i],
+										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT, this.hHeight-(hHeight*2/spacesD)*(i+0.5), this.hWidth-(hWidth*2/spacesD)*(i+0.5));
 		}
 		count += spaces;
 		return phaseSpaces;
 	}
+	PhaseSpace[] shatter(){
+		double spaces = spectroTable[0].length;
+		PhaseSpace[] phaseSpaces2;
+		phaseSpaces2.length = to!int(spaces);
+		foreach (i, ref elem; phaseSpaces2) {
+			elem = new PhaseSpace((this.hHeight/this.chirp)/spaces, this.hHeight/spaces, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*spectroTable[1][i], this.intensityRatio*spectroTable[1][i],
+								  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT, this.hHeight-(hHeight*2/spaces)*(i+0.5)-spectroTable[0][i], this.hWidth-(hWidth*2/spaces)*(i+0.5));
+		}
+		count += spaces;
+		return phaseSpaces2;
+	}
 	PhaseSpace modelPhaseSpace(double accuracy){
-		auto window = new SimpleWindow(to!int(6*hWidth), to!int(6*hHeight)); 
+		auto window = new SimpleWindow(to!int(4*hWidth), to!int(4*hHeight)); 
 		{// introduce sub-scope;
 			auto painter = window.draw(); // begin drawing
 			double x, y;
-			x = -3*hWidth, y = -3*hHeight;
-			while(y < 3*hHeight){
-				while(x < 3*hWidth){
-					double map( double x, double in_min,double in_max, double out_min, double out_max)
-					{
-					if(x< in_min)
-					{
-						x = in_min;
-					}
-						return (100*(x - in_min) / (in_max - in_min) * (in_max - in_min) / (out_max - out_min) + out_min); 
-					}
+			x = -2*hWidth, y = -2*hHeight;
+			while(y < 2*hHeight){
+				while(x < 2*hWidth){
 					double h = this.intensityRatio*1E12*exp((-1*pow(x,2)/(2*pow(hWidth,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(hWidth*VzIntDist,2));
-					double a, b, c, d;
-					a = 3861.0;
-					b = 6366.2;
-					c = 0.0;
-					d = 100.0;
-					painter.outlineColor(Color( to!int(map(h, a, b, c, d)), 0, 0, 255));
-					painter.drawLine(Point(to!int(x+(hWidth*3)), to!int(-y+(hHeight*3))), Point(to!int(x+(hWidth*3)+1), to!int(-y+(hHeight*3)+1)));
-				
+					painter.outlineColor(Color(0, 0, to!int(map(h, 3861.0, 6366.0, 0, 255))));
+					painter.drawLine(Point(to!int(x+(hWidth*2)), to!int(-y+(hHeight*2))), Point(to!int(x+(hWidth*2)+1), to!int(-y+(hHeight*2)+1)));
 					x += accuracy;
 				}
-				x = -3*hWidth;
+				x = -2*hWidth;
 				y += accuracy;
 			}
 		} // end scope, calling `painter`'s, drawing to the screen.
@@ -185,13 +188,6 @@ class PhaseSpace{
 		writeln("Longitudinal Emmittence Conserved: ", checkAreaConservation(hWidth, VzIntDist, hHeight, zIntDist));
 		writeln("Transverse Emmittence Conserved: ", checkAreaConservation(hDepth, VxIntDist, hDepthVelocity, xIntDist));
 		writeln("");
-	}
-}
-void electronLossCalculations(PhaseSpace[][] spaces){
-	for(int i = 0;i<spaces.length;i++){
-		for(int j = 0;spaces[i].length;j++){
-			spaces[i][j].totalPulseEnergy -= spectroTable[1][j];
-		}
 	}
 }
 void main(){
