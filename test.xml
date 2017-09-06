@@ -3,27 +3,10 @@
     <print></print>
     <time>
     	<model accuracy="1"></model>
-      <split portions="10000">
-          <!--<distance dist="164.35"></distance> distance in micrometers-->
-          <!--<magLens power="1"></magLens>
-          <distance dist="164.35"></distance>
-          <magLens power="1"></magLens>
-          <distance dist="164.35"></distance>
-          <RFLens power="1"></RFLens>
-          <distance dist="164.35"></distance>
-          <magLens power="1"></magLens>
-          <distance dist="164.35"></distance>
-          <magLens power="1"></magLens>
-          <distance dist="164.35"></distance>
-          <RFLens power="1"></RFLens>
-          <distance dist="164.35"></distance>
-          <magLens power="1"></magLens>
-          <distance dist="164.35"></distance>
-          <model accuracy="1"></model>
-          <print></print>-->
-          <shatter></shatter>
-          <split portions="500"></split>
-      </split>
+        <distance dist="0"></distance>
+      <distance dist="0"></distance>
+      <distance dist="0"></distance>
+      <distance dist="0"></distance>
       <print></print>
       <model accuracy="1"></model>
     </time>

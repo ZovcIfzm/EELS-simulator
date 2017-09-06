@@ -43,10 +43,15 @@ class PhaseSpace{
 		hDepth=hDepthC, hDepthVelocity=hDepthVelocityC, VxIntDist=VxIntDistC, xIntDist=xIntDistC, chirpT=chirpTC, bT=bTC, vZC=vZCC, zC=zCC;
 	}
 	this(PhaseSpace[] spaces){
-		this.VzIntDist = spaces[0].VzIntDist;
+		this.hWidth = spaces[0].hWidth;
+		writeln(this.hWidth);
+		this.hHeight = spaces[0].hHeight * spaces.length; //If you add a * 1/chirp here sometimes it doesn't process it for some reason, a 1/chirp isn't needed here anyway but its an odd mystery why its only sometimes processed
+		this.vZC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.vZC"(spaces));
+		this.zC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.zC"(spaces));
+		this.VzIntDist = spaces[0].VzIntDist*spaces.length;
 		this.zIntDist = spaces[0].zIntDist;
-		this.chirp = spaces[0].chirp;
-		this.b = spaces[0].b;
+		this.chirp = this.hHeight/this.hWidth;
+		this.b = this.chirp*pow(this.zIntDist/this.VzIntDist,2);
 		this.hDepth = spaces[0].hDepth;
 		this.hDepthVelocity = spaces[0].hDepthVelocity;
 		this.VxIntDist = spaces[0].VxIntDist;
@@ -55,10 +60,7 @@ class PhaseSpace{
 		this.bT = spaces[0].bT;
 		this.totalPulseEnergy = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.totalPulseEnergy"(spaces));
 		this.intensityRatio = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.intensityRatio"(spaces));
-		this.hWidth = spaces[0].hWidth * spaces.length;
-		this.hHeight = spaces[0].hHeight * spaces.length; //If you add a * 1/chirp here sometimes it doesn't process it for some reason, a 1/chirp isn't needed here anyway but its an odd mystery why its only sometimes processed
-		this.vZC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.vZC"(spaces));
-		this.zC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.zC"(spaces));
+		
 	}
 	PhaseSpace[] split(long spaces){
 		PhaseSpace[] phaseSpaces;
@@ -66,11 +68,16 @@ class PhaseSpace{
 		double spacesD = (to!double(spaces));
 		double[] intensityRatios;
 		intensityRatios.length = to!int(spaces);
+		double newHHeight, newVzIntDist, newZIntDist, newChirp, newB;
+		newHHeight = this.hHeight/spacesD;
+		newVzIntDist = VzIntDist/spacesD;
+		newChirp = newHHeight/this.hWidth;
+		newB = newChirp*pow(zIntDist/newVzIntDist,2);
 		foreach (i, ref elem; parallel(intensityRatios)) {
 			elem = getSplitintensityRatio(1005/spacesD, spaces, i+1, this.hHeight, this.hWidth);
 		}
 		foreach (i, ref elem; phaseSpaces) {
-			elem = new PhaseSpace((this.hHeight/this.chirp)/spacesD, this.hHeight/spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatios[i], intensityRatios[i],
+			elem = new PhaseSpace(this.hWidth, newHHeight, newVzIntDist, this.zIntDist, newChirp, newB, this.totalPulseEnergy*intensityRatios[i], intensityRatios[i],
 										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT, this.hHeight-(hHeight*2/spacesD)*(i+0.5), this.hWidth-(hWidth*2/spacesD)*(i+0.5));
 		}
 		count += spaces;
@@ -80,8 +87,13 @@ class PhaseSpace{
 		double spaces = spectroTable[0].length;
 		PhaseSpace[] phaseSpaces2;
 		phaseSpaces2.length = to!int(spaces);
+		double newHHeight, newVzIntDist, newChirp, newB;
+		newHHeight = this.hHeight/spaces;
+		newVzIntDist = VzIntDist/spaces;
+		newChirp = newHHeight/this.hWidth;
+		newB = newChirp*pow(zIntDist/VzIntDist,2);
 		foreach (i, ref elem; phaseSpaces2) {
-			elem = new PhaseSpace((this.hHeight/this.chirp)/spaces, this.hHeight/spaces, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*spectroTable[1][i], this.intensityRatio*spectroTable[1][i],
+			elem = new PhaseSpace(this.hWidth, newHHeight, newVzIntDist, this.zIntDist, newChirp, newB, this.totalPulseEnergy*spectroTable[1][i], this.intensityRatio*spectroTable[1][i],
 								  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT, this.hHeight-(hHeight*2/spaces)*(i+0.5)-spectroTable[0][i], this.hWidth-(hWidth*2/spaces)*(i+0.5));
 		}
 		count += spaces;
@@ -148,10 +160,11 @@ class PhaseSpace{
 		if(chirpT<0){
 			this.xIntDist = bT/(sqrt((1/pow(VxIntDist,2))-(1/pow(hDepthVelocity,2))));
 		}
-		this.chirp = b*pow(VzIntDist,2)/pow(zIntDist,2);
-		this.chirpT = bT*pow(VxIntDist,2)/pow(xIntDist,2);
+		this.chirp = b*pow(VzIntDist/zIntDist,2);
+		this.chirpT = bT*pow(VxIntDist/xIntDist,2);
 		this.hWidth = sqrt(1/((1/pow(zIntDist,2))-pow(chirp/VzIntDist,2)));
 		this.hDepth = sqrt(1/((1/pow(xIntDist,2))-pow(chirpT/VxIntDist,2)));
+		writeln(chirp);
 		return this;
 	}
 	PhaseSpace RFLens(double changeChirp){
