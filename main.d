@@ -164,7 +164,6 @@ class PhaseSpace{
 		this.chirpT = bT*pow(VxIntDist/xIntDist,2);
 		this.hWidth = sqrt(1/((1/pow(zIntDist,2))-pow(chirp/VzIntDist,2)));
 		this.hDepth = sqrt(1/((1/pow(xIntDist,2))-pow(chirpT/VxIntDist,2)));
-		writeln(chirp);
 		return this;
 	}
 	PhaseSpace RFLens(double changeChirp){
