@@ -18,6 +18,7 @@ double[][] readSpec(string filename){
 	}
 	return toReturn;
 }
+double originalHWidth;
 double[][] spectroTable;
 double totalEnergy = 100E3, electronAmount = 100E3;
 double exp1(double x) {
@@ -43,14 +44,13 @@ class PhaseSpace{
 		hDepth=hDepthC, hDepthVelocity=hDepthVelocityC, VxIntDist=VxIntDistC, xIntDist=xIntDistC, chirpT=chirpTC, bT=bTC, vZC=vZCC, zC=zCC;
 	}
 	this(PhaseSpace[] spaces){
-		this.hWidth = spaces[0].hWidth;
-		writeln(this.hWidth);
+		this.hWidth = spaces[0].hWidth + (spaces[0].hWidth-originalHWidth)*spaces.length;
 		this.hHeight = spaces[0].hHeight * spaces.length; //If you add a * 1/chirp here sometimes it doesn't process it for some reason, a 1/chirp isn't needed here anyway but its an odd mystery why its only sometimes processed
 		this.vZC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.vZC"(spaces));
 		this.zC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.zC"(spaces));
 		this.VzIntDist = spaces[0].VzIntDist*spaces.length;
 		this.zIntDist = spaces[0].zIntDist;
-		this.chirp = this.hHeight/this.hWidth;
+		this.chirp = VzIntDist*sqrt((1/pow(zIntDist,2))-(1/pow(hWidth,2)));
 		this.b = this.chirp*pow(this.zIntDist/this.VzIntDist,2);
 		this.hDepth = spaces[0].hDepth;
 		this.hDepthVelocity = spaces[0].hDepthVelocity;
@@ -63,21 +63,20 @@ class PhaseSpace{
 		
 	}
 	PhaseSpace[] split(long spaces){
+		originalHWidth = hWidth;
 		PhaseSpace[] phaseSpaces;
 		phaseSpaces.length = to!int(spaces);
 		double spacesD = (to!double(spaces));
 		double[] intensityRatios;
 		intensityRatios.length = to!int(spaces);
-		double newHHeight, newVzIntDist, newZIntDist, newChirp, newB;
-		newHHeight = this.hHeight/spacesD;
-		newVzIntDist = VzIntDist/spacesD;
-		newChirp = newHHeight/this.hWidth;
-		newB = newChirp*pow(zIntDist/newVzIntDist,2);
 		foreach (i, ref elem; parallel(intensityRatios)) {
-			elem = getSplitintensityRatio(1005/spacesD, spaces, i+1, this.hHeight, this.hWidth);
+			elem = getSplitIntensityRatio(spacesD, i+1, hHeight, hWidth);
 		}
+		VzIntDist = VzIntDist/spacesD;
+		chirp = VzIntDist*sqrt((1/pow(zIntDist,2))-(1/pow(hWidth,2)));
+		b = chirp*pow(zIntDist/VzIntDist,2);
 		foreach (i, ref elem; phaseSpaces) {
-			elem = new PhaseSpace(this.hWidth, newHHeight, newVzIntDist, this.zIntDist, newChirp, newB, this.totalPulseEnergy*intensityRatios[i], intensityRatios[i],
+			elem = new PhaseSpace(this.hWidth, this.hHeight/spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatios[i], intensityRatios[i],
 										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT, this.hHeight-(hHeight*2/spacesD)*(i+0.5), this.hWidth-(hWidth*2/spacesD)*(i+0.5));
 		}
 		count += spaces;
@@ -90,7 +89,7 @@ class PhaseSpace{
 		double newHHeight, newVzIntDist, newChirp, newB;
 		newHHeight = this.hHeight/spaces;
 		newVzIntDist = VzIntDist/spaces;
-		newChirp = newHHeight/this.hWidth;
+		newChirp = VzIntDist*sqrt((1/pow(zIntDist,2))-(1/pow(hWidth,2)));
 		newB = newChirp*pow(zIntDist/VzIntDist,2);
 		foreach (i, ref elem; phaseSpaces2) {
 			elem = new PhaseSpace(this.hWidth, newHHeight, newVzIntDist, this.zIntDist, newChirp, newB, this.totalPulseEnergy*spectroTable[1][i], this.intensityRatio*spectroTable[1][i],
@@ -119,13 +118,14 @@ class PhaseSpace{
 		window.eventLoop(0);// handle events
 		return this;
 	}
-	double getSplitintensityRatio(double accuracy, double numSections, double sectionNum, double hHeight, double hWidth){
+	double getSplitIntensityRatio(double numSections, double sectionNum, double hHeight, double hWidth){
 		//Gets intensity % proportionally to 1 (like if its gets .5 its 50% of total intensity)
 		//search with xSearch & ySearch = +- 5.803*hWidth or hHeight to get the total intensity of the phase space (equal to 1)	
-		double ySearchLB = -5.803*hHeight + ((5.803*hHeight*2/numSections)*(sectionNum-1));
-		double ySearchUB = 5.803*hHeight - (5.803*hHeight*2/numSections)*(numSections - sectionNum);
+		double ySearchLB = -5.803*hHeight + ((5.803*hHeight*2.0/numSections)*(sectionNum-1));
+		double ySearchUB = 5.803*hHeight - (5.803*hHeight*2.0/numSections)*(numSections - sectionNum);
 		double xSearchLB = -5.803*hWidth;
 		double xSearchUB = 5.803*hWidth;
+		double accuracy = ySearchUB-ySearchLB;
 		double x = xSearchLB;
 		double y = ySearchLB;
 		double intensityRatio = 0;
@@ -133,17 +133,17 @@ class PhaseSpace{
 		double twoVzIntDistsq = 2*VzIntDist*VzIntDist;
 		double twoPIhWidthsqVzIntDistsq = 2*PI*(hWidth*hWidth*VzIntDist*VzIntDist);
 		if(numSections==sectionNum){
-			ySearchUB += 0.0001;
+			ySearchUB += 0.000000000001;
 		}
-		while(y < ySearchUB-0.0001){
+		while(y < ySearchUB-0.000000000001){
 			while(x < xSearchUB){
-				intensityRatio += 112*accuracy*exp1((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq);
-				x += 112;
+				intensityRatio += 0.1*accuracy*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq);
+				x += 0.1;
 			}
 			y += accuracy;
 			x = xSearchLB;
 		}
-		return intensityRatio*5000;		
+		return intensityRatio/2000;		
 	}
 	PhaseSpace freeExpansion(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 		this.b += time;
@@ -206,6 +206,15 @@ void main(){
 	spectroTable = readSpec("hexogon BN-powder-eels.sl0");
 	auto test = new Script("test.xml");
 	test.run();
+	/*PhaseSpace pulse = new PhaseSpace(1.5,0.0006218811,0.000333333,0.804012205,0.00035,2036.27222124,100,1,100,86.6,50,50,0.866,0.866,0,0);
+	int i = 0;
+	double counterB = 0;
+	while(i<100000){
+		counterB += pulse.getSplitIntensityRatio(100000, i,0.0006218811,1.5);
+		i =i+1;
+	}*/
+	//writeln(pulse.getSplitIntensityRatio(100, 100,0.0006218811,1.5));
+	//writeln(counterB);
 	writeln("Total Fragmentated Phase Spaces: ", count);
 	writeln("End of Program, enter anything to continue");
 	string input = stdin.readln();

@@ -2,9 +2,7 @@
     hDepth="100" hDepthVelocity="86.6" VxIntDist="50" xIntDist="50" chirpT="0.866" bT="0.866" vZC="0" zC="0">
     <print></print>
     <time>
-      <split portions="10000">
-        <distance dist="164.35"></distance>
-      </split>
+        <distance dist="164000.35"></distance>
       <print></print>
     </time>
 </space>
