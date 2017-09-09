@@ -15,8 +15,8 @@ t=dist/v								fs = uM/(uM/fs)
 
 Kv = 1117ev um/ps
 
-xPost[ij]=xPre[ij]+D*Ke*VzPre[ij]
-D=dx/dE
+xPost[ij]=xPre[ij]+D*Kv*VzPre[ij]
+D=dx/dE=5 ("in concert with RF power of LL2")
 
 	Important things to know
 

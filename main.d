@@ -37,11 +37,11 @@ int count = 0;
 class PhaseSpace{
 	double hWidth, hHeight, VzIntDist, zIntDist, chirp, b, totalPulseEnergy = 0, intensityRatio = 0;
 	double hDepth, hDepthVelocity, VxIntDist, xIntDist, chirpT, bT;
-	double vZC = 0, zC = 0;
+	double vZC = 0, zC = 0, xC = 0;
 	this(double hWidthC, double hHeightC, double VzIntDistC, double zIntDistC, double chirpC, double bC, double totalPulseEnergyC, double intensityRatioC,
-		double hDepthC, double hDepthVelocityC, double VxIntDistC, double xIntDistC, double chirpTC, double bTC, double vZCC, double zCC){
+		double hDepthC, double hDepthVelocityC, double VxIntDistC, double xIntDistC, double chirpTC, double bTC, double vZCC, double zCC, double xCC){
 		hWidth=hWidthC, hHeight=hHeightC, VzIntDist=VzIntDistC, zIntDist=zIntDistC, chirp=chirpC, b=bC, totalPulseEnergy=totalPulseEnergyC, intensityRatio=intensityRatioC,
-		hDepth=hDepthC, hDepthVelocity=hDepthVelocityC, VxIntDist=VxIntDistC, xIntDist=xIntDistC, chirpT=chirpTC, bT=bTC, vZC=vZCC, zC=zCC;
+		hDepth=hDepthC, hDepthVelocity=hDepthVelocityC, VxIntDist=VxIntDistC, xIntDist=xIntDistC, chirpT=chirpTC, bT=bTC, vZC=vZCC, zC=zCC, xC=xCC;
 	}
 	this(PhaseSpace[] spaces){
 		this.hWidth = spaces[0].hWidth + (spaces[0].hWidth-originalHWidth)*spaces.length;
@@ -50,13 +50,13 @@ class PhaseSpace{
 		foreach(PhaseSpace space; spaces){
 			this.vZC += space.vZC*space.intensityRatio;
 			this.zC += space.zC*space.intensityRatio;
+			this.xC += space.xC*space.intensityRatio;
 		}
 		//this.zC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.zC"(spaces));
 		this.VzIntDist = spaces[0].VzIntDist*spaces.length;
 		this.zIntDist = spaces[0].zIntDist;
 		this.chirp = VzIntDist*sqrt((1/pow(zIntDist,2))-(1/pow(hWidth,2)));
 		this.b = this.chirp*pow(this.zIntDist/this.VzIntDist,2);
-		writeln(spaces[0].hDepth);
 		this.hDepth = spaces[0].hDepth;
 		this.hDepthVelocity = spaces[0].hDepthVelocity;
 		this.VxIntDist = spaces[0].VxIntDist;
@@ -83,7 +83,7 @@ class PhaseSpace{
 		b = chirp*pow(zIntDist/VzIntDist,2);
 		foreach (i, ref elem; phaseSpaces) {
 			elem = new PhaseSpace(this.hWidth, this.hHeight/spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatios[i], intensityRatios[i],
-										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT, this.hHeight-(hHeight*2/spacesD)*(i+0.5), this.zC);
+										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT, this.hHeight-(hHeight*2/spacesD)*(i+0.5), this.zC, this.xC);
 		}
 		count += spaces;
 		return phaseSpaces;
@@ -98,7 +98,7 @@ class PhaseSpace{
 		b = chirp*pow(zIntDist/VzIntDist,2);
 		foreach (i, ref elem; phaseSpaces2) {
 			elem = new PhaseSpace(this.hWidth, this.hHeight/spaces, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*spectroTable[1][i], this.intensityRatio*spectroTable[1][i],
-								  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT, this.hHeight+(spectroTable[0][i]/1117), this.zC);
+								  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT, this.hHeight+(spectroTable[0][i]/1117), this.zC, this.xC);
 		}
 		count += spaces;
 		return phaseSpaces2;
@@ -179,6 +179,10 @@ class PhaseSpace{
 		this.chirpT += changechirpT;
 		return this;
 	}
+	PhaseSpace spectroscopyFunction(){
+		this.xC = this.xC + 5585.0*this.vZC;
+		return this;
+	}
 	//Conservation Checking - Emittence based
 	bool checkAreaConservation(double hDimensionW, double intDistH, double hDimensionH, double intDistW){//Needs to be reworked, both cons1&2 should describe the same emmittence- be the same value, however height and width are different but the intDist are the same
 		double consValue = hDimensionW*intDistH;
@@ -199,6 +203,7 @@ class PhaseSpace{
 		writeln("chirp: ", chirp, " ",       " chirpT: ", chirpT);
 		writeln("b: ", b, "     ",           " bT: ", bT);
 		writeln("VzC: ", vZC, "   ",         "zC: ", zC);
+		writeln("xC: ", xC);
 		writeln("totalPulseEnergy: ", totalPulseEnergy);
 		writeln("intensityRatio: ", intensityRatio);
 		writeln("");

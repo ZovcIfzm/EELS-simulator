@@ -11,7 +11,7 @@ class Script{
 				to!double(t.getAttribute("VzIntDist")), to!double(t.getAttribute("zIntDist")), 
 				to!double(t.getAttribute("chirp")), to!double(t.getAttribute("b")), to!double(t.getAttribute("intensity")), to!double(t.getAttribute("intensityRatio")),
 				to!double(t.getAttribute("hDepth")), to!double(t.getAttribute("hDepthVelocity")), to!double(t.getAttribute("VxIntDist")), to!double(t.getAttribute("xIntDist")),
-				to!double(t.getAttribute("chirpT")), to!double(t.getAttribute("bT")), to!double(t.getAttribute("vZC")), to!double(t.getAttribute("zC")));
+				to!double(t.getAttribute("chirpT")), to!double(t.getAttribute("bT")), to!double(t.getAttribute("vZC")), to!double(t.getAttribute("zC")), to!double(t.getAttribute("xC")));
 				this.byNode(t.childNodes()[0], this.space);
 		}
 	}
@@ -34,6 +34,9 @@ class Script{
 				break;
 			case "distance":
 				space.freeExpansion(to!double(statement.getAttribute("dist"))/164.35);//such as double convToTime = sqrt(2*totalEnergy/(9.11*1E-31*electronAmount));
+				break;
+			case "analyzer":
+				space.spectroscopyFunction();
 				break;
 			case "time":
 				StopWatch sw;
