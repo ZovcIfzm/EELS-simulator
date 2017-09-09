@@ -184,10 +184,21 @@ class PhaseSpace{
 		return this;
 	}
 	//Conservation Checking - Emittence based
-	bool checkAreaConservation(double hDimensionW, double intDistH, double hDimensionH, double intDistW){//Needs to be reworked, both cons1&2 should describe the same emmittence- be the same value, however height and width are different but the intDist are the same
+	bool checkAreaConservationLongitudinal(double hDimensionW, double intDistH, double hDimensionH, double intDistW){//Needs to be reworked, both cons1&2 should describe the same emmittence- be the same value, however height and width are different but the intDist are the same
 		double consValue = hDimensionW*intDistH;
 		double consValue2 = hDimensionH*intDistW;
-		if(consValue > 4329 && consValue < 4331  && consValue2 > 4329 && consValue2 < 4331){//randomly decided range to account for data error
+		if(consValue > 0.000499 && consValue < 0.000501  && consValue2 > 0.000499 && consValue2 < 0.000501){//randomly decided range to account for data error
+			return true;
+		}
+		else{
+			writeln("Area1: ", consValue, "  Area2: ", consValue2);
+			return false;
+		}
+	}
+	bool checkAreaConservationTransverse(double hDimensionW, double intDistH, double hDimensionH, double intDistW){//Needs to be reworked, both cons1&2 should describe the same emmittence- be the same value, however height and width are different but the intDist are the same
+		double consValue = hDimensionW*intDistH;
+		double consValue2 = hDimensionH*intDistW;
+		if(consValue > 0.00299 && consValue < 0.00301  && consValue2 > 0.00299 && consValue2 < 0.00301){//randomly decided range to account for data error
 			return true;
 		}
 		else{
@@ -207,8 +218,8 @@ class PhaseSpace{
 		writeln("totalPulseEnergy: ", totalPulseEnergy);
 		writeln("intensityRatio: ", intensityRatio);
 		writeln("");
-		writeln("Longitudinal Emmittence Conserved: ", checkAreaConservation(hWidth, VzIntDist, hHeight, zIntDist));
-		writeln("Transverse Emmittence Conserved: ", checkAreaConservation(hDepth, VxIntDist, hDepthVelocity, xIntDist));
+		writeln("Longitudinal Emmittence Conserved: ", checkAreaConservationLongitudinal(hWidth, VzIntDist, hHeight, zIntDist));
+		writeln("Transverse Emmittence Conserved: ", checkAreaConservationTransverse(hDepth, VxIntDist, hDepthVelocity, xIntDist));
 		writeln("");
 	}
 }

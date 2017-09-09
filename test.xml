@@ -1,11 +1,9 @@
-<space hWidth="1.5" hHeight="0.0006218811" VzIntDist="0.000333333" zIntDist="0.804012205" chirp="0.00035" b="2036.27222124" intensity="100" intensityRatio="1"
-    hDepth="100" hDepthVelocity="86.6" VxIntDist="50" xIntDist="50" chirpT="0.866" bT="0.866" vZC="0" zC="0" xC="0">
+<space hWidth="1.82534513746" hHeight="0.00069511761" VzIntDist="0.00027392079" zIntDist="0.71930270898" chirp="0.00035" b="2413.46744543" intensity="100" intensityRatio="1"
+    hDepth="0.60844837915" hDepthVelocity="0.00494641054" VxIntDist="0.00493057439" xIntDist="0.60650040415" chirpT="0.00065" bT="9.83513928219" vZC="0" zC="0" xC="0">
     <print></print>
     <time>
-      <shatter portions="1000">
-            <distance dist="164000.35"></distance>
-      </shatter>
-      <analyzer></analyzer>
+      <split portions="1000"></split>
+      <distance dist="164000.35"></distance>
       <print></print>
     </time>
 </space>
