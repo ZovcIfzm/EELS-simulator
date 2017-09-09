@@ -2,7 +2,9 @@
     hDepth="100" hDepthVelocity="86.6" VxIntDist="50" xIntDist="50" chirpT="0.866" bT="0.866" vZC="0" zC="0">
     <print></print>
     <time>
-        <distance dist="164000.35"></distance>
+      <shatter portions="1000">
+            <distance dist="164000.35"></distance>
+      </shatter>
       <print></print>
     </time>
 </space>

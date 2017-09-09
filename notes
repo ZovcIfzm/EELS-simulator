@@ -13,6 +13,7 @@ Relativistic velocity
 v=164.35								uM/fs
 t=dist/v								fs = uM/(uM/fs)	
 
+Kv = 1117ev um/ps
 
 xPost[ij]=xPre[ij]+D*Ke*VzPre[ij]
 D=dx/dE
