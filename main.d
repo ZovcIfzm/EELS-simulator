@@ -34,6 +34,7 @@ double map( double x, double in_min,double in_max, double out_min, double out_ma
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min; 
 }
 int count = 0;
+double[] pixel;
 class PhaseSpace{
 	double hWidth, hHeight, VzIntDist, zIntDist, chirp, b, totalPulseEnergy = 0, intensityRatio = 0;
 	double hDepth, hDepthVelocity, VxIntDist, xIntDist, chirpT, bT;
@@ -172,15 +173,21 @@ class PhaseSpace{
 		return this;
 	}
 	PhaseSpace RFLens(double changeChirp){
-		this.chirp += changeChirp;
+		this.chirp -= changeChirp;
+		this.zIntDist = sqrt(1/((1/pow(hWidth,2))+pow(chirp/VzIntDist,2)));
+		this.b = this.chirp*pow(this.zIntDist/this.VzIntDist,2);
+		this.hHeight = sqrt(1/((1/pow(VzIntDist,2))-pow(b/zIntDist,2)));
 		return this;
 	}
 	PhaseSpace magLens(double changechirpT){
-		this.chirpT += changechirpT;
+		this.chirpT -= changechirpT;
+		this.xIntDist = sqrt(1/((1/pow(hDepth,2))+pow(chirpT/VxIntDist,2)));
+		this.bT = this.chirpT*pow(this.xIntDist/this.VxIntDist,2);
+		this.hDepthVelocity = sqrt(1/((1/pow(VxIntDist,2))-pow(bT/xIntDist,2)));
 		return this;
 	}
 	PhaseSpace spectroscopyFunction(){
-		this.xC = this.xC + 5585.0*this.vZC;
+		this.xC = this.xC + 7172.99042634*this.vZC;
 		return this;
 	}
 	//Conservation Checking - Emittence based
@@ -222,7 +229,11 @@ class PhaseSpace{
 		writeln("Transverse Emmittence Conserved: ", checkAreaConservationTransverse(hDepth, VxIntDist, hDepthVelocity, xIntDist));
 		writeln("");
 	}
+	void pixelSum(){
+		pixel[to!int(xC/50)] += intensityRatio;
+	}
 }
+
 void main(){
 	spectroTable = readSpec("hexogon BN-powder-eels.sl0");
 	auto test = new Script("test.xml");

@@ -10,13 +10,18 @@ Vz = vel;			the difference in velocity from center of mass
 
 Distance/Velocity/Time Conversions
 Relativistic velocity
-v=164.35								uM/fs
-t=dist/v								fs = uM/(uM/fs)	
+v=164.35								uM/ps
+t=dist/v								ps = uM/(uM/ps)	
 
 Kv = 1117ev um/ps
 
+E = Kv*Vz
+x = x + D*Kv*Vz
+
 xPost[ij]=xPre[ij]+D*Kv*VzPre[ij]
-D=dx/dE=5 ("in concert with RF power of LL2")
+D=dx/dE=6.421 ("in concert with RF power of LL2")
+
+LL2 has the same lens coefficient at LL1
 
 	Important things to know
 

@@ -2,8 +2,8 @@
     hDepth="0.60844837915" hDepthVelocity="0.00494641054" VxIntDist="0.00493057439" xIntDist="0.60650040415" chirpT="0.00065" bT="9.83513928219" vZC="0" zC="0" xC="0">
     <print></print>
     <time>
-      <split portions="1000"></split>
-      <distance dist="164000.35"></distance>
+      <RFLens power="100"></RFLens>
+      <distance dist="0.5"></distance>
       <print></print>
     </time>
 </space>
