@@ -5,6 +5,7 @@
       <RFLens power="100"></RFLens>
       <distance dist="0.5"></distance>
       <print></print>
+      <specMod></specMod>
     </time>
 </space>
         <!--

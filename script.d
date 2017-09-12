@@ -32,6 +32,9 @@ class Script{
 			case "print":
 				space.printPhaseSpace();
 				break;
+			case "specMod":
+				space.specModeling();
+				break;
 			case "distance":
 				space.freeExpansion(to!double(statement.getAttribute("dist"))/164.35);//such as double convToTime = sqrt(2*totalEnergy/(9.11*1E-31*electronAmount));
 				break;

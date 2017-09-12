@@ -232,6 +232,26 @@ class PhaseSpace{
 	void pixelSum(){
 		pixel[to!int(xC/50)] += intensityRatio;
 	}
+	PhaseSpace specModeling()
+	{ 
+		auto window = new SimpleWindow(to!int(400), to!int(400));
+		{// introduce sub-scope;
+			auto painter = window.draw(); // begin drawing
+		
+			int count=0;
+			double energy, intensity;
+			foreach(double pix; pixel)
+			{
+				intensity = pixel[count];
+				//energy = xC/6.421;
+				energy = xC;
+				painter.drawLine(Point(to!int(energy), 0), Point(to!int(energy), to!int(intensityRatio*electronAmount)));
+				count++;
+			}
+		} // end scope, calling `painter`'s, drawing to the screen.
+		window.eventLoop(0);// handle events
+		return this;
+	}
 }
 
 void main(){
