@@ -24,7 +24,7 @@ class Script{
 				space.freeExpansion(to!double(statement.getAttribute("dist"))/164.35);//FIX issues with scope of creating a predefined constant 
 				break;
 			case "rflens":
-				space.RFLens(to!double(statement.getAttribute("power")));
+				space.RFLens(to!double(statement.getAttribute("lenscoefficient"))*to!double(statement.getAttribute("power")));
 				break;
 			case "maglens":
 				space.magLens(to!double(statement.getAttribute("power")));
