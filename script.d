@@ -21,13 +21,13 @@ class Script{
 				space.modelPhaseSpace(to!double(statement.getAttribute("accuracy"))); 
 				break;
 			case "freeexpansion":
-				space.freeExpansion(to!double(statement.getAttribute("dist"))/164.35);//FIX issues with scope of creating a predefined constant 
+				space.freeExpansion(to!double(statement.getAttribute("dist"))*1000000/164.35);//FIX issues with scope of creating a predefined constant 
 				break;
 			case "rflens":
-				space.RFLens(to!double(statement.getAttribute("lenscoefficient"))*to!double(statement.getAttribute("power")));
+				space.RFLens(to!double(statement.getAttribute("lenscoefficient"))*sqrt(to!double(statement.getAttribute("power"))));
 				break;
 			case "maglens":
-				space.magLens(to!double(statement.getAttribute("power")));
+				space.magLens(to!double(statement.getAttribute("lenscoefficient"))/1000000000000*pow(to!double(statement.getAttribute("power")),2));
 				break;
 			case "print":
 				space.printPhaseSpace();

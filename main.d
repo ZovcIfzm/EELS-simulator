@@ -27,7 +27,7 @@ double exp1(double x) {
   x *= x; x *= x; x *= x; x *= x;
   return x;
 }
-double map( double x, double in_min,double in_max, double out_min, double out_max){
+double map( double x, double in_min, double in_max, double out_min, double out_max){
 	if(x < in_min){
 		x = in_min;
 	}
@@ -105,20 +105,21 @@ class PhaseSpace{
 		return phaseSpaces2;
 	}
 	PhaseSpace modelPhaseSpace(double accuracy){
-		auto window = new SimpleWindow(to!int(4*hWidth), to!int(4*hHeight)); 
+		auto window = new SimpleWindow(to!int(600), to!int(600)); 
 		{// introduce sub-scope;
 			auto painter = window.draw(); // begin drawing
 			double x, y;
 			x = -2*hWidth, y = -2*hHeight;
 			while(y < 2*hHeight){
 				while(x < 2*hWidth){
-					double h = this.intensityRatio*1E12*exp((-1*pow(x,2)/(2*pow(hWidth,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(hWidth*VzIntDist,2));
-					painter.outlineColor(Color(0, 0, to!int(map(h, 3861.0, 6366.0, 0, 255))));
-					painter.drawLine(Point(to!int(x+(hWidth*2)), to!int(-y+(hHeight*2))), Point(to!int(x+(hWidth*2)+1), to!int(-y+(hHeight*2)+1)));
-					x += accuracy;
+					double h = exp((-1*pow(x,2)/(2*pow(hWidth,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(hWidth*VzIntDist,2));
+					
+					painter.outlineColor(Color(0, 0, to!int(map(h, 386090.0, 636622.0, 0, 255))));
+					painter.drawLine(Point(to!int(x*150+300), to!int(-y*33300+300)), Point(to!int(x*150+300+1), to!int(-y*33300+300+1)));
+					x += hWidth/300;
 				}
 				x = -2*hWidth;
-				y += accuracy;
+				y += hHeight/300;
 			}
 		} // end scope, calling `painter`'s, drawing to the screen.
 		window.eventLoop(0);// handle events
@@ -173,14 +174,14 @@ class PhaseSpace{
 		return this;
 	}
 	PhaseSpace RFLens(double changeChirp){
-		this.chirp -= changeChirp;
+		this.chirp += changeChirp;
 		this.zIntDist = sqrt(1/((1/pow(hWidth,2))+pow(chirp/VzIntDist,2)));
 		this.b = this.chirp*pow(this.zIntDist/this.VzIntDist,2);
 		this.hHeight = sqrt(1/((1/pow(VzIntDist,2))-pow(b/zIntDist,2)));
 		return this;
 	}
 	PhaseSpace magLens(double changechirpT){
-		this.chirpT -= changechirpT;
+		this.chirpT += changechirpT;
 		this.xIntDist = sqrt(1/((1/pow(hDepth,2))+pow(chirpT/VxIntDist,2)));
 		this.bT = this.chirpT*pow(this.xIntDist/this.VxIntDist,2);
 		this.hDepthVelocity = sqrt(1/((1/pow(VxIntDist,2))-pow(bT/xIntDist,2)));

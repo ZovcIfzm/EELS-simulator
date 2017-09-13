@@ -2,10 +2,25 @@
     hDepth="0.60844837915" hDepthVelocity="0.00494641054" VxIntDist="0.00493057439" xIntDist="0.60650040415" chirpT="0.00065" bT="9.83513928219" vZC="0" zC="0" xC="0">
     <print></print>
     <time>
-      <RFLens lenscoefficient="0.000223" power="100"></RFLens>
-      <distance dist="0.5"></distance>
+      <distance dist="-.5484"></distance>
+      <magLens lenscoefficient="1000000000" power=".9"></magLens>
+      <distance dist="0.0225"></distance>
+      <magLens lenscoefficient="150000000" power="3.05"></magLens>
+      <distance dist="0.28"></distance>
+      <RFLens lenscoefficient="0.0002232305" power="100"></RFLens>
+      <distance dist="0.41"></distance>
+      <magLens lenscoefficient="2800000000" power=".49"></magLens>
+      <distance dist="0.015"></distance>
+      <magLens lenscoefficient="2800000000" power="0.00001"></magLens>
+      <distance dist="0.03"></distance>
+      <RFLens lenscoefficient="0.0002232305" power="140"></RFLens>
+      <distance dist="0.1995"></distance>
+      <magLens lenscoefficient="2800000000" power="0.00001"></magLens>
+      <distance dist="0.2"></distance>
+      <distance dist="0.27"></distance>
+      <distance dist="0.2"></distance>
       <print></print>
-      <specMod></specMod>
+      <model accuracy="0.01"></model>
     </time>
 </space>
         <!--
