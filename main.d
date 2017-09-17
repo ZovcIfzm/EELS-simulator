@@ -66,7 +66,6 @@ class PhaseSpace{
 		this.bT = spaces[0].bT;
 		this.totalPulseEnergy = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.totalPulseEnergy"(spaces));
 		this.intensityRatio = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.intensityRatio"(spaces));
-		
 	}
 
 	PhaseSpace[] split(long spaces){

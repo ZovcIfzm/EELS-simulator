@@ -1,29 +1,34 @@
-<space hWidth="1.82534513746" hHeight="0.00069511761" VzIntDist="0.00027392079" zIntDist="0.71930270898" chirp="0.00035" b="2413.46744543" intensity="100" intensityRatio="1"
-    hDepth="0.60844837915" hDepthVelocity="0.00494641054" VxIntDist="0.00493057439" xIntDist="0.60650040415" chirpT="0.00065" bT="9.83513928219" vZC="0" zC="0" xC="0">
+<space hWidth="1.82534513746" hHeight="0.00069511761" VzIntDist="0.00027392079" zIntDist="0.71930270898" chirp="0.00035" b="2413.46744543" intensity="100" intensityRatio="1" hDepth="0.60844837915" hDepthVelocity="0.00494641054" VxIntDist="0.00493057439" xIntDist="0.60650040415" chirpT="0.00065" bT="9.83513928219" vZC="0" zC="0" xC="0">
     <print></print>
-    <time>
-      <distance dist="-.5484"></distance>
-      <magLens lenscoefficient="1000000000" power=".9"></magLens>
-      <distance dist="0.0225"></distance>
-      <magLens lenscoefficient="150000000" power="3.05"></magLens>
-      <distance dist="0.28"></distance>
-      <RFLens lenscoefficient="0.0002232305" power="100"></RFLens>
-      <distance dist="0.41"></distance>
-      <magLens lenscoefficient="2800000000" power=".49"></magLens>
-      <distance dist="0.015"></distance>
-      <magLens lenscoefficient="2800000000" power="0.00001"></magLens>
-      <distance dist="0.03"></distance>
-      <RFLens lenscoefficient="0.0002232305" power="140"></RFLens>
-      <distance dist="0.1995"></distance>
-      <magLens lenscoefficient="2800000000" power="0.00001"></magLens>
-      <distance dist="0.2"></distance>
-      <distance dist="0.27"></distance>
-      <distance dist="0.2"></distance>
-      <print></print>
-      <model accuracy="0.01"></model>
-    </time>
+    <split portions="3">
+        <split portions="3">
+            <distance dist="0.1995"></distance>
+        </split>
+    </split>
+    <print></print>
+    <!--<time>
+        <distance dist="-.5484"></distance>
+        <magLens lenscoefficient="1000000000" power=".9"></magLens>
+        <distance dist="0.0225"></distance>
+        <magLens lenscoefficient="150000000" power="3.05"></magLens>
+        <distance dist="0.28"></distance>
+        <RFLens lenscoefficient="0.0002232305" power="100"></RFLens>
+        <distance dist="0.41"></distance>
+        <magLens lenscoefficient="2800000000" power=".49"></magLens>
+        <distance dist="0.015"></distance>
+        <magLens lenscoefficient="2800000000" power="0.00001"></magLens>
+        <distance dist="0.03"></distance>
+        <RFLens lenscoefficient="0.0002232305" power="140"></RFLens>
+        <distance dist="0.1995"></distance>
+        <magLens lenscoefficient="2800000000" power="0.00001"></magLens>
+        <distance dist="0.2"></distance>
+        <distance dist="0.27"></distance>
+        <distance dist="0.2"></distance>
+        <print></print>
+        <model accuracy="0.01"></model>
+    </time>-->
 </space>
-        <!--
+<!--
         <distance dist=""></distance>
         <magLens power=""></magLens>
         <distance dist=""></distance>

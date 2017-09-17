@@ -1,21 +1,21 @@
 import std.stdio, std.file, std.conv, std.datetime, std.math, std.parallelism, arsd.dom, arsd.script, arsd.jsvar, main;
 class Script{
 	Document file;
-	PhaseSpace space;
+	PhaseSpace masterSpace;
 	this(string fn){
 		this.file = new Document(readText(fn));
 	}
 	void run(){
 		foreach(Element t; this.file.getElementsByTagName("space")){
-			this.space = new PhaseSpace(to!double(t.getAttribute("hWidth")), to!double(t.getAttribute("hHeight")), 
+			this.masterSpace = new PhaseSpace(to!double(t.getAttribute("hWidth")), to!double(t.getAttribute("hHeight")), 
 				to!double(t.getAttribute("VzIntDist")), to!double(t.getAttribute("zIntDist")), 
 				to!double(t.getAttribute("chirp")), to!double(t.getAttribute("b")), to!double(t.getAttribute("intensity")), to!double(t.getAttribute("intensityRatio")),
 				to!double(t.getAttribute("hDepth")), to!double(t.getAttribute("hDepthVelocity")), to!double(t.getAttribute("VxIntDist")), to!double(t.getAttribute("xIntDist")),
 				to!double(t.getAttribute("chirpT")), to!double(t.getAttribute("bT")), to!double(t.getAttribute("vZC")), to!double(t.getAttribute("zC")), to!double(t.getAttribute("xC")));
-				this.byNode(t.childNodes()[0], this.space);
+				this.byNode(t.childNodes()[0], this.masterSpace);
 		}
 	}
-	void byNode(Element statement, PhaseSpace space){
+	PhaseSpace byNode(Element statement, PhaseSpace space){
 		switch (statement.tagName) {
 			case "model":
 				space.modelPhaseSpace(to!double(statement.getAttribute("accuracy"))); 
@@ -36,7 +36,7 @@ class Script{
 				space.specModeling();
 				break;
 			case "distance":
-				space.freeExpansion(to!double(statement.getAttribute("dist"))/164.35);//such as double convToTime = sqrt(2*totalEnergy/(9.11*1E-31*electronAmount));
+				space = space.freeExpansion(to!double(statement.getAttribute("dist"))/164.35);//such as double convToTime = sqrt(2*totalEnergy/(9.11*1E-31*electronAmount));
 				break;
 			case "analyzer":
 				space.spectroscopyFunction();
@@ -50,12 +50,12 @@ class Script{
 				break;
 			case "split":
 				auto spaces = space.split(to!long(statement.getAttribute("portions")));
-				if(statement.childNodes.length > 1){
-					foreach (ref s; spaces) {
-						this.byNode(statement.childNodes()[0], s);
-					}
+				for (int i = 0; i < spaces.length; i++){
+					spaces[i] = this.byNode(statement.childNodes()[0], spaces[i]);
 				}
+				//foreach ( s; spaces) s = this.byNode(statement.childNodes()[0], s);
 				space = new PhaseSpace(spaces);
+				
 				break;
 			case "shatter":
 				auto spaces2 = space.shatter();
@@ -70,5 +70,6 @@ class Script{
 		}
 		if(statement.nextSibling)
 			this.byNode(statement.nextSibling, space);
+		return space;
 	}
 }
