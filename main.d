@@ -34,7 +34,7 @@ double map( double x, double in_min, double in_max, double out_min, double out_m
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min; 
 }
 int count = 0;
-double[] pixel;
+double[100] pixel = 0;//!!Temporary!!
 class PhaseSpace{
 	double hWidth, hHeight, VzIntDist, zIntDist, chirp, b, totalPulseEnergy = 0, intensityRatio = 0;
 	double hDepth, hDepthVelocity, VxIntDist, xIntDist, chirpT, bT;
@@ -224,13 +224,11 @@ class PhaseSpace{
 		writeln("xC: ", xC);
 		writeln("totalPulseEnergy: ", totalPulseEnergy);
 		writeln("intensityRatio: ", intensityRatio);
+		writeln("totalIntensityRatio from PixelSum: ", sumUp());
 		writeln("");
 		writeln("Longitudinal Emmittence Conserved: ", checkAreaConservationLongitudinal(hWidth, VzIntDist, hHeight, zIntDist));
 		writeln("Transverse Emmittence Conserved: ", checkAreaConservationTransverse(hDepth, VxIntDist, hDepthVelocity, xIntDist));
 		writeln("");
-	}
-	void pixelSum(){
-		pixel[to!int(xC/50)] += intensityRatio;
 	}
 	PhaseSpace specModeling()
 	{ 
@@ -252,6 +250,17 @@ class PhaseSpace{
 		window.eventLoop(0);// handle events
 		return this;
 	}
+	void pixelSum(){
+		pixel[to!int((xC+5000)/50)] += intensityRatio;//!!Temporary!!
+	}
+}
+double sumUp(){
+	double sumA=0;
+	for(int i = 0; i<pixel[].length; i++){
+		sumA += pixel[i];
+		writeln(pixel[i]);
+	}
+	return sumA;
 }
 
 void main(){

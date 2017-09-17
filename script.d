@@ -55,7 +55,6 @@ class Script{
 				}
 				//foreach ( s; spaces) s = this.byNode(statement.childNodes()[0], s);
 				space = new PhaseSpace(spaces);
-				
 				break;
 			case "shatter":
 				auto spaces2 = space.shatter();
@@ -65,6 +64,9 @@ class Script{
 					}
 				}
 				space = new PhaseSpace(spaces2);
+				break;
+			case "pixelsum":
+				space.pixelSum();
 				break;
 			default: break;
 		}
