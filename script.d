@@ -36,7 +36,7 @@ class Script{
 				space.specModeling();
 				break;
 			case "distance":
-				space.freeExpansion(to!double(statement.getAttribute("dist"))/164.35);//such as double convToTime = sqrt(2*totalEnergy/(9.11*1E-31*electronAmount));
+				space.freeExpansion(to!double(statement.getAttribute("dist"))*1000000/164.35);//such as double convToTime = sqrt(2*totalEnergy/(9.11*1E-31*electronAmount));
 				break;
 			case "analyzer":
 				space.spectroscopyFunction();

@@ -45,7 +45,7 @@ class PhaseSpace{
 		hDepth=hDepthC, hDepthVelocity=hDepthVelocityC, VxIntDist=VxIntDistC, xIntDist=xIntDistC, chirpT=chirpTC, bT=bTC, vZC=vZCC, zC=zCC, xC=xCC;
 	}
 	this(PhaseSpace[] spaces){
-		this.hWidth = spaces[0].hWidth + (spaces[0].hWidth-originalHWidth)*spaces.length;
+		this.hWidth = originalHWidth + (spaces[0].hWidth-originalHWidth)*spaces.length;
 		this.hHeight = spaces[0].hHeight * spaces.length; //If you add a * 1/chirp here sometimes it doesn't process it for some reason, a 1/chirp isn't needed here anyway but its an odd mystery why its only sometimes processed
 		//this.vZC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.vZC"(spaces))*this.intensityRatio;
 		foreach(PhaseSpace space; spaces){
@@ -54,8 +54,8 @@ class PhaseSpace{
 			this.xC += space.xC*space.intensityRatio;
 		}
 		//this.zC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.zC"(spaces));
-		this.VzIntDist = spaces[0].VzIntDist*spaces.length;
 		this.zIntDist = spaces[0].zIntDist;
+		this.VzIntDist = zIntDist*hHeight/hWidth;
 		this.chirp = VzIntDist*sqrt((1/pow(zIntDist,2))-(1/pow(hWidth,2)));
 		this.b = this.chirp*pow(this.zIntDist/this.VzIntDist,2);
 		this.hDepth = spaces[0].hDepth;
@@ -66,7 +66,6 @@ class PhaseSpace{
 		this.bT = spaces[0].bT;
 		this.totalPulseEnergy = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.totalPulseEnergy"(spaces));
 		this.intensityRatio = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.intensityRatio"(spaces));
-		
 	}
 
 	PhaseSpace[] split(long spaces){
