@@ -32,7 +32,7 @@ class Script{
 			case "print":
 				space.printPhaseSpace();
 				break;
-			case "specMod":
+			case "specmod":
 				space.specModeling();
 				break;
 			case "distance":
