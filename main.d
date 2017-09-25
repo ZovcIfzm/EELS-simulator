@@ -1,14 +1,19 @@
 import std.stdio, std.array, std.algorithm, std.conv, std.math, std.parallelism, std.range, std.string, std.file, arsd.simpledisplay, script;
+long splitNumber = 0;
+double originalHWidth, originalHWidth2;
+double[][] spectroTable;
+double[400][400] modelingSpace;
+double totalEnergy = 100E3, electronAmount = 100E3;
 double[][] readSpec(string filename){
 	double[][] toReturn;
 	toReturn.length = 2;
 	auto lines = readText(filename).splitLines();
 	foreach(string line; lines){
-			string[] nums = line.split(",");
-			if(isNumeric(nums[0].strip())){
-				toReturn[0] ~= to!double(nums[0].strip());
-				toReturn[1] ~= to!double(nums[1].strip());
-			}
+		string[] nums = line.split(",");
+		if(isNumeric(nums[0].strip())){
+			toReturn[0] ~= to!double(nums[0].strip());
+			toReturn[1] ~= to!double(nums[1].strip());
+		}
 	}
 	double sum = 0;
 	foreach(double dat; toReturn[1])
@@ -18,9 +23,6 @@ double[][] readSpec(string filename){
 	}
 	return toReturn;
 }
-double originalHWidth, originalHWidth2;
-double[][] spectroTable;
-double totalEnergy = 100E3, electronAmount = 100E3;
 double exp1(double x) {
   x = 1.0 + x / 256.0;
   x *= x; x *= x; x *= x; x *= x;
@@ -34,6 +36,7 @@ double map( double x, double in_min, double in_max, double out_min, double out_m
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min; 
 }
 int count = 0;
+double sumInf = 0;
 double[100] pixel = 0;//!!Temporary!!
 class PhaseSpace{
 	double hWidth, hHeight, VzIntDist, zIntDist, chirp, b, totalPulseEnergy = 0, intensityRatio = 0;
@@ -75,15 +78,15 @@ class PhaseSpace{
 		double spacesD = (to!double(spaces));
 		double[] intensityRatios;
 		intensityRatios.length = to!int(spaces);
-		foreach (i, ref elem; parallel(intensityRatios)) {
+		foreach (i, ref elem; intensityRatios) {
 			elem = getSplitIntensityRatio(spacesD, i+1, hHeight, hWidth);
 		}
 		VzIntDist = VzIntDist/spacesD;
 		chirp = VzIntDist*sqrt((1/pow(zIntDist,2))-(1/pow(hWidth,2)));
 		b = chirp*pow(zIntDist/VzIntDist,2);
 		foreach (i, ref elem; phaseSpaces) {
-			elem = new PhaseSpace(this.hWidth, this.hHeight/spacesD, this.VzIntDist, this.zIntDist, this.chirp, this.b, this.totalPulseEnergy*intensityRatios[i], intensityRatios[i],
-										  this.hDepth, this.hDepthVelocity, this.VxIntDist, this.xIntDist, this.chirpT, this.bT, this.hHeight-(hHeight*2/spacesD)*(i+0.5), this.zC, this.xC);
+			elem = new PhaseSpace(hWidth, hHeight/spacesD, VzIntDist, zIntDist, chirp, b, totalPulseEnergy*intensityRatios[i], intensityRatios[i],
+										  hDepth, hDepthVelocity, VxIntDist, xIntDist, chirpT, bT, hHeight-(hHeight*2/spacesD)*(i+0.5), zC, xC);
 		}
 		count += spaces;
 		return phaseSpaces;
@@ -112,7 +115,6 @@ class PhaseSpace{
 			while(y < 2*hHeight){
 				while(x < 2*hWidth){
 					double h = exp((-1*pow(x,2)/(2*pow(hWidth,2)))-(pow(y-chirp*x,2)/(2*pow(VzIntDist,2))))/(2*PI*pow(hWidth*VzIntDist,2));
-					
 					painter.outlineColor(Color(0, 0, to!int(map(h, 386090.0, 636622.0, 0, 255))));
 					painter.drawLine(Point(to!int(x*150+300), to!int(-y*33300+300)), Point(to!int(x*150+300+1), to!int(-y*33300+300+1)));
 					x += hWidth/300;
@@ -132,6 +134,7 @@ class PhaseSpace{
 		double xSearchLB = -5.803*hWidth;
 		double xSearchUB = 5.803*hWidth;
 		double accuracy = ySearchUB-ySearchLB;
+		double accuracyX = (xSearchUB-xSearchLB)/100;
 		double x = xSearchLB;
 		double y = ySearchLB;
 		double intensityRatio = 0;
@@ -143,8 +146,8 @@ class PhaseSpace{
 		}
 		while(y < ySearchUB-0.000000000001){
 			while(x < xSearchUB){
-				intensityRatio += 0.1*accuracy*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq);
-				x += 0.1;
+				intensityRatio += accuracyX*accuracy*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq);
+				x += accuracyX;
 			}
 			y += accuracy;
 			x = xSearchLB;
@@ -253,17 +256,68 @@ class PhaseSpace{
 	void pixelSum(){
 		pixel[to!int((xC+5000)/50)] += intensityRatio;//!!Temporary!!
 	}
+	PhaseSpace recombinationSumming(){
+		sumInf += intensityRatio;
+		double ySearchLB = -5.803*hHeight;
+		double ySearchUB = 5.803*hHeight;
+		double xSearchLB = -5.803*hWidth;
+		double xSearchUB = 5.803*hWidth;
+		double yAccuracy = (ySearchUB-ySearchLB)/400;
+		double xAccuracy = (xSearchUB-xSearchLB)/400;
+		double x = xSearchLB;
+		double y = ySearchLB;
+		double negTwohWidthsq = -2*hWidth*hWidth;
+		double twoVzIntDistsq = 2*VzIntDist*VzIntDist;
+		double twoPIhWidthsqVzIntDistsq = 2*PI*(hWidth*hWidth*VzIntDist*VzIntDist);
+		int yCoord = 0;
+		while(y < ySearchUB-0.000000000001){
+			while(x < xSearchUB){
+				yCoord = to!int(map(y,ySearchLB, ySearchUB, 0, 399));//+to!int(vZC*199/(11.606*splitNumber*hHeight));//!!Temporary!! splitNumber global
+				if(yCoord>0 && yCoord<399){
+					modelingSpace[yCoord][to!int(map(x, xSearchLB, xSearchUB, 0, 399))] += xAccuracy/2000*yAccuracy*intensityRatio*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq);
+				}
+				x += xAccuracy;
+				//writeln(modelingSpace[to!int(map(y,ySearchLB, ySearchUB, 0, 399))][to!int(map(x, xSearchLB, xSearchUB, 0, 399))]);
+				/*for(int j = 0; j<modelingSpace.length; j++){
+					for(int i = 0; i<modelingSpace[0].length; i++){
+						writeln(modelingSpace[j][i]);
+					}
+				}*/
+			}
+			y += yAccuracy;
+			x = xSearchLB;
+		}
+		return this;
+	}
+}
+void recombinationModeling(){
+	auto window = new SimpleWindow(to!int(400), to!int(400));
+	{// introduce sub-scope;
+		auto painter = window.draw(); // begin drawing
+		for(int j = 0; j<400; j++){
+			for(int i = 0; i<400; i++){
+				painter.outlineColor(Color(0, 0, to!int(map(modelingSpace[j][i], 0, 0.340501, 0, 255))));
+				painter.drawLine(Point(i, 400-j), Point(i+1, 400-j+1));
+			}
+		}
+	} // end scope, calling `painter`'s, drawing to the screen.
+	window.eventLoop(0);// handle events
 }
 double sumUp(){
 	double sumA=0;
 	for(int i = 0; i<pixel[].length; i++){
 		sumA += pixel[i];
-		writeln(pixel[i]);
+		//writeln(pixel[i]);
 	}
 	return sumA;
 }
 
 void main(){
+	for(int j = 0; j<modelingSpace.length; j++){
+		for(int i = 0; i<modelingSpace[0].length; i++){
+			modelingSpace[j][i]=0;
+		}
+	}
 	spectroTable = readSpec("hexogon BN-powder-eels.sl0");
 	auto test = new Script("test.xml");
 	test.run();
@@ -278,5 +332,19 @@ void main(){
 	//writeln(counterB);
 	writeln("Total Fragmentated Phase Spaces: ", count);
 	writeln("End of Program, enter anything to continue");
+	double highest = 0;
+	double hSum = 0;
+	for(int j = 0; j<modelingSpace.length; j++){
+		for(int i = 0; i<modelingSpace[0].length; i++){
+			if(modelingSpace[j][i] > highest)
+				highest = modelingSpace[j][i];
+				hSum += modelingSpace[j][i];
+		}	
+	}
+	writeln(hSum);
+
+	writeln(highest);
+
+	writeln(sumInf);
 	string input = stdin.readln();
 }

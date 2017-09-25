@@ -50,6 +50,7 @@ class Script{
 				break;
 			case "split":
 				auto spaces = space.split(to!long(statement.getAttribute("portions")));
+				splitNumber = (to!long(statement.getAttribute("portions")));
 				for (int i = 0; i < spaces.length; i++){
 					spaces[i] = this.byNode(statement.childNodes()[0], spaces[i]);
 				}
@@ -67,6 +68,12 @@ class Script{
 				break;
 			case "pixelsum":
 				space.pixelSum();
+				break;
+			case "recombinesumming":
+				space.recombinationSumming();
+				break;
+			case "recombinemodeling":
+				recombinationModeling();
 				break;
 			default: break;
 		}
