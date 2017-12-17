@@ -37,6 +37,7 @@ double map( double x, double in_min, double in_max, double out_min, double out_m
 }
 int count = 0;
 double sumInf = 0;
+double highestPixelEnergy = 0;
 double[100] pixel = 0;//!!Temporary!!
 class PhaseSpace{
 	double hWidth, hHeight, VzIntDist, zIntDist, chirp, b, totalPulseEnergy = 0, intensityRatio = 0;
@@ -244,8 +245,9 @@ class PhaseSpace{
 			foreach(double pix; pixel)
 			{
 				intensity = pixel[count];
-				//energy = xC/6.421;
-				energy = xC;
+				energy = xC/6.421;
+				if(energy > highestPixelEnergy)
+					highestPixelEnergy = energy;
 				painter.drawLine(Point(to!int(energy), 0), Point(to!int(energy), to!int(intensityRatio*electronAmount)));
 				count++;
 			}
@@ -346,5 +348,6 @@ void main(){
 	writeln(highest);
 
 	writeln(sumInf);
+	writeln(highestPixelEnergy);
 	string input = stdin.readln();
 }

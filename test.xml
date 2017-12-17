@@ -5,6 +5,7 @@
     <split portions="1000">
       <distance dist="0.2"></distance>
       <distance dist="0.27"></distance>
+      <RFLens lenscoefficient="0.0002232305" power="100"></RFLens>
       <distance dist="0.2"></distance>
       <recombinesumming></recombinesumming>
     </split>
