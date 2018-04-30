@@ -14,4 +14,5 @@ phase_space spectroscopy_function();
 bool longitudinal_area_conservation(double hDimensionW, double distH, double hDimensionH, double distW);
 bool transverse_area_conservation(double hDimensionW, double distH, double hDimensionH, double distW);
 void print();
+
 };

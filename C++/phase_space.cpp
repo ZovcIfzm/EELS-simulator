@@ -7,9 +7,7 @@ phase_space::phase_space(double hWidthC, double hHeightC, double VzDistC, double
 double hDepthC, double hDepthVelC, double VxDistC, double xDistC, double chirpTC, double bTC, double vZCC, double zCC, double xCC) 
 : hWidth(hWidthC), hHeight(hHeightC), VzDist(VzDistC), zDist(zDistC), chirp(chirpC), b(bC), pulseEnergy(pulseEnergyC), intensityRatio(intensityRatioC),
 hDepth(hDepthC), hDepthVel(hDepthVelC), VxDist(VxDistC), xDist(xDistC), chirpT(chirpTC), bT(bTC), vZC(vZCC), zC(zCC), xC(zCC) {}
-//	phase_space::hWidth = hWidthC;
-//	hHeight, VzIntDist, zIntDist, chirp, b, pulseEnergy, intensityRatio,
-//hDepth, hDepthVel, VxDist, xDist, chirpT, bT, vZC, zC, xC
+
 phase_space phase_space::evolution(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 		b += time;
 		bT += time;
