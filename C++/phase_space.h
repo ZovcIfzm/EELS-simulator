@@ -1,7 +1,9 @@
 #include <iostream>
 #include <vector>
+#include "external_variables.h"
 #include "constants.h"
 using namespace std;
+
 
 class phase_space{
 private:
@@ -23,8 +25,12 @@ public:
 	phase_space RFLens(double changeChirp);
 	phase_space mag_lens(double changeChirpT);
 	phase_space spectroscopy_function();
+	void valid_variables_check();
 	double get_split_intensity_multiplier(double numSections, double sectionNum, double hHeight, double hWidth);
 	bool longitudinal_area_conservation(double hDimensionW, double distH, double hDimensionH, double distW);
 	bool transverse_area_conservation(double hDimensionW, double distH, double hDimensionH, double distW);
 	void print();
+
+	//DEBUGGING FUNCTions
+	double hWidth_accessor();
 };

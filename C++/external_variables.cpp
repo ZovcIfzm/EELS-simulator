@@ -1,0 +1,10 @@
+extern double originalHWidth = 0;
+int phaseSpaces = 0;
+extern double testMax = 0;
+extern double testMaxXCoordinate = 0;
+extern double testMaxYCoordinate = 0;
+extern double valueHolder = 0;
+extern double valueHolder2 = 0;
+extern double valueHolder3 = 0;
+extern double valueHolder4 = 0;
+extern double valueHolder5 = 0;

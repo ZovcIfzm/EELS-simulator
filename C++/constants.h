@@ -1,4 +1,19 @@
-const int splitNumber = 3;
-extern double originalHWidth;
-extern double originalHWidth2;
-extern int phaseSpaces;
+const int splitNumber = 1001; //Needs to be int, to be used as array size
+															//Needs to be odd in order for doubleensityMultiplier towork (to sum up the center correctly, with even it's unsymmetric for some reason)
+const double base_hWidth = 1.82534513746;
+const double base_hHeight = 0.00069511761; 
+const double base_VzDist = 0.00027392079 ;
+const double base_zDist = 0.71930270898 ;
+const double base_chirp = 0.00035 ;
+const double base_b = 2413.46744543 ;
+const double base_pulseEnergy = 100 ;
+const double base_intensityMultiplier = 1.0;
+const double base_hDepth = 0.60844837915;
+const double base_hDepthVelocity = 0.00494641054;
+const double base_VxDist = 0.00493057439;
+const double base_xDist = 0.60650040415;
+const double base_chirpT = 0.00065;
+const double base_bT = 9.83513928219;
+const double base_vZC = 0.0;
+const double base_zC = 0.0;
+const double base_xC = 0.0;

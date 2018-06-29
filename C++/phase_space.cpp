@@ -3,6 +3,11 @@
 #include <math.h>
 #include <functional>
 #include <vector>
+#include "external_variables.h"
+#include "using_gnuplot.h"
+//#include "gnuplot_i.hpp"
+//#include "gnuplot-iostream.h"
+//#include <boost/tuple/tuple.hpp>
 #define M_PI 3.14159265358979323846264338328
 using namespace std;
 
@@ -21,22 +26,18 @@ phase_space::phase_space(double hWidthC, double hHeightC, double VzDistC, double
 hDepth(hDepthC), hDepthVel(hDepthVelC), VxDist(VxDistC), xDist(xDistC), chirpT(chirpTC), bT(bTC), vZC(vZCC), zC(zCC), xC(zCC) {}
 
 phase_space::phase_space(vector<phase_space> spaces):hWidth(0),hHeight(0),VzDist(0),zDist(0),chirp(0),b(0),pulseEnergy(0),intensityMultiplier(0),hDepth(0),hDepthVel(0),VxDist(0),xDist(0),chirpT(0),bT(0),vZC(0),zC(0),xC(0){
-		//hWidth = originalHWidth + (spaces[0].hWidth-originalHWidth)*splitNumber;
-		hWidth = originalHWidth;
-		cout << spaces[0].hWidth << endl;
-		cout << originalHWidth << endl;
-		cout << hWidth << endl;
-		hHeight = spaces[0].hHeight * splitNumber; //If you add a * 1/chirp here sometimes it doesn't process it for some reason, a 1/chirp isn't needed here anyway but its an odd mystery why its only sometimes processed
-		//this.vZC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.vZC"(spaces))*this.intensityRatio;
-		//int maxSize = sizeof(spaces[]);
 		for(int i = 0; i<splitNumber; i++){
 			vZC += spaces[i].vZC*spaces[i].intensityMultiplier;
+			//DEBUGGING cout << spaces[i].intensityMultiplier << endl;
 			zC += spaces[i].zC*spaces[i].intensityMultiplier;
 			xC += spaces[i].xC*spaces[i].intensityMultiplier;
 			intensityMultiplier += spaces[i].intensityMultiplier;
 			pulseEnergy += spaces[i].pulseEnergy;
-			spaces[i].print();
+			//spaces[i].print();
 		}
+		//this.vZC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.vZC"(spaces))*this.intensityRatio;
+		//int maxSize = sizeof(spaces[]);
+
 		//for (phase_space space : spaces[splitNumber]){
 		//	vZC += space.vZC*space.intensityMultiplier;
 		//	zC += space.zC*space.intensityMultiplier;
@@ -44,8 +45,14 @@ phase_space::phase_space(vector<phase_space> spaces):hWidth(0),hHeight(0),VzDist
 		//}
 		//this.zC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.zC"(spaces));
 
-			//Recalculation from single variable change
-		zDist = spaces[0].zDist;
+		
+
+			//Recalculation from single variable change		
+		//HWIDTH BASED RECALCULATION
+		//hWidth = spaces[0].hWidth; (Shown not to be accurate/gives wrong results)
+		hWidth = originalHWidth + (spaces[0].hWidth-originalHWidth)*splitNumber;
+		hHeight = spaces[0].hHeight * splitNumber; //If you add a * 1/chirp here sometimes it doesn't process it for some reason, a 1/chirp isn't needed here anyway but its an odd mystery why its only sometimes processed
+				zDist = spaces[0].zDist;
 		VzDist = zDist*hHeight/hWidth;
 		chirp = VzDist*sqrt((1/pow(zDist,2))-(1/pow(hWidth,2)));
 		b = chirp*pow(zDist/VzDist,2);
@@ -55,6 +62,8 @@ phase_space::phase_space(vector<phase_space> spaces):hWidth(0),hHeight(0),VzDist
 		xDist = spaces[0].xDist;
 		chirpT = spaces[0].chirpT;
 		bT = spaces[0].bT;
+
+
 
 		//pulseEnergy = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.totalPulseEnergy"(spaces));
 		//intensityMultiplier = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.intensityRatio"(spaces));
@@ -86,10 +95,12 @@ double phase_space::get_split_intensity_multiplier(double numSections, double se
 		double ySearchUB = 5.803*hHeight - (5.803*hHeight*2.0/numSections)*(numSections - sectionNum);
 		double xSearchLB = -5.803*hWidth;
 		double xSearchUB = 5.803*hWidth;
-		double accuracy = (ySearchUB-ySearchLB)/100;
-		double accuracyX = (xSearchUB-xSearchLB)/100;
-		double x = xSearchLB;
-		double y = ySearchLB;
+		double accuracyY = (ySearchUB-ySearchLB)/99;
+		double accuracyX = (xSearchUB-xSearchLB)/99;
+		//double x = xSearchLB;
+		//double y = ySearchLB;
+		double x = xSearchLB+accuracyX/2;
+		double y = ySearchLB+accuracyY/2;
 		double intensityMultiplier = 0;
 		double negTwohWidthsq = -2*hWidth*hWidth;
 		double twoVzIntDistsq = 2*VzDist*VzDist;
@@ -99,12 +110,22 @@ double phase_space::get_split_intensity_multiplier(double numSections, double se
 		}
 		while(y < ySearchUB-0.000000000001){
 			while(x < xSearchUB){
-				intensityMultiplier += accuracyX*accuracy*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq);
+				intensityMultiplier += accuracyX*accuracyY*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq);
+				if(accuracyX*accuracyY*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq) > testMax){
+					/*DEBUGGING to test how testMax (which is the maximum value for each of the coordinates that intensityMultiplier checks for) 
+						compares to valueHolder (the value at [0,0]- the absolute maximum of the gaussian function)
+					testMax = accuracyX*accuracyY*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq);
+					testMaxXCoordinate = x;
+					testMaxYCoordinate = y;
+					valueHolder = accuracyX*accuracyY*exp((0/(negTwohWidthsq))-((0-chirp*0)*(0-chirp*0)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq);
+					*/
+				}
 				x += accuracyX;
 			}
-			y += accuracy;
-			x = xSearchLB;
+			y += accuracyY;
+			x = xSearchLB+accuracyX/2;
 		}
+		//DEBUGGING	cout << "x: " << x + accuracyX*49 << endl; //Not 50 because x already starts on the first one, so plus 50 would make it the 51st slot
 		return intensityMultiplier/2000;		
 	}
 phase_space phase_space::evolution(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
@@ -169,6 +190,13 @@ bool phase_space::transverse_area_conservation(double hDimensionW, double intDis
 			return false;
 		}
 	}
+
+void phase_space::valid_variables_check(){
+	cout << "Checks" << endl;
+	cout << "hWidth: " << hWidth << endl;
+	cout << "hWidth 1: " << sqrt(1/((1/(zDist*zDist)) - (chirp/VzDist)*(chirp/VzDist))) << endl;
+}
+
 void phase_space::print(){
 		cout << "hWidth: " << hWidth << "  " <<    " hDepth: " << hDepth << endl;;
 		cout << "hHeight: " << hHeight << " " <<   " hDepthVelocity: " << hDepthVel << endl;
@@ -185,4 +213,10 @@ void phase_space::print(){
 		cout << "Longitudinal Emmittence Conserved: " << longitudinal_area_conservation(hWidth, VzDist, hHeight, zDist) << endl;
 		cout << "Transverse Emmittence Conserved: " << transverse_area_conservation(hDepth, VxDist, hDepthVel, xDist) << endl;
 		cout << endl;
+		//valid_variables_check();
 	}
+//DEBUGGING FUNCTIONS
+
+double phase_space::hWidth_accessor(){
+	return hWidth;
+}
