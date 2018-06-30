@@ -5,6 +5,7 @@
 #include "using_gnuplot.h"
 using namespace std;
 
+
 /*TODO
 Test limits of roundoff error for variable checking
 
