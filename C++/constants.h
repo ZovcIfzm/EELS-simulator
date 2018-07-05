@@ -1,19 +1,25 @@
-const int splitNumber = 1001; //Needs to be int, to be used as array size
-															//Needs to be odd in order for doubleensityMultiplier towork (to sum up the center correctly, with even it's unsymmetric for some reason)
-const double base_hWidth = 1.82534513746;
-const double base_hHeight = 0.00069511761; 
-const double base_VzDist = 0.00027392079 ;
-const double base_zDist = 0.71930270898 ;
-const double base_chirp = 0.00035 ;
-const double base_b = 2413.46744543 ;
-const double base_pulseEnergy = 100 ;
-const double base_intensityMultiplier = 1.0;
-const double base_hDepth = 0.60844837915;
-const double base_hDepthVelocity = 0.00494641054;
-const double base_VxDist = 0.00493057439;
-const double base_xDist = 0.60650040415;
-const double base_chirpT = 0.00065;
-const double base_bT = 9.83513928219;
-const double base_vZC = 0.0;
-const double base_zC = 0.0;
-const double base_xC = 0.0;
+//Defined variables (no need to be included in cpp file, they only need to be written once)
+
+#define splitNumber 1001 //Needs to be int, to be used as array size & needs to be odd in order for doubleensityMultiplier towork (to sum up the center correctly, with even it's unsymmetric for some reason)
+#define M_PI 3.14159265358979323846264338328
+#define modelingXRange 501
+#define modelingYRange 501
+
+//Phase Space parameters
+#define  base_hWidth 1.82534513746
+#define  base_hHeight 0.00069511761
+#define  base_VzDist 0.00027392079
+#define  base_zDist 0.71930270898
+#define  base_chirp 0.00035
+#define  base_b 2413.46744543
+#define  base_pulseEnergy 100.0
+#define  base_intensityMultiplier 1.0
+#define  base_hDepth 0.60844837915
+#define  base_hDepthVelocity 0.00494641054
+#define  base_VxDist 0.00493057439
+#define  base_xDist 0.60650040415
+#define  base_chirpT 0.00065
+#define  base_bT 9.83513928219
+#define  base_vZC 0.0
+#define  base_zC 0.0
+#define  base_xC 0.0

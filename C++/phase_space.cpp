@@ -4,11 +4,11 @@
 #include <functional>
 #include <vector>
 #include "external_variables.h"
+#include "constants.h"
 #include "using_gnuplot.h"
 //#include "gnuplot_i.hpp"
 //#include "gnuplot-iostream.h"
 //#include <boost/tuple/tuple.hpp>
-#define M_PI 3.14159265358979323846264338328
 using namespace std;
 
 phase_space::phase_space(){
@@ -21,13 +21,13 @@ phase_space::phase_space(double test){
 }
 
 phase_space::phase_space(double hWidthC, double hHeightC, double VzDistC, double zDistC, double chirpC, double bC, double pulseEnergyC, double intensityMultiplierC,
-						 double hDepthC, double hDepthVelC, double VxDistC, double xDistC, double chirpTC, double bTC, double vZCC, double zCC, double xCC)
+						 double hDepthC, double hDepthVelC, double VxDistC, double xDistC, double chirpTC, double bTC, double VzCC, double zCC, double xCC)
 : hWidth(hWidthC), hHeight(hHeightC), VzDist(VzDistC), zDist(zDistC), chirp(chirpC), b(bC), pulseEnergy(pulseEnergyC), intensityMultiplier(intensityMultiplierC),
-hDepth(hDepthC), hDepthVel(hDepthVelC), VxDist(VxDistC), xDist(xDistC), chirpT(chirpTC), bT(bTC), vZC(vZCC), zC(zCC), xC(zCC) {}
+hDepth(hDepthC), hDepthVel(hDepthVelC), VxDist(VxDistC), xDist(xDistC), chirpT(chirpTC), bT(bTC), VzC(VzCC), zC(zCC), xC(zCC) {}
 
-phase_space::phase_space(vector<phase_space> spaces):hWidth(0),hHeight(0),VzDist(0),zDist(0),chirp(0),b(0),pulseEnergy(0),intensityMultiplier(0),hDepth(0),hDepthVel(0),VxDist(0),xDist(0),chirpT(0),bT(0),vZC(0),zC(0),xC(0){
-		for(int i = 0; i<splitNumber; i++){
-			vZC += spaces[i].vZC*spaces[i].intensityMultiplier;
+phase_space::phase_space(vector<phase_space> spaces):hWidth(0),hHeight(0),VzDist(0),zDist(0),chirp(0),b(0),pulseEnergy(0),intensityMultiplier(0),hDepth(0),hDepthVel(0),VxDist(0),xDist(0),chirpT(0),bT(0),VzC(0),zC(0),xC(0){
+	for (int i = 0; i < splitNumber; i++) {
+			VzC += spaces[i].VzC*spaces[i].intensityMultiplier;
 			//DEBUGGING cout << spaces[i].intensityMultiplier << endl;
 			zC += spaces[i].zC*spaces[i].intensityMultiplier;
 			xC += spaces[i].xC*spaces[i].intensityMultiplier;
@@ -35,11 +35,11 @@ phase_space::phase_space(vector<phase_space> spaces):hWidth(0),hHeight(0),VzDist
 			pulseEnergy += spaces[i].pulseEnergy;
 			//spaces[i].print();
 		}
-		//this.vZC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.vZC"(spaces))*this.intensityRatio;
+		//this.VzC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.VzC"(spaces))*this.intensityRatio;
 		//int maxSize = sizeof(spaces[]);
 
 		//for (phase_space space : spaces[splitNumber]){
-		//	vZC += space.vZC*space.intensityMultiplier;
+		//	VzC += space.VzC*space.intensityMultiplier;
 		//	zC += space.zC*space.intensityMultiplier;
 		//	xC += space.xC*space.intensityMultiplier;
 		//}
@@ -164,7 +164,7 @@ phase_space phase_space::mag_lens(double changechirpT){
 		return *this;
 	}
 phase_space phase_space::spectroscopy_function(){
-		xC = xC + 7172.99042634*vZC;
+		xC = xC + 7172.99042634*VzC;
 		return *this;
 	}
 	//Conservation Checking - Emittence based
@@ -204,7 +204,7 @@ void phase_space::print(){
 		cout << "zIntDist: " << zDist << " " << " xIntDist: " << xDist << endl;
 		cout << "chirp: " << chirp << " " <<       " chirpT: " << chirpT << endl;
 		cout << "b: " << b << "     " <<           " bT: " << bT << endl;
-		cout << "VzC: " << vZC << "   " <<         "zC: " << zC << endl;
+		cout << "VzC: " << VzC << "   " <<         "zC: " << zC << endl;
 		cout << "xC: " << xC << endl;
 		cout << "pulseEnergy: " << pulseEnergy << endl;
 		cout << "intensityMultiplier: " << intensityMultiplier << endl;
@@ -217,6 +217,14 @@ void phase_space::print(){
 	}
 //DEBUGGING FUNCTIONS
 
-double phase_space::hWidth_accessor(){
-	return hWidth;
-}
+//Accessor methods
+double phase_space::hWidth_accessor(){return hWidth;}
+double phase_space::hHeight_accessor(){return hWidth;}
+double phase_space::VzDist_accessor(){return VzDist;}
+double phase_space::zDist_accessor(){return zDist;}
+double phase_space::chirp_accessor(){return chirp;}
+double phase_space::b_accessor(){return b;}
+double phase_space::intensity_multiplier_accessor(){return intensityMultiplier;}
+double phase_space::VzC_accessor(){return VzC;}
+double phase_space::zC_accessor(){return zC;}
+double phase_space::xC_accessor() { return xC; }
