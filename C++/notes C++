@@ -1,3 +1,7 @@
+-Requirements to run simulator
+add gnuplot files to linker/c++ additional include directories
+exclude example.cc from build
+
 
 -Things to do
 Test limits of roundoff error for variable checking
@@ -7,6 +11,8 @@ Figure out data containment
 Figure out how to recombine after shattering
 Figure out how to have identical evolution of shattered spaces vs. normal space
 Figure out the mystery 2000 multiplier
+Figure out decimal precision (VzC after recombination should be 0)
+Implement multithreading
 
 		Math Conversion
 sigmaZ = hWidth;	the hWidth along the z axis

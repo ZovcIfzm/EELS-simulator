@@ -100,28 +100,35 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Public\Documents\Programming\Visual Studio 2017\source\repos\EELS-Simulator\gnuplot\gnuplot-cpp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Public\Documents\Programming\Visual Studio 2017\source\repos\EELS-Simulator\Extra Libraries\gnuplot\gnuplot-cpp</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="c++\constants.cpp" />
     <ClCompile Include="c++\external_variables.cpp" />
+    <ClCompile Include="C++\modeling.cpp" />
     <ClCompile Include="c++\phase_space.cpp" />
     <ClCompile Include="c++\Source.cpp" />
     <ClCompile Include="c++\test_class.cpp" />
     <ClCompile Include="c++\using_gnuplot.cpp" />
-    <ClCompile Include="gnuplot\gnuplot-cpp\example.cc">
+    <ClCompile Include="Extra Libraries\gnuplot\gnuplot-cpp\example.cc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="c++\constants.h" />
     <ClInclude Include="c++\external_variables.h" />
+    <ClInclude Include="C++\modeling.h" />
     <ClInclude Include="c++\phase_space.h" />
     <ClInclude Include="c++\test_class.h" />
     <ClInclude Include="c++\using_gnuplot.h" />
-    <ClInclude Include="gnuplot\gnuplot-cpp\gnuplot_i.hpp" />
+    <ClInclude Include="Extra Libraries\gnuplot\gnuplot-cpp\gnuplot_i.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C++\notes C++" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

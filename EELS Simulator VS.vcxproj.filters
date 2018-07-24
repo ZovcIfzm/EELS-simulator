@@ -33,7 +33,10 @@
     <ClCompile Include="c++\using_gnuplot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gnuplot\gnuplot-cpp\example.cc">
+    <ClCompile Include="C++\modeling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Extra Libraries\gnuplot\gnuplot-cpp\example.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,8 +56,16 @@
     <ClInclude Include="c++\using_gnuplot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gnuplot\gnuplot-cpp\gnuplot_i.hpp">
+    <ClInclude Include="C++\modeling.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Extra Libraries\gnuplot\gnuplot-cpp\gnuplot_i.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C++\notes C++">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

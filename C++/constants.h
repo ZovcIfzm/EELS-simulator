@@ -1,11 +1,22 @@
 //Defined variables (no need to be included in cpp file, they only need to be written once)
 
-#define splitNumber 1001 //Needs to be int, to be used as array size & needs to be odd in order for doubleensityMultiplier towork (to sum up the center correctly, with even it's unsymmetric for some reason)
-#define M_PI 3.14159265358979323846264338328
-#define modelingXRange 501
-#define modelingYRange 501
 
-//Phase Space parameters
+//Debugging
+	//Printing
+#define printStarts false
+#define printEnds false
+#define printInitialPhaseSpace true
+#define printFinalInitialPhaseSpace true
+#define printRecombinantPhaseSpace true
+#define saveData true
+
+//Miscellaneous defined variables
+#define splitNumber 101 //Needs to be int, to be used as array size & needs to be odd in order for doubleintensityMultiplier towork (to sum up the center correctly, with even it's unsymmetric for some reason)
+#define M_PI 3.14159265358979323846264338328
+#define modelingXRange 51 //Is 51 so that there is a middle number i.e. 0-24, 25, 26-50
+#define modelingYRange 51 //Is 51 so that there is a middle number i.e. 0-24, 25, 26-50
+
+//Phase space parameters
 #define  base_hWidth 1.82534513746
 #define  base_hHeight 0.00069511761
 #define  base_VzDist 0.00027392079
