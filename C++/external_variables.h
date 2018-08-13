@@ -11,5 +11,7 @@ extern double valueHolder2;
 extern double valueHolder3;
 extern double valueHolder4;
 extern double valueHolder5;
+extern double valueHolder6;
+extern double centralVzReference;
 
 extern double graphingMap[modelingXRange][modelingYRange];

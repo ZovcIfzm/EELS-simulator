@@ -3,15 +3,17 @@
 
 //Debugging
 	//Printing
-#define printStarts false
-#define printEnds false
-#define printInitialPhaseSpace true
-#define printFinalInitialPhaseSpace true
-#define printRecombinantPhaseSpace true
+#define printStarts true
+#define printEnds true
+#define printInitialPhaseSpace false
+#define modelFinalInitialPhaseSpace true
+#define modelRecombinantPhaseSpace false
+#define modelSplitSpaces false
 #define saveData true
+#define loadData false
 
 //Miscellaneous defined variables
-#define splitNumber 101 //Needs to be int, to be used as array size & needs to be odd in order for doubleintensityMultiplier towork (to sum up the center correctly, with even it's unsymmetric for some reason)
+#define splitNumber 7 //Needs to be int, to be used as array size & needs to be odd in order for doubleintensityMultiplier towork (to sum up the center correctly, with even it's unsymmetric for some reason)
 #define M_PI 3.14159265358979323846264338328
 #define modelingXRange 51 //Is 51 so that there is a middle number i.e. 0-24, 25, 26-50
 #define modelingYRange 51 //Is 51 so that there is a middle number i.e. 0-24, 25, 26-50
@@ -34,3 +36,7 @@
 #define  base_vZC 0.0
 #define  base_zC 0.0
 #define  base_xC 0.0
+
+//Splitting parameters
+#define catchFactor 6 //factor needed to be multipled to hWidth/hHeight during summing to get almost 100% of the population of the 2d gaussian
+

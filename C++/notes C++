@@ -4,15 +4,20 @@ exclude example.cc from build
 
 
 -Things to do
+Look into evolution at (0.0), reorganize equations and see if the changes like 1/3 VzDist isn't enough.
+
 Test limits of roundoff error for variable checking
 Figure out shattering (secondary splitting)
-Recenter center of mass individually for each phase space
+Done? - Recenter center of mass individually for each phase space
 Figure out data containment
 Figure out how to recombine after shattering
 Figure out how to have identical evolution of shattered spaces vs. normal space
 Figure out the mystery 2000 multiplier
 Figure out decimal precision (VzC after recombination should be 0)
 Implement multithreading
+Do I have to split across transverse axis as well?
+
+Recenter zC for split phase spaces - same method as VzC? - need to figure out chirp shrinking
 
 		Math Conversion
 sigmaZ = hWidth;	the hWidth along the z axis

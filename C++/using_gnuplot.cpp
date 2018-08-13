@@ -1,4 +1,4 @@
-
+/*
 #include <iostream>
 #include <string>
 #include "using_gnuplot.h"
@@ -18,4 +18,4 @@ void pause_method_2(){
 	string rando;
 	cout << "Press enter to continue..." << endl;
 	getline(cin, rando);
-}
+}*/

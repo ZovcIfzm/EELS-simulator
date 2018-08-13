@@ -5,7 +5,7 @@
 #include <vector>
 #include "external_variables.h"
 #include "constants.h"
-#include "using_gnuplot.h"
+//#include "using_gnuplot.h"
 //#include "cpp_dec_float.hpp"
 //#include "gnuplot_i.hpp"
 //#include "gnuplot-iostream.h"
@@ -69,9 +69,6 @@ phase_space::phase_space(vector<phase_space> spaces):hWidth(0),hHeight(0),VzDist
 }
 vector<phase_space> phase_space::split(){
 	vector<phase_space> splitSpaces;
-	double splitVzDist = 0;
-	double splitChirp = 0;
-	double splitB = 0;
 	originalHWidth = hWidth;
 	//phaseSpaces.length = to!int(spaces);
 	double intensityMultipliers [splitNumber];
@@ -79,12 +76,22 @@ vector<phase_space> phase_space::split(){
 		intensityMultipliers[i] = get_split_intensity_multiplier(splitNumber, i+1, hHeight, hWidth);
 		//intensityMultipliers[i] = 0.01;
 	}
-	splitVzDist = VzDist/splitNumber;
-	splitChirp = VzDist*sqrt((1/pow(zDist,2))-(1/pow(hWidth,2)));
-	splitB = chirp*pow(zDist/VzDist,2);
+	double splitHHeight = 0;
+	double splitVzDist = 0;
+	double splitB = 0;
+	double splitZDist = 0;
+	double splitChirp = 0;
+	splitHHeight = hHeight / splitNumber;
+	splitVzDist = VzDist / splitNumber;
+	//b = chirp * pow(zDist / VzDist, 2);
+	splitB = zDist * sqrt((1 / pow(VzDist, 2)) - (1 / pow(hHeight, 2)));
+	splitZDist = b / (sqrt((1 / pow(VzDist, 2)) - (1 / pow(hHeight, 2))));
+	splitChirp = VzDist * sqrt((1 / pow(zDist, 2)) - (1 / pow(hWidth, 2)));
 	//i, ref elem; phaseSpaces
+	//cout << splitChirp << endl;
+	//cout << splitHHeight / hWidth << endl;
 	for(int j = 0; j < splitNumber; j++){
-		splitSpaces.push_back(phase_space(hWidth, hHeight/splitNumber, splitVzDist, zDist, splitChirp, splitB, pulseEnergy*intensityMultipliers[j], intensityMultipliers[j],
+		splitSpaces.push_back(phase_space(hWidth, splitHHeight, splitVzDist, splitZDist, splitChirp, splitB, pulseEnergy*intensityMultipliers[j], intensityMultipliers[j],
 																		   hDepth, hDepthVel, VxDist, xDist, chirpT, bT, hHeight-(hHeight*2/splitNumber)*(double(j)+0.5), zC, xC));
 	}
 	phaseSpaces += splitNumber;
@@ -94,10 +101,10 @@ vector<phase_space> phase_space::split(){
 double phase_space::get_split_intensity_multiplier(double numSections, double sectionNum, double hHeight, double hWidth){
 	//Gets intensity % proportionally to 1 (like if its gets .5 its 50% of total intensity)
 	//search with xSearch & ySearch = +- 5.803*hWidth or hHeight to get the total intensity of the phase space (equal to 1)	
-	double ySearchLB = -5.803*hHeight + ((5.803*hHeight*2.0/numSections)*(sectionNum-1));
-	double ySearchUB = 5.803*hHeight - (5.803*hHeight*2.0/numSections)*(numSections - sectionNum);
-	double xSearchLB = -5.803*hWidth;
-	double xSearchUB = 5.803*hWidth;
+	double ySearchLB = -catchFactor*hHeight + ((catchFactor*hHeight*2.0/numSections)*(sectionNum-1));
+	double ySearchUB = catchFactor*hHeight - (catchFactor*hHeight*2.0/numSections)*(numSections - sectionNum);
+	double xSearchLB = -catchFactor*hWidth;
+	double xSearchUB = catchFactor*hWidth;
 	double accuracyY = (ySearchUB-ySearchLB)/99;
 	double accuracyX = (xSearchUB-xSearchLB)/99;
 	//double x = xSearchLB;
@@ -150,6 +157,8 @@ phase_space phase_space::evolution(double time){//To deal with processing we mig
 	chirpT = bT*pow(VxDist/xDist,2);
 	hWidth = sqrt(1/((1/pow(zDist,2))-pow(chirp/VzDist,2)));
 	hDepth = sqrt(1/((1/pow(xDist,2))-pow(chirpT/VxDist,2)));
+
+	zC += VzC * time;
 	return *this;
 }
 

@@ -1,2 +1,2 @@
-void gnuplot6();
-void pause_method_2();
+/*void gnuplot6();
+void pause_method_2();*/
