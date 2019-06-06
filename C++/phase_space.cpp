@@ -3,8 +3,8 @@
 #include <math.h>
 #include <functional>
 #include <vector>
-#include "external_variables.h"
 #include "constants.h"
+//#include "data_processing.h"
 //#include "using_gnuplot.h"
 //#include "cpp_dec_float.hpp"
 //#include "gnuplot_i.hpp"
@@ -182,35 +182,30 @@ phase_space phase_space::spectroscopy_function(){
 	xC = xC + 7172.99042634*VzC;
 	return *this;
 }
-//Conservation Checking - Emittence based
-bool phase_space::longitudinal_area_conservation(double hDimensionW, double distH, double hDimensionH, double distW){//Needs to be reworked, both cons1&2 should describe the same emmittence- be the same value, however height and width are different but the intDist are the same
-	double consValue = hDimensionW*distH;
-	double consValue2 = hDimensionH*distW;
-	if(consValue > 0.000499 && consValue < 0.000501  && consValue2 > 0.000499 && consValue2 < 0.000501){//randomly decided range to account for data error
-		return true;
-	}
-	else{
-		cout << "Area1: " << consValue << "  Area2: " << consValue2 << endl;;
-		return false;
-	}
-}
 
-bool phase_space::transverse_area_conservation(double hDimensionW, double intDistH, double hDimensionH, double intDistW){//Needs to be reworked, both cons1&2 should describe the same emmittence- be the same value, however height and width are different but the intDist are the same
-	double consValue = hDimensionW*intDistH;
-	double consValue2 = hDimensionH*intDistW;
-	if(consValue > 0.00299 && consValue < 0.00301  && consValue2 > 0.00299 && consValue2 < 0.00301){//randomly decided range to account for data error
-		return true;
-	}
-	else{
-		cout << "Area1: " << consValue << "  Area2: " << consValue2 << endl;
-		return false;
-	}
-}
 
-void phase_space::valid_variables_check(){
+tuple<double, double, double, double, double, double> phase_space::valid_variables_check() {
+	tuple<double, double, double, double, double, double> response = make_tuple(0.0,0.0,0.0,0.0,0.0,0.0);
+	double hWidth_ = sqrt(1 / ((1 / (zDist*zDist)) - (chirp / VzDist)*(chirp / VzDist)));
+	double hHeight_ = sqrt(1 / ((1 / pow(VzDist, 2)) - pow(b / zDist, 2)));
+	double zDist_ = sqrt(1 / ((1 / pow(hWidth, 2)) + pow(chirp / VzDist, 2)));
+	double VzDist_ = sqrt(1 / ((1 / pow(hHeight, 2)) + pow((b / zDist), 2)));
+	double chirp_ = b * pow(VzDist / zDist, 2);
+	double b_ = chirp * pow(zDist / VzDist, 2);
 	cout << "Checks" << endl;
-	cout << "hWidth: " << hWidth << endl;
-	cout << "hWidth 1: " << sqrt(1/((1/(zDist*zDist)) - (chirp/VzDist)*(chirp/VzDist))) << endl;
+	if (hWidth / hWidth_ < 1.01 && hWidth / hWidth_ > 0.99) get<0>(response) = 1;
+	else	get<0>(response) = hWidth/hWidth_;
+	if (hHeight / hHeight_ < 1.01 && hHeight / hHeight_ > 0.99) get<1>(response) = 1;
+	else	get<1>(response) = hHeight/hHeight_;
+	if (zDist / zDist_ < 1.01 && zDist / zDist_ > 0.99) get<2>(response) = 1;
+	else	get<2>(response) = zDist/zDist_;
+	if (VzDist / VzDist_ < 1.01 && VzDist / VzDist_ > 0.99) get<3>(response) = 1;
+	else	get<3>(response) = VzDist/VzDist_;
+	if (chirp / chirp_ < 1.01 && chirp / chirp_ > 0.99) get<4>(response) = 1;
+	else	get<4>(response) = chirp/chirp_;
+	if (b / b_ < 1.01 && b / b_ > 0.99) get<5>(response) = 1;
+	else	get<5>(response) = b/b_;
+	return response;
 }
 
 void phase_space::print(){
@@ -229,7 +224,6 @@ void phase_space::print(){
 	cout << "Longitudinal Emmittence Conserved: " << longitudinal_area_conservation(hWidth, VzDist, hHeight, zDist) << endl;
 	cout << "Transverse Emmittence Conserved: " << transverse_area_conservation(hDepth, VxDist, hDepthVel, xDist) << endl;
 	cout << endl;
-	//valid_variables_check();
 }
 
 //DEBUGGING FUNCTIONS

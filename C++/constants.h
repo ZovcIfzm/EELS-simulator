@@ -1,16 +1,20 @@
+#pragma once
+
 //Defined variables (no need to be included in cpp file, they only need to be written once)
-
-
 //Debugging
 	//Printing
 #define printStarts true
 #define printEnds true
-#define printInitialPhaseSpace false
-#define modelFinalInitialPhaseSpace true
+#define printInitialPhaseSpace true
+#define printFinalPhaseSpace true
+#define modelFinalPhaseSpace false
 #define modelRecombinantPhaseSpace false
 #define modelSplitSpaces false
-#define saveData true
+#define saveData false
 #define loadData false
+#define loadValueHolders true
+#define openFinalData true
+#define pauseClose false
 
 //Miscellaneous defined variables
 #define splitNumber 7 //Needs to be int, to be used as array size & needs to be odd in order for doubleintensityMultiplier towork (to sum up the center correctly, with even it's unsymmetric for some reason)
@@ -37,6 +41,28 @@
 #define  base_zC 0.0
 #define  base_xC 0.0
 
-//Splitting parameters
-#define catchFactor 6 //factor needed to be multipled to hWidth/hHeight during summing to get almost 100% of the population of the 2d gaussian
+//1/(2*3.14159*1.82534513746^2*0.00027392079^2)*e^(	(-(x^2)/(2*1.82534513746))-(y-0.00035*x)^2/(2*0.71930270898))
 
+//Splitting parameters
+#define catchFactor 4 //factor needed to be multipled to hWidth/hHeight during summing to get almost 100% of the population of the 2d gaussian
+
+extern double originalHWidth;
+extern double originalHWidth2;
+extern int phaseSpaces;
+extern double testMax;
+extern double testMaxXCoordinate;
+extern double testMaxYCoordinate;
+extern double valueHolder;
+extern double valueHolder2;
+extern double valueHolder3;
+extern double valueHolder4;
+extern double valueHolder5;
+extern double valueHolder6;
+extern double centralVzReference;
+
+extern double graphingMap[modelingXRange][modelingYRange];
+/*
+phase_space secondPulse(double a, double b, double c, double d, double e,
+double f, double g, double h, double i, double j,
+double k, double l, double m, double n, double o,
+double p, double q);*/

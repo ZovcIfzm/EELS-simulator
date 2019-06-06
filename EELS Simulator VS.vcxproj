@@ -100,7 +100,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Public\Documents\Programming\Visual Studio 2017\source\repos\EELS-Simulator\Extra Libraries\gnuplot\gnuplot-cpp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Public\Documents\Programming\EELS-Simulator\Extra Libraries\gnuplot-cpp</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -108,7 +108,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="c++\constants.cpp" />
-    <ClCompile Include="c++\external_variables.cpp" />
+    <ClCompile Include="C++\data_processing.cpp" />
+    <ClCompile Include="C++\main_sequence.cpp" />
     <ClCompile Include="C++\modeling.cpp" />
     <ClCompile Include="c++\phase_space.cpp" />
     <ClCompile Include="c++\Source.cpp" />
@@ -120,7 +121,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="c++\constants.h" />
-    <ClInclude Include="c++\external_variables.h" />
+    <ClInclude Include="C++\data_processing.h" />
+    <ClInclude Include="C++\main_sequence.h" />
     <ClInclude Include="C++\modeling.h" />
     <ClInclude Include="c++\phase_space.h" />
     <ClInclude Include="c++\test_class.h" />
@@ -129,6 +131,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="C++\notes C++" />
+    <None Include="finalOutputFile.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="New_to_do_list.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

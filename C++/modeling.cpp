@@ -65,7 +65,7 @@ void summing(vector<phase_space> spaces) {
 	double twoVzIntDistsq = 2 * spaces[0].VzDist_accessor()*spaces[0].VzDist_accessor();
 	double twoPIhWidthsqVzIntDistsq = 2 * M_PI*(spaces[0].hWidth_accessor()*spaces[0].hWidth_accessor()*spaces[0].VzDist_accessor()*spaces[0].VzDist_accessor());
 	double x = xSearchLB + accuracyX / 2;
-	double y = ySearchLB + accuracyY / 2;
+	double y = ySearchLB + accuracyY / 2; 
 	for (phase_space pulse : spaces) {
 		x = xSearchLB + accuracyX / 2;
 		y = ySearchLB + accuracyY / 2;
@@ -89,12 +89,12 @@ void summing(phase_space space) {
 	if (printStarts) {
 		cout << "summing single phase space started" << endl;
 	}
-	double ySearchLB = -catchFactor * space.hHeight_accessor();
+	double ySearchLB = -catchFactor *space.hHeight_accessor();
 	double ySearchUB = catchFactor * space.hHeight_accessor();
-	double xSearchLB = -catchFactor * space.hWidth_accessor();
-	double xSearchUB = catchFactor * space.hWidth_accessor();
-	double accuracyY = (ySearchUB - ySearchLB) / 100;  // Cannot be 99 or else for some reason the middle (25th row out of 50) takes half that of all the other rows. Look into?
-	double accuracyX = (xSearchUB - xSearchLB) / 100;
+	double xSearchLB = -catchFactor *space.hWidth_accessor();
+	double xSearchUB = catchFactor *space.hWidth_accessor();
+	double accuracyY = (ySearchUB - ySearchLB) / 10000;  // Cannot be 99 or else for some reason the middle (25th row out of 50) takes half that of all the other rows. Look into?
+	double accuracyX = (xSearchUB - xSearchLB) / 10000;
 	double negTwohWidthsq = -2 * space.hWidth_accessor()*space.hWidth_accessor();
 	double twoVzIntDistsq = 2 * space.VzDist_accessor()*space.VzDist_accessor();
 	double twoPIhWidthsqVzIntDistsq = 2 * M_PI*(space.hWidth_accessor()*space.hWidth_accessor()*space.VzDist_accessor()*space.VzDist_accessor());
@@ -103,7 +103,10 @@ void summing(phase_space space) {
 	while (y < ySearchUB) {
 		while (x < xSearchUB) {
 			if (x + space.zC_accessor() > xSearchLB && x + space.zC_accessor() < xSearchUB && y + space.VzC_accessor() > ySearchLB && y + space.VzC_accessor() < ySearchUB) {
-				graphingMap[int(map(x, xSearchLB, xSearchUB, 0, modelingXRange - 1) + 0.5)][int(map(y, ySearchLB, ySearchUB, 0, modelingYRange - 1) + 0.5)] += (accuracyX * accuracyY*exp((x*x / (negTwohWidthsq)) - ((y - space.chirp_accessor() * x)*(y - space.chirp_accessor() * x) / (twoVzIntDistsq))) / (twoPIhWidthsqVzIntDistsq))/2000;
+				graphingMap[int(map(x, xSearchLB, xSearchUB, 0, modelingXRange - 1) + 0.5)][int(map(y, ySearchLB, ySearchUB, 0, modelingYRange - 1) + 0.5)] += (accuracyX*accuracyY*exp((x*x / (negTwohWidthsq)) - ((y - space.chirp_accessor() * x)*(y - space.chirp_accessor() * x) / (twoVzIntDistsq))) / (twoPIhWidthsqVzIntDistsq))/2000;
+				//valueHolder += (accuracyX * accuracyY*exp((x*x / (negTwohWidthsq)) - ((y - space.chirp_accessor() * x)*(y - space.chirp_accessor() * x) / (twoVzIntDistsq))) / (twoPIhWidthsqVzIntDistsq)) / 2000;
+				//graphingMap[int(map(x, xSearchLB, xSearchUB, 0, modelingXRange - 1)+0.5)][int(map(y, ySearchLB, ySearchUB, 0, modelingYRange - 1)+0.5)] += (accuracyX*accuracyY*(1 / sqrt(2 * M_PI))*exp(-1 / 2 * pow(x,2)-pow(y-2*x,2)/2));
+				//valueHolder2 += (accuracyX*accuracyY*(1 / sqrt(2 * M_PI))*exp(-1 / 2 * pow(x, 2) - pow(y - 2*x, 2) / 2));
 			}
 			x += accuracyX;
 		}
@@ -113,12 +116,6 @@ void summing(phase_space space) {
 	if (printEnds) {
 		cout << "summing single phase space finished" << endl;
 	}
-}
-
-void pause() {
-	string random;
-	cout << "Press enter to continue...";
-	getline(cin, random);
 }
 
 void write_to_file(double modelMatrix[modelingXRange][modelingYRange]) {//Untested
@@ -136,15 +133,21 @@ void write_to_file(double modelMatrix[modelingXRange][modelingYRange]) {//Untest
 		cout << "writing to file finished" << endl;
 }
 
-void read_from_file(string file){
+void read_from_file(string file) {
 	if (printStarts)
 		cout << "reading file started" << endl;
 	ifstream modelFileRead(file);
 	int x, y;
 	double z;
 	while (modelFileRead >> x >> y >> z) {
-		graphingMap[x-1][y-1] = z;
+		graphingMap[x - 1][y - 1] = z;
 	}
 	if (printEnds)
 		cout << "reading file finished" << endl;
+}
+
+void pause() {
+	string random;
+	cout << "Press enter to continue...";
+	getline(cin, random);
 }

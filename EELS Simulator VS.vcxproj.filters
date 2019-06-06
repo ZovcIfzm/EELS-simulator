@@ -18,9 +18,6 @@
     <ClCompile Include="c++\constants.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="c++\external_variables.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="c++\phase_space.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -39,12 +36,15 @@
     <ClCompile Include="Extra Libraries\gnuplot\gnuplot-cpp\example.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C++\data_processing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C++\main_sequence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="c++\constants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="c++\external_variables.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="c++\phase_space.h">
@@ -62,10 +62,24 @@
     <ClInclude Include="Extra Libraries\gnuplot\gnuplot-cpp\gnuplot_i.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="C++\data_processing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C++\main_sequence.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="C++\notes C++">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="finalOutputFile.css">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="New_to_do_list.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

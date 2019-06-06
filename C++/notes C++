@@ -11,7 +11,7 @@ Figure out shattering (secondary splitting)
 Done? - Recenter center of mass individually for each phase space
 Figure out data containment
 Figure out how to recombine after shattering
-Figure out how to have identical evolution of shattered spaces vs. normal space
+Figure out how to have identical evolution of shattered spaces vs. normal spacedf
 Figure out the mystery 2000 multiplier
 Figure out decimal precision (VzC after recombination should be 0)
 Implement multithreading
@@ -73,19 +73,9 @@ bT: 9.83513928219, 0.0, 0.0, 0.0
 
 
 	Time Table
-Siemens Competition
-Due September 19
-
-	Michigan ISEF Qualification Fair 
-Due March 15
 
 LARGE PART NOT YET FIGURED OUT Figure out how to optimize the microscope through combinations of optics
-Write an at most 18 pages (not including references) paper about our research
-Total 1600 projects
-Score top 300 for semi finalist (top 18.75%)
-Score top 60 for regional finalist (top 3.75%)
-Score top 6 (in team category) for national finalist (top 0.375%) top (0.65% of team projects)
-Score first (in team category) (top 0.0625%) top (0.125% of team projects)
+
 
 Outside resources used:
 gnuplot-iostream interface
