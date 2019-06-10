@@ -130,11 +130,11 @@
     <ClInclude Include="Extra Libraries\gnuplot\gnuplot-cpp\gnuplot_i.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="C++\notes C++" />
-    <None Include="finalOutputFile.css" />
+    <None Include="C++\notes C++.txt" />
+    <None Include="final_output_file.css" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="New_to_do_list.txt" />
+    <Text Include="assumption_list.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include "main_sequence.h";
 #include <tuple>;
+#include "constants.h";
 
 void psComparison(phase_space space, phase_space space2) {
 	int counter = 0;
@@ -96,13 +97,13 @@ void finalDataOutput() {
 	if (printStarts)
 		cout << "writing to final data file started" << endl;
 	ofstream finalOutputFile;
-	finalOutputFile.open("finalOutput.html");
+	finalOutputFile.open("final_output.html");
 	finalOutputFile <<
 		"<!DOCTYPE html>" << endl <<
 		"<html>" << endl <<
 		"<head>" << endl <<
 		"<title> Simulator data </title>" << endl <<
-		"<link rel=\"stylesheet\" href=\"finalOutputFile.css\">" << endl <<
+		"<link rel=\"stylesheet\" href=\"final_output_file.css\">" << endl <<
 		"</head>" << endl <<
 		"<body>" << endl <<
 		"<h1> Simulator data </h1>" << endl <<
@@ -124,12 +125,25 @@ void finalDataOutput() {
 		outputPhaseSpace(finalOutputFile, returnFinalPS(), "finalPulse");
 	}
 	finalOutputFile <<
+		"</table>" << endl <<
+		"<br> <br>" << endl <<
+		"<table style = \"width=100%\">" << endl <<
+		"	<tr>" << endl <<
+		"		<th> Debugging info </th>" << endl <<
+		"		<td> valueHolder1: " << valueHolder << " </td>" << endl <<
+		"		<td> valueHolder2: " << valueHolder2 << " </td>" << endl <<
+		"		<td> valueHolder3: " << valueHolder3 << " </td>" << endl <<
+		"		<td> valueHolder4: " << valueHolder4 << " </td>" << endl <<
+		"		<td> valueHolder5: " << valueHolder5 << " </td>" << endl <<
+		"		<td> valueHolder6: " << valueHolder6 << " </td>" << endl <<
+		"	</tr>" << endl <<
+		"</table>" << endl <<
 		"</body>" << endl <<
 		"</html>" << endl;
 	finalOutputFile.close();
 	if (printEnds)
 		cout << "writing to final data file finished" << endl;
 
-	ShellExecute(NULL, "open", "finalOutput.html",
+	ShellExecute(NULL, "open", "final_output.html",
 		NULL, NULL, SW_SHOWNORMAL);
 }

@@ -1,3 +1,0 @@
-Be sure to add the gnuplot_i.hpp in the additional include directories
-(Project -> Properties -> Configuration Properties -> C/C++ -> General)
-When started this project on a new visual studio installation.

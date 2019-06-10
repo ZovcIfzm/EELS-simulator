@@ -22,7 +22,7 @@ void mainSequence() {
 		phase_space modifiedPulse = initialPulse;
 		//initialPulse.evolution(100);
 		//initialPulse.print();
-		modifiedPulse.evolution(10);
+		//modifiedPulse.evolution(10);
 		vector<phase_space> pulses = initialPulse.split();
 		//modifiedPulse.evolution(-10);
 		//pulses[0].print();
@@ -31,17 +31,34 @@ void mainSequence() {
 		//pulses[0].print();
 		//phase_space recombinantSpace(pulses);
 		finalPulse = modifiedPulse;
-		psComparison(initialPulse, modifiedPulse);
+		//psComparison(initialPulse, modifiedPulse);
+		//summing(modifiedPulse, graphingMap);
+		//summing(pulses, graphingMap2);
+		//grid_subtraction(graphingMap, graphingMap2);
+		
+		//Equation checking
+		//valueHolder = 1 / (base_hWidth*base_hWidth) + (base_chirp*base_chirp / base_VzDist / base_VzDist)-1/(base_zDist*base_zDist);
+		//valueHolder2 = 1 / (base_hHeight*base_hHeight) + (base_b*base_b / base_zDist / base_zDist) - 1 / (base_VzDist*base_VzDist);
+		//valueHolder3 = base_b - base_chirp*(base_zDist*base_zDist / base_VzDist / base_VzDist);
+
+		//if (saveData)
+		//	write_to_file(graphingMap);
+		
+		//modeling(graphingMap);
+		summing(pulses, graphingMap);
+		write_to_file(graphingMap);
+		modeling(graphingMap);
+
 		if (printFinalPhaseSpace){
 			finalPulse.print();
 		}
 		if (modelFinalPhaseSpace) {
 			modifiedPulse.print();
-			summing(modifiedPulse);
+			summing(modifiedPulse, graphingMap);
 			modeling(graphingMap);
 		}
 		if (modelSplitSpaces) {
-			summing(pulses);
+			summing(pulses, graphingMap);
 			modeling(graphingMap);
 		}
 		//if (modelRecombinantPhaseSpace)
@@ -50,8 +67,6 @@ void mainSequence() {
 			cout << "ValueHolder1: " << valueHolder << endl;
 			cout << "ValueHolder2:" << valueHolder2 << endl;
 		}
-		if (saveData)
-			write_to_file(graphingMap);
 	}
 	else if (loadData)//Redundant - else would do just as fine as else if, but else if makes the logic easier to understand
 		read_from_file("modeling_data.txt");

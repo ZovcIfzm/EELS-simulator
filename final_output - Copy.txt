@@ -2,7 +2,7 @@
 <html>
 <head>
 <title> Simulator data </title>
-<link rel="stylesheet" href="finalOutputFile.css">
+<link rel="stylesheet" href="final_output_file.css">
 </head>
 <body>
 <h1> Simulator data </h1>
@@ -45,5 +45,18 @@
 		<th> ValidityRatio </th>
 		<td colspan="7"> all variables valid </td>
 	</tr>
+</table>
+<br> <br>
+<table style = "width=100%">
+	<tr>
+		<th> Debugging info </th>
+		<td> valueHolder1: 1.82535 </td>
+		<td> valueHolder2: -nan(ind) </td>
+		<td> valueHolder3: 0 </td>
+		<td> valueHolder4: 0 </td>
+		<td> valueHolder5: 0 </td>
+		<td> valueHolder6: 0 </td>
+	</tr>
+</table>
 </body>
 </html>

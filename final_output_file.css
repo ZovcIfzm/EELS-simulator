@@ -19,6 +19,6 @@ table, th, td{
 	border: 1px solid black;
     border-collapse: collapse;
     text-align: center;
-    margin-left:auto;
+    margin-left:20%;
     margin-right:auto;
 }

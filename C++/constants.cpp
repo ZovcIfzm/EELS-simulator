@@ -16,4 +16,6 @@ extern double valueHolder6 = 0;
 extern double centralVzReference = 0;
 
 extern double graphingMap[modelingXRange][modelingYRange] = { 0 };
+extern double graphingMap2[modelingXRange][modelingYRange] = { 0 };
+extern double graphingMap3[modelingXRange][modelingYRange] = { 0 };
 

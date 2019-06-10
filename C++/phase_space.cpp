@@ -67,6 +67,7 @@ phase_space::phase_space(vector<phase_space> spaces):hWidth(0),hHeight(0),VzDist
 	//pulseEnergy = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.totalPulseEnergy"(spaces));
 	//intensityMultiplier = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.intensityRatio"(spaces));
 }
+
 vector<phase_space> phase_space::split(){
 	vector<phase_space> splitSpaces;
 	originalHWidth = hWidth;
@@ -82,17 +83,16 @@ vector<phase_space> phase_space::split(){
 	double splitZDist = 0;
 	double splitChirp = 0;
 	splitHHeight = hHeight / splitNumber;
-	splitVzDist = VzDist / splitNumber;
+	splitVzDist = VzDist/splitNumber;
 	//b = chirp * pow(zDist / VzDist, 2);
-	splitB = zDist * sqrt((1 / pow(VzDist, 2)) - (1 / pow(hHeight, 2)));
-	splitZDist = b / (sqrt((1 / pow(VzDist, 2)) - (1 / pow(hHeight, 2))));
-	splitChirp = VzDist * sqrt((1 / pow(zDist, 2)) - (1 / pow(hWidth, 2)));
+	splitB = zDist * sqrt((1 / pow(splitVzDist, 2)) - (1 / pow(splitHHeight, 2)));
+	splitZDist = splitB / (sqrt((1 / pow(splitVzDist, 2)) - (1 / pow(splitHHeight, 2))));
+	splitChirp = splitVzDist * sqrt((1 / pow(zDist, 2)) - (1 / pow(hWidth, 2)));
 	//i, ref elem; phaseSpaces
-	//cout << splitChirp << endl;
-	//cout << splitHHeight / hWidth << endl;
+
 	for(int j = 0; j < splitNumber; j++){
 		splitSpaces.push_back(phase_space(hWidth, splitHHeight, splitVzDist, splitZDist, splitChirp, splitB, pulseEnergy*intensityMultipliers[j], intensityMultipliers[j],
-																		   hDepth, hDepthVel, VxDist, xDist, chirpT, bT, hHeight-(hHeight*2/splitNumber)*(double(j)+0.5), zC, xC));
+																		   hDepth, hDepthVel, VxDist, xDist, chirpT, bT, hHeight-(hHeight*2/splitNumber)*(double(j)+0.5), (hHeight - (hHeight * 2 / splitNumber)*(double(j) + 0.5)) / chirp, xC));
 	}
 	phaseSpaces += splitNumber;
 	return splitSpaces;
@@ -114,13 +114,13 @@ double phase_space::get_split_intensity_multiplier(double numSections, double se
 	double intensityMultiplier = 0;
 	double negTwohWidthsq = -2*hWidth*hWidth;
 	double twoVzIntDistsq = 2*VzDist*VzDist;
-	double twoPIhWidthsqVzIntDistsq = 2*M_PI*(hWidth*hWidth*VzDist*VzDist);
+	double twoPIhWidthVzIntDist = 2*M_PI*(hWidth*VzDist);
 	if(numSections==sectionNum){
 		ySearchUB += 0.000000000001;
 	}
 	while(y < ySearchUB-0.000000000001){
 		while(x < xSearchUB){
-			intensityMultiplier += accuracyX*accuracyY*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq);
+			intensityMultiplier += accuracyX*accuracyY*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthVzIntDist);
 			/*DEBUGGING to test how testMax (which is the maximum value for each of the coordinates that intensityMultiplier checks for) 
 				compares to valueHolder (the value at [0,0]- the absolute maximum of the gaussian function)
 			if(accuracyX*accuracyY*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq) > testMax){
@@ -135,7 +135,7 @@ double phase_space::get_split_intensity_multiplier(double numSections, double se
 		x = xSearchLB+accuracyX/2;
 	}
 	//DEBUGGING	cout << "x: " << x + accuracyX*49 << endl; //Not 50 because x already starts on the first one, so plus 50 would make it the 51st slot
-	return intensityMultiplier/2000;		
+	return intensityMultiplier;		
 }
 
 phase_space phase_space::evolution(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)

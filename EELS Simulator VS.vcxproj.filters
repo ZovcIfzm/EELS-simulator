@@ -70,15 +70,15 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="C++\notes C++">
+    <None Include="C++\notes C++.txt">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="finalOutputFile.css">
+    <None Include="final_output_file.css">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="New_to_do_list.txt">
+    <Text Include="assumption_list.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
