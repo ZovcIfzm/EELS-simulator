@@ -45,9 +45,11 @@ void mainSequence() {
 		//	write_to_file(graphingMap);
 		
 		//modeling(graphingMap);
-		summing(pulses, graphingMap);
-		write_to_file(graphingMap);
-		modeling(graphingMap);
+		summing(finalPulse, graphingMap);
+		summing(pulses, graphingMap2);
+		grid_subtraction(graphingMap, graphingMap2);
+		write_to_file(graphingMap3);
+		modeling(graphingMap3);
 
 		if (printFinalPhaseSpace){
 			finalPulse.print();

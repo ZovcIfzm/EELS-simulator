@@ -55,18 +55,18 @@ void summing(vector<phase_space> spaces, double graphingGrid[modelingXRange][mod
 	if (printStarts){
 		cout << "summing multiple phase spaces started" << endl;
 	}
-	double ySearchLB =  -1* splitNumber * spaces[0].hHeight_accessor();
-	double ySearchUB = 1 * splitNumber * spaces[0].hHeight_accessor();
-	double xSearchLB = -3 * spaces[0].hWidth_accessor();
-	double xSearchUB = 3 * spaces[0].hWidth_accessor();
+	double ySearchLB = -1 * splitNumber * spaces[0].hHeight_accessor() - 2.5*spaces[0].hHeight_accessor();
+	double ySearchUB = 1 * splitNumber * spaces[0].hHeight_accessor() + 2.5*spaces[0].hHeight_accessor();
+	double xSearchLB = -3.5 * spaces[0].hWidth_accessor();
+	double xSearchUB = 3.5 * spaces[0].hWidth_accessor();
 
 	double yPulseUB = 3.5*spaces[0].hHeight_accessor();
 	double yPulseLB = -3.5*spaces[0].hHeight_accessor();
 	double xPulseUB = 3.5*spaces[0].hWidth_accessor();
 	double xPulseLB = -3.5*spaces[0].hWidth_accessor();
 
-	double accuracyY = (yPulseUB - yPulseLB) / 999;
-	double accuracyX = (xPulseUB - xPulseLB) / 999;
+	double accuracyY = (yPulseUB - yPulseLB) / 199;
+	double accuracyX = (xPulseUB - xPulseLB) / 199;
 
 	double negTwohWidthsq = -2 * spaces[0].hWidth_accessor()*spaces[0].hWidth_accessor();
 	double twoVzIntDistsq = 2 * spaces[0].VzDist_accessor()*spaces[0].VzDist_accessor();
@@ -102,8 +102,8 @@ void summing(phase_space space, double graphingGrid[modelingXRange][modelingYRan
 	double ySearchUB = 3.5 *space.hHeight_accessor();
 	double xSearchLB = -3.5 *space.hWidth_accessor();
 	double xSearchUB = 3.5 *space.hWidth_accessor();
-	double accuracyY = (ySearchUB - ySearchLB) / 999;  // Cannot be 99 or else for some reason the middle (25th row out of 50) takes half that of all the other rows. Look into?
-	double accuracyX = (xSearchUB - xSearchLB) / 999;
+	double accuracyY = (ySearchUB - ySearchLB) / 199;  // Cannot be 99 or else for some reason the middle (25th row out of 50) takes half that of all the other rows. Look into?
+	double accuracyX = (xSearchUB - xSearchLB) / 199;
 	double negTwohWidthsq = -2 * space.hWidth_accessor()*space.hWidth_accessor();
 	double twoVzIntDistsq = 2 * space.VzDist_accessor()*space.VzDist_accessor();
 	double twoPIhWidthVzIntDist = 2 * M_PI*(space.hWidth_accessor()*space.VzDist_accessor());
