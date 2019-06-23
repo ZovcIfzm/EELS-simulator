@@ -21,6 +21,7 @@ public:
 	//phase_space(phase_space[splitNumber]);
 	phase_space(vector<phase_space> spaces);
 	vector<phase_space> split();
+	vector<phase_space> phase_space::shatter();
 	phase_space evolution(double time);
 	phase_space RFLens(double changeChirp);
 	phase_space mag_lens(double changeChirpT);

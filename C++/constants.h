@@ -17,7 +17,7 @@
 #define pauseClose true
 
 //Miscellaneous defined variables
-#define splitNumber 5001 //Needs to be int, to be used as array size & needs to be odd in order for doubleintensityMultiplier towork (to sum up the center correctly, with even it's unsymmetric for some reason)
+#define splitNumber 501 //Needs to be int, to be used as array size & needs to be odd in order for doubleintensityMultiplier towork (to sum up the center correctly, with even it's unsymmetric for some reason)
 #define M_PI 3.14159265358979323846264338328
 #define modelingXRange 51 //Is 51 so that there is a middle number i.e. 0-24, 25, 26-50
 #define modelingYRange 51 //Is 51 so that there is a middle number i.e. 0-24, 25, 26-50
@@ -52,7 +52,7 @@ extern int phaseSpaces;
 extern double testMax;
 extern double testMaxXCoordinate;
 extern double testMaxYCoordinate;
-extern double valueHolder;
+extern double valueHolder1;
 extern double valueHolder2;
 extern double valueHolder3;
 extern double valueHolder4;
@@ -63,6 +63,7 @@ extern double centralVzReference;
 extern double graphingMap[modelingXRange][modelingYRange];
 extern double graphingMap2[modelingXRange][modelingYRange];
 extern double graphingMap3[modelingXRange][modelingYRange];
+
 /*
 phase_space secondPulse(double a, double b, double c, double d, double e,
 double f, double g, double h, double i, double j,

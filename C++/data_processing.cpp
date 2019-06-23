@@ -1,10 +1,38 @@
 #include <iostream>
 #include "data_processing.h"
 #include <fstream>
+#include <sstream>
 #include <Windows.h>
-#include "main_sequence.h";
-#include <tuple>;
-#include "constants.h";
+#include "main_sequence.h"
+#include <tuple>
+#include "constants.h"
+#include <string>
+
+void readSpec(string filename, vector<vector<double>> &v) {
+	ifstream dataFile(filename);
+
+	ofstream dataOutput;
+	dataOutput.open("testing.txt");
+
+	string w1, w2;
+	double v1, v2, v3;
+	dataFile >> w1 >> w2;//removing the first two lines (first line is one character, second has no spaces)
+	cout << "words: " << w1 << " " << w2 << endl;
+	while (dataFile >> w1 >> w2 >> v3) {
+		w1.pop_back();
+		w2.pop_back();
+		v1 = atof(w1.c_str());
+		v2 = atof(w2.c_str());
+
+		vector <double> values;
+		values.push_back(v1);
+		values.push_back(v2);
+		values.push_back(v3);
+		v.push_back(values);
+		dataOutput << values[0] << ", " << values[1] << endl;
+	}
+	dataOutput.close();
+}
 
 void psComparison(phase_space space, phase_space space2) {
 	int counter = 0;
@@ -78,7 +106,7 @@ void outputPhaseSpace(ofstream& file, phase_space pulse, string name) {
 		"	</tr>" << endl <<
 		"	<tr> " << endl <<
 		"		<th> ValidityRatio </th>" << endl; 
-	if (get<0>(response) == get<1>(response) == get<2>(response) == get<3>(response) == get<4>(response) == get<5>(response) == 1) {
+	if (get<0>(response) = get<1>(response) = get<2>(response) = get<3>(response) = get<4>(response) = get<5>(response) = 1) {
 		file << "		<td colspan=\"7\"> all variables valid </td>" << endl <<
 						"	</tr>" << endl;
 	}
@@ -129,13 +157,20 @@ void finalDataOutput() {
 		"<br> <br>" << endl <<
 		"<table style = \"width=100%\">" << endl <<
 		"	<tr>" << endl <<
-		"		<th> Debugging info </th>" << endl <<
-		"		<td> valueHolder1: " << valueHolder << " </td>" << endl <<
-		"		<td> valueHolder2: " << valueHolder2 << " </td>" << endl <<
-		"		<td> valueHolder3: " << valueHolder3 << " </td>" << endl <<
-		"		<td> valueHolder4: " << valueHolder4 << " </td>" << endl <<
-		"		<td> valueHolder5: " << valueHolder5 << " </td>" << endl <<
-		"		<td> valueHolder6: " << valueHolder6 << " </td>" << endl <<
+		"		<td> " << "label1" << " </td>" << endl <<
+		"		<td> " << "label2" << " </td>" << endl <<
+		"		<td> " << "label3" << " </td>" << endl <<
+		"		<td> " << "deviation" << " </td>" << endl <<
+		"		<td> " << "label5" << " </td>" << endl <<
+		"		<td> " << "label6" << " </td>" << endl <<
+		"	</tr>" << endl <<
+		"	<tr>" << endl <<
+		"		<td> "<< valueHolder1 << " </td>" << endl <<
+		"		<td> "<< valueHolder2 << " </td>" << endl <<
+		"		<td> " << valueHolder3 << " </td>" << endl <<
+		"		<td> " << valueHolder4 << " </td>" << endl <<
+		"		<td> " << valueHolder5 << " </td>" << endl <<
+		"		<td> " << valueHolder6 << " </td>" << endl <<
 		"	</tr>" << endl <<
 		"</table>" << endl <<
 		"</body>" << endl <<

@@ -12,15 +12,6 @@
 //#include <boost/tuple/tuple.hpp>
 using namespace std;
 
-phase_space::phase_space(){//For debugging only
-	cout << "empty phase space initialized" << endl;
-}
-
-phase_space::phase_space(double test){//For debugging only
-	b = test;
-	cout << "test phase space initialized, b: " << b << endl;
-}
-
 phase_space::phase_space(double hWidthC, double hHeightC, double VzDistC, double zDistC, double chirpC, double bC, double pulseEnergyC, double intensityMultiplierC,
 						 double hDepthC, double hDepthVelC, double VxDistC, double xDistC, double chirpTC, double bTC, double VzCC, double zCC, double xCC)
 : hWidth(hWidthC), hHeight(hHeightC), VzDist(VzDistC), zDist(zDistC), chirp(chirpC), b(bC), pulseEnergy(pulseEnergyC), intensityMultiplier(intensityMultiplierC),
@@ -97,6 +88,12 @@ vector<phase_space> phase_space::split(){
 	phaseSpaces += splitNumber;
 	return splitSpaces;
 }
+/*
+vector<phase_space> phase_space::shatter() {
+	//Part 1 - splitting into a 2d transverse grid
+
+	//Part 2 energy loss
+}*/
 
 double phase_space::get_split_intensity_multiplier(double numSections, double sectionNum, double hHeight, double hWidth){
 	//Gets intensity % proportionally to 1 (like if its gets .5 its 50% of total intensity)
@@ -134,7 +131,6 @@ double phase_space::get_split_intensity_multiplier(double numSections, double se
 		y += accuracyY;
 		x = xSearchLB+accuracyX/2;
 	}
-	//DEBUGGING	cout << "x: " << x + accuracyX*49 << endl; //Not 50 because x already starts on the first one, so plus 50 would make it the 51st slot
 	return intensityMultiplier;		
 }
 

@@ -51,14 +51,14 @@ void modeling(double modelMatrix[modelingXRange][modelingYRange]) {
 	modeling.cmd("exit");
 }
 
-void summing(vector<phase_space> spaces, double graphingGrid[modelingXRange][modelingYRange]) {
+void summing(vector<phase_space> spaces, double grid[modelingXRange][modelingYRange]) {
 	if (printStarts){
 		cout << "summing multiple phase spaces started" << endl;
 	}
-	double ySearchLB = -1 * splitNumber * spaces[0].hHeight_accessor() - 2.5*spaces[0].hHeight_accessor();
-	double ySearchUB = 1 * splitNumber * spaces[0].hHeight_accessor() + 2.5*spaces[0].hHeight_accessor();
-	double xSearchLB = -3.5 * spaces[0].hWidth_accessor();
-	double xSearchUB = 3.5 * spaces[0].hWidth_accessor();
+	double ySearchLB = -1.0 * splitNumber * spaces[0].hHeight_accessor() - 2.5*spaces[0].hHeight_accessor();
+	double ySearchUB = 1.0 * splitNumber * spaces[0].hHeight_accessor() + 2.5*spaces[0].hHeight_accessor();
+	double xSearchLB = -4.0 * spaces[0].hWidth_accessor();
+	double xSearchUB = 4.0 * spaces[0].hWidth_accessor();
 
 	double yPulseUB = 3.5*spaces[0].hHeight_accessor();
 	double yPulseLB = -3.5*spaces[0].hHeight_accessor();
@@ -80,7 +80,7 @@ void summing(vector<phase_space> spaces, double graphingGrid[modelingXRange][mod
 		while (y < yPulseUB) {
 			while (x < xPulseUB) {
 				if (x + pulse.zC_accessor() > xSearchLB && x + pulse.zC_accessor() < xSearchUB && y + pulse.VzC_accessor() > ySearchLB && y + pulse.VzC_accessor() < ySearchUB) {
-					graphingGrid[int(map(x + pulse.zC_accessor(), xSearchLB, xSearchUB, 0, modelingXRange - 1)+0.5)][int(map(y + pulse.VzC_accessor(), ySearchLB, ySearchUB, 0, modelingYRange - 1)+0.5)] += pulse.intensity_multiplier_accessor()*(accuracyX * accuracyY*exp((x*x / (negTwohWidthsq)) - ((y - spaces[0].chirp_accessor() * x)*(y - spaces[0].chirp_accessor() * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist));
+					grid[int(map(x + pulse.zC_accessor(), xSearchLB, xSearchUB, 0, modelingXRange - 1)+0.5)][int(map(y + pulse.VzC_accessor(), ySearchLB, ySearchUB, 0, modelingYRange - 1)+0.5)] += pulse.intensity_multiplier_accessor()*(accuracyX * accuracyY*exp((x*x / (negTwohWidthsq)) - ((y - spaces[0].chirp_accessor() * x)*(y - spaces[0].chirp_accessor() * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist));
 					valueHolder2 += pulse.intensity_multiplier_accessor()*(accuracyX * accuracyY*exp((x*x / (negTwohWidthsq)) - ((y - spaces[0].chirp_accessor() * x)*(y - spaces[0].chirp_accessor() * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist));
 				}
 				x += accuracyX;
@@ -94,7 +94,7 @@ void summing(vector<phase_space> spaces, double graphingGrid[modelingXRange][mod
 	}
 }
 
-void summing(phase_space space, double graphingGrid[modelingXRange][modelingYRange]) {
+void summing(phase_space space, double grid[modelingXRange][modelingYRange]) {
 	if (printStarts) {
 		cout << "summing single phase space started" << endl;
 	}
@@ -112,9 +112,9 @@ void summing(phase_space space, double graphingGrid[modelingXRange][modelingYRan
 	while (y < ySearchUB) {
 		while (x < xSearchUB) {
 			if (x + space.zC_accessor() > xSearchLB && x + space.zC_accessor() < xSearchUB && y + space.VzC_accessor() > ySearchLB && y + space.VzC_accessor() < ySearchUB) {
-				graphingGrid[int(map(x, xSearchLB, xSearchUB, 0, modelingXRange - 1) + 0.5)][int(map(y, ySearchLB, ySearchUB, 0, modelingYRange - 1) + 0.5)] += (accuracyX*accuracyY*exp((x*x / (negTwohWidthsq)) - ((y - space.chirp_accessor() * x)*(y - space.chirp_accessor() * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist));
+				grid[int(map(x, xSearchLB, xSearchUB, 0, modelingXRange - 1) + 0.5)][int(map(y, ySearchLB, ySearchUB, 0, modelingYRange - 1) + 0.5)] += (accuracyX*accuracyY*exp((x*x / (negTwohWidthsq)) - ((y - space.chirp_accessor() * x)*(y - space.chirp_accessor() * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist));
 				//valueHolder += accuracyX*accuracyY*(1 / (2 * M_PI))*exp((x*x + y * y) / (-2));
-				valueHolder += (accuracyX*accuracyY*exp((x*x / (negTwohWidthsq)) - ((y - space.chirp_accessor() * x)*(y - space.chirp_accessor() * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist));
+				valueHolder1 += (accuracyX*accuracyY*exp((x*x / (negTwohWidthsq)) - ((y - space.chirp_accessor() * x)*(y - space.chirp_accessor() * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist));
 			}
 			x += accuracyX;
 		}
@@ -126,34 +126,33 @@ void summing(phase_space space, double graphingGrid[modelingXRange][modelingYRan
 	}
 }
 
-void grid_subtraction(double grid1[modelingXRange][modelingYRange], double grid2[modelingXRange][modelingYRange]) {
-	 static double finalGrid[modelingXRange][modelingYRange];
+void grid_subtraction(double grid1[modelingXRange][modelingYRange], double grid2[modelingXRange][modelingYRange], double grid3[modelingXRange][modelingYRange]) {
 	 for (int i = 0; i < modelingXRange; i++){
 		 for (int j = 0; j < modelingYRange; j++) {
-			graphingMap3[i][j] = grid1[i][j] - grid2[i][j];
+			grid3[i][j] = grid1[i][j] - grid2[i][j];
 		 }
 	 }
 }
 
+double measureDeviation(double grid1[modelingXRange][modelingYRange], double grid2[modelingXRange][modelingYRange]) {
+	double deviation = 0.0;
+	for (int i = 0; i < modelingXRange; i++) {
+		for (int j = 0; j < modelingYRange; j++) {
+			deviation += pow(grid1[i][j] - grid2[i][j],2);
+		}
+	}
+	return sqrt(deviation/(double(modelingXRange)*double(modelingYRange) - 1.0));
+}
 
- double* t_g_s(double grid1[2][2], double grid2[2][2]) {
-	 static double finalGrid[2][2];
-	 for (int i = 0; i < modelingXRange; i++) {
-		 for (int j = 0; j < modelingYRange; j++) {
-			 finalGrid[i][j] = grid1[i][j] - grid2[i][j];
-		 }
-	 }
-	 return *finalGrid;
- }
 
-void write_to_file(double modelMatrix[modelingXRange][modelingYRange]) {//Untested
+void write_to_file(double grid[modelingXRange][modelingYRange]) {//Untested
 	if (printStarts)
 		cout << "writing to file started" << endl;
 	ofstream modelFile;
 	modelFile.open("modeling_data.txt");
 	for (int row = 0; row < modelingYRange; row++) {
 		for (int col = 0; col < modelingXRange; col++) {
-			modelFile << col << "\t" << row << "\t" << modelMatrix[col][row] << endl;
+			modelFile << col << "\t" << row << "\t" << grid[col][row] << endl;
 		}
 	}
 	modelFile.close();

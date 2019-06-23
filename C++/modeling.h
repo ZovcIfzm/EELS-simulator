@@ -7,8 +7,8 @@ void summing(phase_space space, double graphingGrid[modelingXRange][modelingYRan
 void modeling(double modelMatrix[modelingXRange][modelingYRange]);
 void pause();
 
-void grid_subtraction(double grid1[modelingXRange][modelingYRange], double grid2[modelingXRange][modelingYRange]);
-double* t_g_s(double grid1[2][2], double grid2[2][2]);
+void grid_subtraction(double grid1[modelingXRange][modelingYRange], double grid2[modelingXRange][modelingYRange], double grid3[modelingXRange][modelingYRange]);
+double measureDeviation(double grid1[modelingXRange][modelingYRange], double grid2[modelingXRange][modelingYRange]);
 
 void write_to_file(double modelMatrix[modelingXRange][modelingYRange]); //QUESTION: Why does the range HAVE to be defined for both the function in the h and cpp file?
 void read_from_file(string file);
