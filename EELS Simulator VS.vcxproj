@@ -111,7 +111,7 @@
     <ClCompile Include="C++\data_processing.cpp" />
     <ClCompile Include="C++\main_sequence.cpp" />
     <ClCompile Include="C++\modeling.cpp" />
-    <ClCompile Include="c++\phase_space.cpp" />
+    <ClCompile Include="C++\PhaseSpace.cpp" />
     <ClCompile Include="c++\Source.cpp" />
     <ClCompile Include="c++\test_class.cpp" />
     <ClCompile Include="c++\using_gnuplot.cpp" />
@@ -124,7 +124,7 @@
     <ClInclude Include="C++\data_processing.h" />
     <ClInclude Include="C++\main_sequence.h" />
     <ClInclude Include="C++\modeling.h" />
-    <ClInclude Include="c++\phase_space.h" />
+    <ClInclude Include="C++\PhaseSpace.h" />
     <ClInclude Include="c++\test_class.h" />
     <ClInclude Include="c++\using_gnuplot.h" />
     <ClInclude Include="Extra Libraries\gnuplot\gnuplot-cpp\gnuplot_i.hpp" />

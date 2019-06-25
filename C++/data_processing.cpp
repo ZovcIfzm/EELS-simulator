@@ -34,30 +34,30 @@ void readSpec(string filename, vector<vector<double>> &v) {
 	dataOutput.close();
 }
 
-void psComparison(phase_space space, phase_space space2) {
+void psComparison(PhaseSpace space, PhaseSpace space2) {
 	int counter = 0;
-	if (space.hWidth_accessor() / space2.hWidth_accessor() > 1.01 || space.hWidth_accessor() / space2.hWidth_accessor() < 0.99) {
-		cout << space.hWidth_accessor() / space2.hWidth_accessor() << "% hWidth divergence" << endl;
+	if (space.getHWidth() / space2.getHWidth() > 1.01 || space.getHWidth() / space2.getHWidth() < 0.99) {
+		cout << space.getHWidth() / space2.getHWidth() << "% hWidth divergence" << endl;
 		counter++;
 	}
-	if (space.hHeight_accessor() / space2.hHeight_accessor() > 1.01 || space.hHeight_accessor() / space2.hHeight_accessor() < 0.99) {
-		cout << space.hHeight_accessor() / space2.hHeight_accessor() << "% hHeight divergence" << endl;
+	if (space.getHHeight() / space2.getHHeight() > 1.01 || space.getHHeight() / space2.getHHeight() < 0.99) {
+		cout << space.getHHeight() / space2.getHHeight() << "% hHeight divergence" << endl;
 		counter++;
 	}
-	if (space.VzDist_accessor() / space2.VzDist_accessor() > 1.01 || space.VzDist_accessor()/space2.VzDist_accessor() < 0.99) {
-		cout << space.VzDist_accessor() / space2.VzDist_accessor() << "% VzDist divergence" << endl;
+	if (space.getVzDist() / space2.getVzDist() > 1.01 || space.getVzDist()/space2.getVzDist() < 0.99) {
+		cout << space.getVzDist() / space2.getVzDist() << "% VzDist divergence" << endl;
 		counter++;
 	}
-	if (space.zDist_accessor() / space2.zDist_accessor() > 1.01 || space.zDist_accessor() / space2.zDist_accessor() < 0.99) {
-		cout << space.zDist_accessor() / space2.zDist_accessor() << "% zDist divergence" << endl;
+	if (space.getZDist() / space2.getZDist() > 1.01 || space.getZDist() / space2.getZDist() < 0.99) {
+		cout << space.getZDist() / space2.getZDist() << "% zDist divergence" << endl;
 		counter++;
 	}
-	if (space.chirp_accessor() / space2.chirp_accessor() > 1.01 || space.chirp_accessor() / space2.chirp_accessor() < 0.99) {
-		cout << space.chirp_accessor() / space2.chirp_accessor() << "% chirp divergence" << endl;
+	if (space.getChirp() / space2.getChirp() > 1.01 || space.getChirp() / space2.getChirp() < 0.99) {
+		cout << space.getChirp() / space2.getChirp() << "% chirp divergence" << endl;
 		counter++;
 	}
-	if (space.b_accessor() / space2.b_accessor() > 1.01 || space.b_accessor() / space2.b_accessor() < 0.99) {
-		cout << space.b_accessor() / space2.b_accessor() << "% b divergence" << endl;
+	if (space.getB() / space2.getB() > 1.01 || space.getB() / space2.getB() < 0.99) {
+		cout << space.getB() / space2.getB() << "% b divergence" << endl;
 		counter++;
 	}
 	if (counter == 0)
@@ -67,7 +67,7 @@ void psComparison(phase_space space, phase_space space2) {
 }
 
 //Conservation Checking - Emittence based
-bool phase_space::longitudinal_area_conservation(double hDimensionW, double distH, double hDimensionH, double distW) {//Needs to be reworked, both cons1&2 should describe the same emmittence- be the same value, however height and width are different but the intDist are the same
+bool PhaseSpace::longitudinal_area_conservation(double hDimensionW, double distH, double hDimensionH, double distW) {//Needs to be reworked, both cons1&2 should describe the same emmittence- be the same value, however height and width are different but the intDist are the same
 	double consValue = hDimensionW * distH;
 	double consValue2 = hDimensionH * distW;
 	if (consValue > 0.000499 && consValue < 0.000501  && consValue2 > 0.000499 && consValue2 < 0.000501) {//randomly decided range to account for data error
@@ -79,7 +79,7 @@ bool phase_space::longitudinal_area_conservation(double hDimensionW, double dist
 	}
 }
 
-bool phase_space::transverse_area_conservation(double hDimensionW, double intDistH, double hDimensionH, double intDistW) {//Needs to be reworked, both cons1&2 should describe the same emmittence- be the same value, however height and width are different but the intDist are the same
+bool PhaseSpace::transverse_area_conservation(double hDimensionW, double intDistH, double hDimensionH, double intDistW) {//Needs to be reworked, both cons1&2 should describe the same emmittence- be the same value, however height and width are different but the intDist are the same
 	double consValue = hDimensionW * intDistH;
 	double consValue2 = hDimensionH * intDistW;
 	if (consValue > 0.00299 && consValue < 0.00301  && consValue2 > 0.00299 && consValue2 < 0.00301) {//randomly decided range to account for data error
@@ -91,18 +91,18 @@ bool phase_space::transverse_area_conservation(double hDimensionW, double intDis
 	}
 }
 
-void outputPhaseSpace(ofstream& file, phase_space pulse, string name) {
+void outputPhaseSpace(ofstream& file, PhaseSpace pulse, string name) {
 	tuple<double, double, double, double, double, double> response = pulse.valid_variables_check();
 	file <<
 		"	<tr>" << endl <<
 		"		<th> " << name.c_str() << " </th>" << endl <<
-		"		<td> " << pulse.hWidth_accessor() << " </td>" << endl <<
-		"		<td> " << pulse.hHeight_accessor() << " </td>" << endl <<
-		"		<td> " << pulse.VzDist_accessor() << " </td>" << endl <<
-		"		<td> " << pulse.zDist_accessor() << " </td>" << endl <<
-		"		<td> " << pulse.chirp_accessor() << " </td>" << endl <<
-		"		<td> " << pulse.b_accessor() << " </td>" << endl <<
-		"		<td> " << pulse.longitudinal_area_conservation(pulse.hWidth_accessor(), pulse.VzDist_accessor(), pulse.hHeight_accessor(), pulse.zDist_accessor()) << " </th>" << endl <<
+		"		<td> " << pulse.getHWidth() << " </td>" << endl <<
+		"		<td> " << pulse.getHHeight() << " </td>" << endl <<
+		"		<td> " << pulse.getVzDist() << " </td>" << endl <<
+		"		<td> " << pulse.getZDist() << " </td>" << endl <<
+		"		<td> " << pulse.getChirp() << " </td>" << endl <<
+		"		<td> " << pulse.getB() << " </td>" << endl <<
+		"		<td> " << pulse.longitudinal_area_conservation(pulse.getHWidth(), pulse.getVzDist(), pulse.getHHeight(), pulse.getZDist()) << " </th>" << endl <<
 		"	</tr>" << endl <<
 		"	<tr> " << endl <<
 		"		<th> ValidityRatio </th>" << endl; 

@@ -5,7 +5,7 @@
 using namespace std;
 
 
-class phase_space{
+class PhaseSpace{
 private:
 	double hWidth, hHeight, VzDist, zDist, chirp, b, pulseEnergy, intensityMultiplier,
 	hDepth, hDepthVel, VxDist, xDist, chirpT, bT, VzC, zC, xC;
@@ -14,18 +14,16 @@ private:
 	double totalEnergy, electronAmount;
 
 public:
-	phase_space();
-	phase_space(double testConstructor);
-	phase_space(double hWidthC, double hHeightC, double VzDistC, double zDistC, double chirpC, double bC, double pulseEnergyC, double intensityMultiplierC,
+	PhaseSpace(double hWidthC, double hHeightC, double VzDistC, double zDistC, double chirpC, double bC, double pulseEnergyC, double intensityMultiplierC,
 		double hDepthC, double hDepthVelC, double VxDistC, double xDistC, double chirpTC, double bTC, double VzCC, double zCC, double xCC);
-	//phase_space(phase_space[splitNumber]);
-	phase_space(vector<phase_space> spaces);
-	vector<phase_space> split();
-	vector<phase_space> phase_space::shatter();
-	phase_space evolution(double time);
-	phase_space RFLens(double changeChirp);
-	phase_space mag_lens(double changeChirpT);
-	phase_space spectroscopy_function();
+	//PhaseSpace(PhaseSpace[splitNumber]);
+	PhaseSpace(vector<PhaseSpace> spaces);
+	vector<PhaseSpace> split();
+	vector<PhaseSpace> PhaseSpace::shatter(vector<vector<double>> data);
+	PhaseSpace evolution(double time);
+	PhaseSpace RFLens(double changeChirp);
+	PhaseSpace mag_lens(double changeChirpT);
+	PhaseSpace spectroscopy_function();
 	tuple<double, double, double, double, double, double> valid_variables_check();
 	double get_split_intensity_multiplier(double numSections, double sectionNum, double hHeight, double hWidth);
 	bool longitudinal_area_conservation(double hDimensionW, double distH, double hDimensionH, double distW);
@@ -33,14 +31,14 @@ public:
 	void print();
 
 	//Accessor methods
-	double hWidth_accessor();
-	double hHeight_accessor();
-	double VzDist_accessor();
-	double zDist_accessor();
-	double chirp_accessor();
-	double b_accessor();
-	double intensity_multiplier_accessor();
-	double VzC_accessor();
-	double xC_accessor();
-	double zC_accessor();
+	double getHWidth();
+	double getHHeight();
+	double getVzDist();
+	double getZDist();
+	double getChirp();
+	double getB();
+	double getIntensityMultiplier();
+	double getVzC();
+	double getXC();
+	double getZC();
 };

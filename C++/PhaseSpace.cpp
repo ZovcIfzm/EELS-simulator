@@ -1,5 +1,5 @@
 #include <iostream>
-#include "phase_space.h"
+#include "PhaseSpace.h"
 #include <math.h>
 #include <functional>
 #include <vector>
@@ -12,12 +12,12 @@
 //#include <boost/tuple/tuple.hpp>
 using namespace std;
 
-phase_space::phase_space(double hWidthC, double hHeightC, double VzDistC, double zDistC, double chirpC, double bC, double pulseEnergyC, double intensityMultiplierC,
+PhaseSpace::PhaseSpace(double hWidthC, double hHeightC, double VzDistC, double zDistC, double chirpC, double bC, double pulseEnergyC, double intensityMultiplierC,
 						 double hDepthC, double hDepthVelC, double VxDistC, double xDistC, double chirpTC, double bTC, double VzCC, double zCC, double xCC)
 : hWidth(hWidthC), hHeight(hHeightC), VzDist(VzDistC), zDist(zDistC), chirp(chirpC), b(bC), pulseEnergy(pulseEnergyC), intensityMultiplier(intensityMultiplierC),
 hDepth(hDepthC), hDepthVel(hDepthVelC), VxDist(VxDistC), xDist(xDistC), chirpT(chirpTC), bT(bTC), VzC(VzCC), zC(zCC), xC(zCC) {}
 
-phase_space::phase_space(vector<phase_space> spaces):hWidth(0),hHeight(0),VzDist(0),zDist(0),chirp(0),b(0),pulseEnergy(0),intensityMultiplier(0),hDepth(0),hDepthVel(0),VxDist(0),xDist(0),chirpT(0),bT(0),VzC(0),zC(0),xC(0){
+PhaseSpace::PhaseSpace(vector<PhaseSpace> spaces):hWidth(0),hHeight(0),VzDist(0),zDist(0),chirp(0),b(0),pulseEnergy(0),intensityMultiplier(0),hDepth(0),hDepthVel(0),VxDist(0),xDist(0),chirpT(0),bT(0),VzC(0),zC(0),xC(0){
 	for (int i = 0; i < splitNumber; i++) {
 		VzC += spaces[i].VzC*spaces[i].intensityMultiplier;
 		//DEBUGGING cout << spaces[i].intensityMultiplier << endl;
@@ -30,7 +30,7 @@ phase_space::phase_space(vector<phase_space> spaces):hWidth(0),hHeight(0),VzDist
 	//this.VzC = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.VzC"(spaces))*this.intensityRatio;
 	//int maxSize = sizeof(spaces[]);
 	
-	//for (phase_space space : spaces[splitNumber]){
+	//for (PhaseSpace space : spaces[splitNumber]){
 	//	VzC += space.VzC*space.intensityMultiplier;
 	//	zC += space.zC*space.intensityMultiplier;
 	//	xC += space.xC*space.intensityMultiplier;
@@ -59,8 +59,8 @@ phase_space::phase_space(vector<phase_space> spaces):hWidth(0),hHeight(0),VzDist
 	//intensityMultiplier = taskPool.reduce!"a + b"(0.0, std.algorithm.map!"a.intensityRatio"(spaces));
 }
 
-vector<phase_space> phase_space::split(){
-	vector<phase_space> splitSpaces;
+vector<PhaseSpace> PhaseSpace::split(){
+	vector<PhaseSpace> splitSpaces;
 	originalHWidth = hWidth;
 	//phaseSpaces.length = to!int(spaces);
 	double intensityMultipliers [splitNumber];
@@ -82,20 +82,27 @@ vector<phase_space> phase_space::split(){
 	//i, ref elem; phaseSpaces
 
 	for(int j = 0; j < splitNumber; j++){
-		splitSpaces.push_back(phase_space(hWidth, splitHHeight, splitVzDist, splitZDist, splitChirp, splitB, pulseEnergy*intensityMultipliers[j], intensityMultipliers[j],
+		splitSpaces.push_back(PhaseSpace(hWidth, splitHHeight, splitVzDist, splitZDist, splitChirp, splitB, pulseEnergy*intensityMultipliers[j], intensityMultipliers[j],
 																		   hDepth, hDepthVel, VxDist, xDist, chirpT, bT, hHeight-(hHeight*2/splitNumber)*(double(j)+0.5), (hHeight - (hHeight * 2 / splitNumber)*(double(j) + 0.5)) / chirp, xC));
 	}
 	phaseSpaces += splitNumber;
 	return splitSpaces;
 }
-/*
-vector<phase_space> phase_space::shatter() {
-	//Part 1 - splitting into a 2d transverse grid
 
-	//Part 2 energy loss
-}*/
+vector<PhaseSpace> PhaseSpace::shatter(vector<vector<double>> spectroTable) {
+	int spaces = spectroTable.size();
+	vector<PhaseSpace> shatteredPulses;
+	double newVzDist = VzDist / spaces;
+	double newChirp = newVzDist * sqrt((1 / pow(zDist, 2)) - (1 / pow(hWidth, 2)));
+	double newB = newChirp * pow(zDist / newVzDist, 2);
+	for (int i = 0; i < spaces; i++) {
+		shatteredPulses.push_back(PhaseSpace(hWidth, hHeight / spaces, newVzDist, zDist, newChirp, newB, pulseEnergy * spectroTable[i][1], intensityMultiplier * spectroTable[i][1]/ 2890661135.000000,
+			hDepth, hDepthVel, VxDist, xDist, chirpT, bT, hHeight + (spectroTable[i][0] / 1117), zC, xC));
+	}
+	return shatteredPulses;
+}
 
-double phase_space::get_split_intensity_multiplier(double numSections, double sectionNum, double hHeight, double hWidth){
+double PhaseSpace::get_split_intensity_multiplier(double numSections, double sectionNum, double hHeight, double hWidth){
 	//Gets intensity % proportionally to 1 (like if its gets .5 its 50% of total intensity)
 	//search with xSearch & ySearch = +- 5.803*hWidth or hHeight to get the total intensity of the phase space (equal to 1)	
 	double ySearchLB = -catchFactor*hHeight + ((catchFactor*hHeight*2.0/numSections)*(sectionNum-1));
@@ -134,7 +141,7 @@ double phase_space::get_split_intensity_multiplier(double numSections, double se
 	return intensityMultiplier;		
 }
 
-phase_space phase_space::evolution(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
+PhaseSpace PhaseSpace::evolution(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 	b += time;
 	bT += time;
 	if(chirp>0){
@@ -158,7 +165,7 @@ phase_space phase_space::evolution(double time){//To deal with processing we mig
 	return *this;
 }
 
-phase_space phase_space::RFLens(double changeChirp){
+PhaseSpace PhaseSpace::RFLens(double changeChirp){
 	chirp += changeChirp;
 	zDist = sqrt(1/((1/pow(hWidth,2))+pow(chirp/VzDist,2)));
 	b = chirp*pow(zDist/VzDist,2);
@@ -166,7 +173,7 @@ phase_space phase_space::RFLens(double changeChirp){
 	return *this;
 }
 
-phase_space phase_space::mag_lens(double changechirpT){
+PhaseSpace PhaseSpace::mag_lens(double changechirpT){
 	chirpT += changechirpT;
 	xDist = sqrt(1/((1/pow(hDepth,2))+pow(chirpT/VxDist,2)));
 	bT = chirpT*pow(xDist/VxDist,2);
@@ -174,13 +181,13 @@ phase_space phase_space::mag_lens(double changechirpT){
 	return *this;
 }
 
-phase_space phase_space::spectroscopy_function(){
+PhaseSpace PhaseSpace::spectroscopy_function(){
 	xC = xC + 7172.99042634*VzC;
 	return *this;
 }
 
 
-tuple<double, double, double, double, double, double> phase_space::valid_variables_check() {
+tuple<double, double, double, double, double, double> PhaseSpace::valid_variables_check() {
 	tuple<double, double, double, double, double, double> response = make_tuple(0.0,0.0,0.0,0.0,0.0,0.0);
 	double hWidth_ = sqrt(1 / ((1 / (zDist*zDist)) - (chirp / VzDist)*(chirp / VzDist)));
 	double hHeight_ = sqrt(1 / ((1 / pow(VzDist, 2)) - pow(b / zDist, 2)));
@@ -204,7 +211,7 @@ tuple<double, double, double, double, double, double> phase_space::valid_variabl
 	return response;
 }
 
-void phase_space::print(){
+void PhaseSpace::print(){
 	cout << "hWidth: " << hWidth << "  " <<    " hDepth: " << hDepth << endl;;
 	cout << "hHeight: " << hHeight << " " <<   " hDepthVelocity: " << hDepthVel << endl;
 	cout << "VzIntDist: " << VzDist <<    " VxIntDist: " << VxDist << endl;
@@ -225,13 +232,13 @@ void phase_space::print(){
 //DEBUGGING FUNCTIONS
 
 //Accessor methods
-double phase_space::hWidth_accessor(){return hWidth;}
-double phase_space::hHeight_accessor(){return hHeight;}
-double phase_space::VzDist_accessor(){return VzDist;}
-double phase_space::zDist_accessor(){return zDist;}
-double phase_space::chirp_accessor(){return chirp;}
-double phase_space::b_accessor(){return b;}
-double phase_space::intensity_multiplier_accessor(){return intensityMultiplier;}
-double phase_space::VzC_accessor(){return VzC;}
-double phase_space::zC_accessor(){return zC;}
-double phase_space::xC_accessor() { return xC; }
+double PhaseSpace::getHWidth(){return hWidth;}
+double PhaseSpace::getHHeight(){return hHeight;}
+double PhaseSpace::getVzDist(){return VzDist;}
+double PhaseSpace::getZDist(){return zDist;}
+double PhaseSpace::getChirp(){return chirp;}
+double PhaseSpace::getB(){return b;}
+double PhaseSpace::getIntensityMultiplier(){return intensityMultiplier;}
+double PhaseSpace::getVzC(){return VzC;}
+double PhaseSpace::getZC(){return zC;}
+double PhaseSpace::getXC() { return xC; }

@@ -1,9 +1,9 @@
 #include <iostream>
-#include "phase_space.h"
+#include "PhaseSpace.h"
 double map(double input, double inMin, double inMax, double outMin, double outMax);
-void split_evolution(vector<phase_space>& ev_pulses, double time);
-void summing(vector<phase_space> spaces, double graphingGrid[modelingXRange][modelingYRange]);
-void summing(phase_space space, double graphingGrid[modelingXRange][modelingYRange]);
+void split_evolution(vector<PhaseSpace>& ev_pulses, double time);
+void summing(vector<PhaseSpace> spaces, double graphingGrid[modelingXRange][modelingYRange]);
+void summing(PhaseSpace space, double graphingGrid[modelingXRange][modelingYRange]);
 void modeling(double modelMatrix[modelingXRange][modelingYRange]);
 void pause();
 
