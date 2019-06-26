@@ -24,19 +24,33 @@ void mainSequence() {
 
 		vector<vector<double>> v;
 		readSpec("Data files/hexogon BN-powder-eels.sl0", v);
-		vector<PhaseSpace> shatteredPulses = initialPulse.shatter(v);
-		summing(shatteredPulses, graphingMap3);
-		summing(initialPulse, graphingMap);
-		measureDeviation(graphingMap, graphingMap3);
-		psComparison(shatteredPulses[0], initialPulse);
-		//grid_subtraction(graphingMap, graphingMap3, graphingMap2);
-		modeling(graphingMap3);
-		//modeling(graphingMap3);
-		for (int i = 0; i < modelingXRange; i++) {
-			for (int j = 0; j < modelingYRange; j++) {
-				valueHolder3 += graphingMap3[i][j];
-			}
+		
+		vector<PhaseSpace> splitPulses = initialPulse.split();
+
+		vector<vector<PhaseSpace>> allPulses;
+		for (PhaseSpace p : splitPulses) {
+			allPulses.push_back(p.shatter(v));
 		}
+		//vector<PhaseSpace> shatteredPulses = initialPulse.shatter(v);
+		
+
+		//summing(shatteredPulses, graphingMap3);
+		//summing(initialPulse, graphingMap);
+		//measureDeviation(graphingMap, graphingMap3);
+		//psComparison(shatteredPulses[0], initialPulse);
+		//grid_subtraction(graphingMap, graphingMap3, graphingMap2);
+		//modeling(graphingMap3);
+		//modeling(graphingMap3);
+		//for (int i = 0; i < modelingXRange; i++) {
+		//	for (int j = 0; j < modelingYRange; j++) {
+		//		valueHolder3 += graphingMap3[i][j];
+		//	}
+		//}
+
+		vector<double> pixelArray(pixels);
+		pixelSum(pixelArray, allPulses);
+		specModeling(pixelArray);
+
 	}
 	else if (loadData)//Redundant - else would do just as fine as else if, but else if makes the logic easier to understand
 		read_from_file("modeling_data.txt");

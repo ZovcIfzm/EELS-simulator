@@ -145,6 +145,76 @@ double measureDeviation(double grid1[modelingXRange][modelingYRange], double gri
 	return sqrt(deviation/(double(modelingXRange)*double(modelingYRange) - 1.0));
 }
 
+void pixelSum(vector<double> &pixelArray, vector<vector<PhaseSpace>> spaces){
+	double lowestXC = spaces[spaces.size()-1][spaces[0].size()-1].getXC();
+	double highestXC = spaces[0][0].getXC();
+	for (int i = 0; i < spaces.size(); i++) {
+		for (int j = 0; j < spaces[0].size(); j++) {
+			pixelArray[int(map(spaces[i][j].getXC(), lowestXC, highestXC, 0, double(pixels)-1)+0.5)] += spaces[i][j].getXC();
+		}
+	}
+}
+
+void specModeling(vector<double> &pixelArray) {
+	//Find highestPixelEnergy
+	double highestPixelEnergy = 0;
+	double lowestPixelEnergy = 0;
+	double energy = 0;
+	for (int i = 0; i < pixelArray.size(); i++) {
+		energy = pixelArray[i] / 6.421;
+		if (energy > highestPixelEnergy) {
+			highestPixelEnergy = energy;
+		}
+		if (energy < lowestPixelEnergy) {
+			lowestPixelEnergy = energy;
+		}
+	}
+	//Write data to file for modeling
+	ofstream spectrum;
+	spectrum.open("spectrum.tsv");
+	for (int i = 0; i < pixelArray.size(); i++) {
+		spectrum << i << "\t" << pixelArray[i] / 6.421 << endl;
+	}
+	spectrum.close();
+
+	//Model
+	Gnuplot modeling("model");
+	// Clear up any existing plots.
+	modeling.cmd("clear");
+		// Reset all variables to default values.
+	modeling.cmd("reset");
+
+		//We don't need a key.
+	modeling.cmd("set key off");
+
+		//Draw only the left - hand and bottom borders.
+	modeling.cmd("set border 3");
+
+		//There are 21 sample points.
+	modeling.cmd("set xrange[0:" + to_string(pixelArray.size()) + "]");
+
+		//Show tickmarks at increments of one, and don't show (mirror) them
+		//at the top of the graph.
+	modeling.cmd("set xtic 10 nomirror");
+
+		//The largest value in the data set is 11.
+	modeling.cmd("set yrange[" + to_string(lowestPixelEnergy*magFactor) + ":" + to_string(highestPixelEnergy*magFactor) + "]");
+		//Don't show any tickmarks on the Y axis.
+	modeling.cmd("unset ytics");
+
+		//Make some suitable labels.
+	modeling.cmd("set title 'Frequency spectrum'");
+	modeling.cmd("set xlabel 'Frequency'");
+	modeling.cmd("set ylabel 'Power'");
+
+		//Draw three curves in this graph.
+	modeling.cmd("plot 'spectrum.tsv' using 1:2 with impulses lt 1, \
+		'spectrum.tsv' using 1:2 with points pt 3 lc rgb '#FF0000', \
+		'spectrum.tsv' using 1:2 smooth csplines lt 2");
+	pause();
+}
+
+//Data processing
 
 void write_to_file(double grid[modelingXRange][modelingYRange]) {//Untested
 	if (printStarts)

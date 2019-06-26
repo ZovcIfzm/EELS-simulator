@@ -21,6 +21,8 @@
 #define M_PI 3.14159265358979323846264338328
 #define modelingXRange 51 //Is 51 so that there is a middle number i.e. 0-24, 25, 26-50
 #define modelingYRange 51 //Is 51 so that there is a middle number i.e. 0-24, 25, 26-50
+#define pixels 100
+#define magFactor 1.1
 
 //Phase space parameters
 #define  base_hWidth 1.82534513746
