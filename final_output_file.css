@@ -1,0 +1,24 @@
+body{ 
+	background-color: lightblue;
+	color: black;
+	font-family: monospace;
+	font-size: 100% ;
+}
+h1{
+	color: white;
+	font-family: ;
+	font-size: 250% ;
+
+	border: 1px solid black;
+	padding: 30px;
+	margin: 50px;
+
+	text-align: center;
+}
+table, th, td{
+	border: 1px solid black;
+    border-collapse: collapse;
+    text-align: center;
+    margin-left:20%;
+    margin-right:auto;
+}

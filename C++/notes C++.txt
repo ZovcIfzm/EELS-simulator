@@ -1,0 +1,85 @@
+-Requirements to run simulator
+	Be sure to add the gnuplot_i.hpp in the additional include directories
+	(Project -> Properties -> Configuration Properties -> C/C++ -> General)
+	When started this project on a new visual studio installation.
+
+	exclude example.cc from build
+
+-Things to do
+graphingMap subtraction function
+
+
+Look into evolution at (0.0), reorganize equations and see if the changes like 1/3 VzDist isn't enough.
+
+Test limits of roundoff error for variable checking
+Figure out shattering (secondary splitting)
+Figure out data containment?
+Figure out how to recombine after shattering
+Figure out how to have identical evolution of shattered spaces vs. normal spacedf
+Figure out decimal precision (VzC after recombination should be 0)
+Implement multithreading
+Do I have to split across transverse axis as well?
+
+Recenter zC for split phase spaces - same method as VzC? - need to figure out chirp shrinking
+
+		Math Conversion
+sigmaZ = hWidth;	the hWidth along the z axis
+sigmaVz = hHeight;	the hHeight along the Vz axis
+zetaZ = VzIntDist;	the distance between the two Vz intercepts				//I think since it is between z (distance) and Vz(relative difference in velocity)
+tau = zIntDist;		the distance between the two z intercepts				//Its important to write z and Vz, instead of x and y
+a = chirp;			the chirp. chirp = slope
+b = b;				the relationship between the chirp, zIntDist, and VzIntDist. (b=a(tau/zeta)^2)
+z = dist;			the distance from the origin-from the center of mass
+Vz = vel;			the difference in velocity from center of mass
+
+Distance/Velocity/Time Conversions
+Relativistic velocity
+v=164.35								uM/ps
+t=dist/v								ps = uM/(uM/ps)	
+
+Kv = 1117ev um/ps
+
+E = Kv*Vz
+x = x + D*Kv*Vz
+
+xPost[ij]=xPre[ij]+D*Kv*VzPre[ij]
+D=dx/dE=6.421 ("in concert with RF power of LL2")
+
+LL2 has the same lens coefficient at LL1
+
+	Important things to know
+
+-We will need to create a phase space simulation that not only has the shape of the phase space
+but and VERY IMPORTANTLY
+has the data gathered from hitting the specimen in each point.
+
+	Objectives
+-Create a phase space simulator that simulates the phase space and collects data from hitting the specimen
+in order to collect the data it needs to shatter
+recombine the phase spaces at the end and collect the data
+
+Initial Phase Space Constants
+sigmaZ/hWidth: 1.82534513746
+sigmaVz/hHeight: 0.00069511761 
+zetaZ/VzDist: 0.00027392079 
+tau/zDist: 0.71930270898 
+a/chirp: 0.00035 
+b/b: 2413.46744543 
+pulse energy: 100 
+intensity multiplier: 1.0
+hDepth: 0.60844837915
+hDepthVelocity: 0.00494641054
+VxDist: 0.00493057439
+xDist: 0.60650040415
+chirpT: 0.00065
+bT: 9.83513928219, 0.0, 0.0, 0.0
+
+
+	Time Table
+
+LARGE PART NOT YET FIGURED OUT Figure out how to optimize the microscope through combinations of optics
+
+
+Outside resources used:
+gnuplot-iostream interface
+boost library

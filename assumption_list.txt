@@ -1,0 +1,8 @@
+**constant hWidth and zDist during splitting
+	since an infinite amount of splitting is said to approximate the actual distribution, it follows that
+	
+	
+		emmittance = hWidth * VzDist = hHeight * zDist
+	
+	The different split phase spaces probably don't equally contribute to the effective emmitance of the PS (equal emmitance), 
+		if it did, that means the tips would have the same effective area as the middle.
