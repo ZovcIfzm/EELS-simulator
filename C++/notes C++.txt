@@ -44,6 +44,8 @@ x = x + D*Kv*Vz
 
 xPost[ij]=xPre[ij]+D*Kv*VzPre[ij]
 D=dx/dE=6.421 ("in concert with RF power of LL2")
+RF lens coefficient: 0.0002232305
+1st Mag lens coefficient: 1000000000		NOTE: mag lens coefficients are different for nearly each lens
 
 LL2 has the same lens coefficient at LL1
 

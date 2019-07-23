@@ -13,7 +13,7 @@
 #define saveData true
 #define loadData false
 #define loadValueHolders true
-#define openFinalData true
+#define openFinalData false
 #define pauseClose true
 
 //Miscellaneous defined variables
@@ -21,7 +21,7 @@
 #define M_PI 3.14159265358979323846264338328
 #define modelingXRange 51 //Is 51 so that there is a middle number i.e. 0-24, 25, 26-50
 #define modelingYRange 51 //Is 51 so that there is a middle number i.e. 0-24, 25, 26-50
-#define pixels 100
+#define pixels 500
 #define magFactor 1.1
 
 //Phase space parameters

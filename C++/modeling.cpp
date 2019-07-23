@@ -40,7 +40,7 @@ void modeling(double modelMatrix[modelingXRange][modelingYRange]) {
 	//modeling.set_contour("base");
 	modeling.cmd("set dgrid3d 50,50");
 	modeling.cmd("set style data lines");
-	modeling.cmd("set pm3d");
+	//modeling.cmd("set pm3d");
 	modeling.cmd("set palette rgb 23,28,3");
 	write_to_file(modelMatrix);
 	modeling.cmd("splot 'modeling_data.txt' pal");
@@ -145,13 +145,63 @@ double measureDeviation(double grid1[modelingXRange][modelingYRange], double gri
 	return sqrt(deviation/(double(modelingXRange)*double(modelingYRange) - 1.0));
 }
 
+/*void analyzer(vector<vector<PhaseSpace>> spaces) {
+	//for (vector<PhaseSpace> space : spaces) {
+	//	for (PhaseSpace pulse : space) {
+	//		pulse.spectroscopy_function();
+	//	}
+	//}
+	for (int i = 0; i < spaces.size(); i++) {
+		for (int j = 0; j < spaces[0].size(); j++) {
+			spaces[i][j].spectroscopy_function();
+		}
+	}
+}*/
+
+vector<vector<PhaseSpace>> analyzer(vector<vector<PhaseSpace>> spaces) {
+	//for (vector<PhaseSpace> space : spaces) {
+	//	for (PhaseSpace pulse : space) {
+	//		pulse.spectroscopy_function();
+	//	}
+	//}
+	vector<vector<PhaseSpace>> pulses;
+
+	for (int i = 0; i < spaces.size(); i++) {
+		vector<PhaseSpace> a;
+		for (int j = 0; j < spaces[0].size(); j++) {
+			a.push_back(spaces[i][j].spectroscopy_function());
+		}
+		pulses.push_back(a);
+	}
+	return pulses;
+}
+
+
 void pixelSum(vector<double> &pixelArray, vector<vector<PhaseSpace>> spaces){
 	double lowestXC = spaces[spaces.size()-1][spaces[0].size()-1].getXC();
 	double highestXC = spaces[0][0].getXC();
+	int i = 0;
 	for (int i = 0; i < spaces.size(); i++) {
 		for (int j = 0; j < spaces[0].size(); j++) {
-			pixelArray[int(map(spaces[i][j].getXC(), lowestXC, highestXC, 0, double(pixels)-1)+0.5)] += spaces[i][j].getXC();
+			pixelArray[int(map(spaces[i][j].getXC(), lowestXC, highestXC, 0, double(pixels) - 1) + 0.5)] += spaces[i][j].getXC() * spaces[i][j].getIntensityMultiplier();
 		}
+	}
+}
+
+void pixelSum(vector<double>& pixelArray, vector<PhaseSpace> spaces) {
+	double lowestXC = spaces[spaces.size() - 1].getXC();
+	double highestXC = spaces[0].getXC();
+	double counter = 0;
+	for (int i = 0; i < spaces.size(); i++) {
+		pixelArray[int(map(spaces[i].getXC(), lowestXC-0.01, highestXC, 0, double(pixels) - 1) + 0.5)] += spaces[i].getXC() * spaces[i].getIntensityMultiplier();
+		counter += spaces[i].getXC();// *spaces[i].getIntensityMultiplier();
+	}
+	cout << counter << endl;
+}
+
+void pixelSum(vector<double>& pixelArray, double highest, double lowest, vector<vector<double>> v) {
+	for (int i = 0; i < v.size(); i++) {
+		pixelArray[int(map(v[i][0], lowest, highest, 0, double(pixels) - 1) + 0.5)] += v[i][1];
 	}
 }
 
@@ -161,7 +211,7 @@ void specModeling(vector<double> &pixelArray) {
 	double lowestPixelEnergy = 0;
 	double energy = 0;
 	for (int i = 0; i < pixelArray.size(); i++) {
-		energy = pixelArray[i] / 6.421;
+		energy = pixelArray[i] / -6.421;
 		if (energy > highestPixelEnergy) {
 			highestPixelEnergy = energy;
 		}
@@ -173,7 +223,7 @@ void specModeling(vector<double> &pixelArray) {
 	ofstream spectrum;
 	spectrum.open("spectrum.tsv");
 	for (int i = 0; i < pixelArray.size(); i++) {
-		spectrum << i << "\t" << pixelArray[i] / 6.421 << endl;
+		spectrum << i << "\t" << pixelArray[i] / -6.421 << endl;
 	}
 	spectrum.close();
 

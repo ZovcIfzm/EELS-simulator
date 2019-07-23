@@ -28,6 +28,7 @@ void mainSequence() {
 		vector<PhaseSpace> splitPulses = initialPulse.split();
 
 		vector<vector<PhaseSpace>> allPulses;
+		
 		for (PhaseSpace p : splitPulses) {
 			allPulses.push_back(p.shatter(v));
 		}
@@ -39,7 +40,7 @@ void mainSequence() {
 		//measureDeviation(graphingMap, graphingMap3);
 		//psComparison(shatteredPulses[0], initialPulse);
 		//grid_subtraction(graphingMap, graphingMap3, graphingMap2);
-		//modeling(graphingMap3);
+		//modeling(graphingMap);
 		//modeling(graphingMap3);
 		//for (int i = 0; i < modelingXRange; i++) {
 		//	for (int j = 0; j < modelingYRange; j++) {
@@ -47,8 +48,15 @@ void mainSequence() {
 		//	}
 		//}
 
+
+			
+		vector<vector<PhaseSpace>> end = analyzer(allPulses);
+		
+		
 		vector<double> pixelArray(pixels);
-		pixelSum(pixelArray, allPulses);
+		pixelSum(pixelArray, end);
+		//pixelSum(pixelArray, shatteredPulses);
+		//pixelSum(pixelArray, -113.5, -625, v);
 		specModeling(pixelArray);
 
 	}

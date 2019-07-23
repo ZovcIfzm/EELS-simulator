@@ -6,7 +6,14 @@ void summing(vector<PhaseSpace> spaces, double graphingGrid[modelingXRange][mode
 void summing(PhaseSpace space, double graphingGrid[modelingXRange][modelingYRange]);
 void modeling(double modelMatrix[modelingXRange][modelingYRange]);
 void pause();
+
+//void analyzer(vector<vector<PhaseSpace>> spaces);
+vector<vector<PhaseSpace>> analyzer(vector<vector<PhaseSpace>> spaces);
+
 void pixelSum(vector<double> &pixelArray, vector<vector<PhaseSpace>> spaces);
+void pixelSum(vector<double>& pixelArray, vector<PhaseSpace> spaces);
+void pixelSum(vector<double>& pixelArray, double highest, double lowest, vector<vector<double>> v);
+
 void specModeling(vector<double> &pixelArray);
 
 void grid_subtraction(double grid1[modelingXRange][modelingYRange], double grid2[modelingXRange][modelingYRange], double grid3[modelingXRange][modelingYRange]);
