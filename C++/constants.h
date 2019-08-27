@@ -19,6 +19,8 @@
 //Miscellaneous defined variables
 #define splitNumber 1001 //Needs to be int, to be used as array size & needs to be odd in order for doubleintensityMultiplier towork (to sum up the center correctly, with even it's unsymmetric for some reason)
 #define M_PI 3.14159265358979323846264338328
+#define RF_LENS_COEFFICIENT 0.0002232305
+#define MAG_LENS_COEFFICIENT 2800000000
 #define modelingXRange 51 //Is 51 so that there is a middle number i.e. 0-24, 25, 26-50
 #define modelingYRange 51 //Is 51 so that there is a middle number i.e. 0-24, 25, 26-50
 #define pixels 500

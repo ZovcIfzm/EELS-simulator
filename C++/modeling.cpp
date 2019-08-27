@@ -211,7 +211,7 @@ void specModeling(vector<double> &pixelArray) {
 	double lowestPixelEnergy = 0;
 	double energy = 0;
 	for (int i = 0; i < pixelArray.size(); i++) {
-		energy = pixelArray[i] / -6.421;
+		energy = pixelArray[i] / 6.421;
 		if (energy > highestPixelEnergy) {
 			highestPixelEnergy = energy;
 		}
@@ -223,7 +223,7 @@ void specModeling(vector<double> &pixelArray) {
 	ofstream spectrum;
 	spectrum.open("spectrum.tsv");
 	for (int i = 0; i < pixelArray.size(); i++) {
-		spectrum << i << "\t" << pixelArray[i] / -6.421 << endl;
+		spectrum << i << "\t" << pixelArray[i] / 6.421 << endl;
 	}
 	spectrum.close();
 

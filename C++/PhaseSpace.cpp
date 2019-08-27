@@ -142,9 +142,11 @@ double PhaseSpace::get_split_intensity_multiplier(double numSections, double sec
 	return intensityMultiplier;		
 }
 
-PhaseSpace PhaseSpace::evolution(double time){//To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
-	b += time;
-	bT += time;
+PhaseSpace PhaseSpace::evolution(double time){//--To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
+	//A divided by 1E6 was found in D code. Reason is unknown.
+	double postTime = time / 164.35;
+	b += postTime;
+	bT += postTime;
 	if(chirp>0){
 		VzDist = sqrt(1/((1/pow(hHeight,2))+pow((b/zDist),2)));
 	}
@@ -162,20 +164,22 @@ PhaseSpace PhaseSpace::evolution(double time){//To deal with processing we might
 	hWidth = sqrt(1/((1/pow(zDist,2))-pow(chirp/VzDist,2)));
 	hDepth = sqrt(1/((1/pow(xDist,2))-pow(chirpT/VxDist,2)));
 
-	zC += VzC * time;
+	zC += VzC * postTime;
+	xC += hDepthVel * postTime;
 	return *this;
 }
 
-PhaseSpace PhaseSpace::RFLens(double changeChirp){
-	chirp += changeChirp;
+PhaseSpace PhaseSpace::RFLens(double power){
+	chirp += sqrt(power)*RF_LENS_COEFFICIENT;
 	zDist = sqrt(1/((1/pow(hWidth,2))+pow(chirp/VzDist,2)));
 	b = chirp*pow(zDist/VzDist,2);
 	hHeight = sqrt(1/((1/pow(VzDist,2))-pow(b/zDist,2)));
 	return *this;
 }
 
-PhaseSpace PhaseSpace::mag_lens(double changechirpT){
-	chirpT += changechirpT;
+PhaseSpace PhaseSpace::mag_lens(double power){
+	//A divided by 1E12 for power was found in D code. Reason is unknown.
+	chirpT += pow(power,2)*MAG_LENS_COEFFICIENT;
 	xDist = sqrt(1/((1/pow(hDepth,2))+pow(chirpT/VxDist,2)));
 	bT = chirpT*pow(xDist/VxDist,2);
 	hDepthVel = sqrt(1/((1/pow(VxDist,2))-pow(bT/xDist,2)));

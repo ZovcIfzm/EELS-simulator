@@ -31,7 +31,22 @@ void mainSequence() {
 		
 		for (PhaseSpace p : splitPulses) {
 			allPulses.push_back(p.shatter(v));
+		}/*
+		for (vector<PhaseSpace> a : allPulses) {
+			for (PhaseSpace p : a) {
+				p.evolution(1000);
+			}
+		}*/
+		allPulses[5][5].print();
+		for (int i = 0; i < allPulses.size(); i++) {
+			for (int j = 0; j < allPulses[i].size(); j++) {
+				allPulses[i][j] = allPulses[i][j].evolution(10000000000);
+			}
 		}
+		allPulses[5][5].print();
+
+		
+		
 		//vector<PhaseSpace> shatteredPulses = initialPulse.shatter(v);
 		
 
