@@ -1,7 +1,6 @@
 #include <iostream>
 #include "PhaseSpace.h"
 #include <math.h>
-#include <functional>
 #include <vector>
 #include "constants.h"
 //#include "data_processing.h"
@@ -190,51 +189,6 @@ PhaseSpace PhaseSpace::spectroscopy_function(){
 	xC = xC + 7172.99042634*VzC;
 	return *this;
 }
-
-
-tuple<double, double, double, double, double, double> PhaseSpace::valid_variables_check() {
-	tuple<double, double, double, double, double, double> response = make_tuple(0.0,0.0,0.0,0.0,0.0,0.0);
-	double hWidth_ = sqrt(1 / ((1 / (zDist*zDist)) - (chirp / VzDist)*(chirp / VzDist)));
-	double hHeight_ = sqrt(1 / ((1 / pow(VzDist, 2)) - pow(b / zDist, 2)));
-	double zDist_ = sqrt(1 / ((1 / pow(hWidth, 2)) + pow(chirp / VzDist, 2)));
-	double VzDist_ = sqrt(1 / ((1 / pow(hHeight, 2)) + pow((b / zDist), 2)));
-	double chirp_ = b * pow(VzDist / zDist, 2);
-	double b_ = chirp * pow(zDist / VzDist, 2);
-	cout << "Checks" << endl;
-	if (hWidth / hWidth_ < 1.01 && hWidth / hWidth_ > 0.99) get<0>(response) = 1;
-	else	get<0>(response) = hWidth/hWidth_;
-	if (hHeight / hHeight_ < 1.01 && hHeight / hHeight_ > 0.99) get<1>(response) = 1;
-	else	get<1>(response) = hHeight/hHeight_;
-	if (zDist / zDist_ < 1.01 && zDist / zDist_ > 0.99) get<2>(response) = 1;
-	else	get<2>(response) = zDist/zDist_;
-	if (VzDist / VzDist_ < 1.01 && VzDist / VzDist_ > 0.99) get<3>(response) = 1;
-	else	get<3>(response) = VzDist/VzDist_;
-	if (chirp / chirp_ < 1.01 && chirp / chirp_ > 0.99) get<4>(response) = 1;
-	else	get<4>(response) = chirp/chirp_;
-	if (b / b_ < 1.01 && b / b_ > 0.99) get<5>(response) = 1;
-	else	get<5>(response) = b/b_;
-	return response;
-}
-
-void PhaseSpace::print(){
-	cout << "hWidth: " << hWidth << "  " <<    " hDepth: " << hDepth << endl;;
-	cout << "hHeight: " << hHeight << " " <<   " hDepthVelocity: " << hDepthVel << endl;
-	cout << "VzIntDist: " << VzDist <<    " VxIntDist: " << VxDist << endl;
-	cout << "zIntDist: " << zDist << " " << " xIntDist: " << xDist << endl;
-	cout << "chirp: " << chirp << " " <<       " chirpT: " << chirpT << endl;
-	cout << "b: " << b << "     " <<           " bT: " << bT << endl;
-	cout << "VzC: " << VzC << "   " <<         "zC: " << zC << endl;
-	cout << "xC: " << xC << endl;
-	cout << "pulseEnergy: " << pulseEnergy << endl;
-	cout << "intensityMultiplier: " << intensityMultiplier << endl;
-	//cout << "totalintensityMultiplier from PixelSum: " << sumUp());
-	cout << endl;
-	cout << "Longitudinal Emmittence Conserved: " << longitudinal_area_conservation(hWidth, VzDist, hHeight, zDist) << endl;
-	cout << "Transverse Emmittence Conserved: " << transverse_area_conservation(hDepth, VxDist, hDepthVel, xDist) << endl;
-	cout << endl;
-}
-
-//DEBUGGING FUNCTIONS
 
 //Accessor methods
 double PhaseSpace::getHWidth(){return hWidth;}

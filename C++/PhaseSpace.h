@@ -4,7 +4,6 @@
 #include "constants.h"
 using namespace std;
 
-
 class PhaseSpace{
 private:
 	double hWidth, hHeight, VzDist, zDist, chirp, b, pulseEnergy, intensityMultiplier,
@@ -20,15 +19,15 @@ public:
 	PhaseSpace(vector<PhaseSpace> spaces);
 	vector<PhaseSpace> split();
 	vector<PhaseSpace> PhaseSpace::shatter(vector<vector<double>> data);
+
+	//Evolution methods
 	PhaseSpace evolution(double time);
 	PhaseSpace RFLens(double changeChirp);
 	PhaseSpace mag_lens(double changeChirpT);
 	PhaseSpace spectroscopy_function();
-	tuple<double, double, double, double, double, double> valid_variables_check();
+
+	//Debugging methods
 	double get_split_intensity_multiplier(double numSections, double sectionNum, double hHeight, double hWidth);
-	bool longitudinal_area_conservation(double hDimensionW, double distH, double hDimensionH, double distW);
-	bool transverse_area_conservation(double hDimensionW, double distH, double hDimensionH, double distW);
-	void print();
 
 	//Accessor methods
 	double getHWidth();

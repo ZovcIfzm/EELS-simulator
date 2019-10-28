@@ -5,6 +5,7 @@
 #include "constants.h"
 #include "modeling.h"
 #include "data_processing.h"
+#include "statistics.h"
 #include "main_sequence.h"
 #include <fstream>;
 using namespace std;
@@ -37,16 +38,15 @@ void mainSequence() {
 				p.evolution(1000);
 			}
 		}*/
-		allPulses[5][5].print();
+		print(allPulses[5][5]);
 		for (int i = 0; i < allPulses.size(); i++) {
 			for (int j = 0; j < allPulses[i].size(); j++) {
 				allPulses[i][j] = allPulses[i][j].evolution(10000000000);
 			}
 		}
-		allPulses[5][5].print();
-
-		
-		
+		print(allPulses[5][5]);
+			
+		cout << "energy total: " << check_energy_conservation(allPulses);
 		//vector<PhaseSpace> shatteredPulses = initialPulse.shatter(v);
 		
 
@@ -63,10 +63,7 @@ void mainSequence() {
 		//	}
 		//}
 
-
-			
 		vector<vector<PhaseSpace>> end = analyzer(allPulses);
-		
 		
 		vector<double> pixelArray(pixels);
 		pixelSum(pixelArray, end);

@@ -113,6 +113,7 @@
     <ClCompile Include="C++\modeling.cpp" />
     <ClCompile Include="C++\PhaseSpace.cpp" />
     <ClCompile Include="c++\Source.cpp" />
+    <ClCompile Include="C++\statistics.cpp" />
     <ClCompile Include="c++\test_class.cpp" />
     <ClCompile Include="c++\using_gnuplot.cpp" />
     <ClCompile Include="Extra Libraries\gnuplot\gnuplot-cpp\example.cc">
@@ -125,6 +126,7 @@
     <ClInclude Include="C++\main_sequence.h" />
     <ClInclude Include="C++\modeling.h" />
     <ClInclude Include="C++\PhaseSpace.h" />
+    <ClInclude Include="C++\statistics.h" />
     <ClInclude Include="c++\test_class.h" />
     <ClInclude Include="c++\using_gnuplot.h" />
     <ClInclude Include="Extra Libraries\gnuplot\gnuplot-cpp\gnuplot_i.hpp" />

@@ -3,8 +3,8 @@
 //Defined variables (no need to be included in cpp file, they only need to be written once)
 //Debugging
 	//Printing
-#define printStarts true
-#define printEnds true
+#define printStarts false
+#define printEnds false
 #define printInitialPhaseSpace true
 #define printFinalPhaseSpace true
 #define modelFinalPhaseSpace false

@@ -42,6 +42,9 @@
     <ClCompile Include="C++\PhaseSpace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C++\statistics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="c++\constants.h">
@@ -66,6 +69,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C++\PhaseSpace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C++\statistics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
