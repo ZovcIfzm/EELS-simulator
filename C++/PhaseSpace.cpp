@@ -145,22 +145,22 @@ double PhaseSpace::intensity_integration(double xHalfRange, double yHalfRange, d
 	return intensityValue;
 }
 
-void PhaseSpace::grid_integration(double xHalfRange, double yHalfRange, double xOffset, double yOffset, double grid[modelingXRange][modelingYRange]) {
+void PhaseSpace::grid_integration(double xHalfRange, double yHalfRange, double xOffset, double yOffset, double grid[modelingXRange][modelingYRange], double xGridHalfRange, double yGridHalfRange) {
 	double accuracyY = 2 * yHalfRange / 199;
 	double accuracyX = 2 * xHalfRange / 199;
-	double x = -xHalfRange + accuracyX / 2;
-	double y = -yHalfRange + accuracyY / 2;
+	double x = -xHalfRange + xOffset + accuracyX / 2;
+	double y = -yHalfRange + yOffset + accuracyY / 2;
 
 	double intensityValue = 0;
 
-	while (y < yHalfRange) {
-		while (x < xHalfRange) {
-			grid[int(map(x, -xHalfRange, xHalfRange, 0, double(modelingXRange) - 1) + 0.5)][int(map(y, -yHalfRange, yHalfRange, 0, double(modelingYRange) - 1) + 0.5)]
+	while (y < yHalfRange + yOffset) {
+		while (x < xHalfRange + xOffset) {
+			grid[int(map(x, -xGridHalfRange, xGridHalfRange, 0, double(modelingXRange) - 1) + 0.5)][int(map(y, -yGridHalfRange, yGridHalfRange, 0, double(modelingYRange) - 1) + 0.5)]
 				+= accuracyX * accuracyY * intensity(x, y);
 			x += accuracyX;
 		}
 		y += accuracyY;
-		x = -xHalfRange + accuracyX / 2;
+		x = -xHalfRange + xOffset + accuracyX / 2;
 	}
 }
 

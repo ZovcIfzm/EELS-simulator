@@ -9,7 +9,6 @@ double check_energy_conservation(vector<vector<PhaseSpace>> shattered);
 void summing(vector<PhaseSpace> spaces, double graphingGrid[modelingXRange][modelingYRange]);
 void summing(PhaseSpace space, double graphingGrid[modelingXRange][modelingYRange]);
 
-
 void grid_subtraction(double grid1[modelingXRange][modelingYRange], double grid2[modelingXRange][modelingYRange], double grid3[modelingXRange][modelingYRange]);
 double measureDeviation(double grid1[modelingXRange][modelingYRange], double grid2[modelingXRange][modelingYRange]);
 

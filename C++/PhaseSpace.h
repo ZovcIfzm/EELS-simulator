@@ -30,7 +30,7 @@ public:
 	double intensity(double x, double y);
 	double get_intensity(double numSections, double sectionNum);
 	double intensity_integration(double xHalfRange, double yHalfRange, double xOffset, double yOffset);
-	void grid_integration(double xHalfRange, double yHalfRange, double xOffset, double yOffset, double grid[modelingXRange][modelingYRange]);
+	void PhaseSpace::grid_integration(double xHalfRange, double yHalfRange, double xOffset, double yOffset, double grid[modelingXRange][modelingYRange], double xGridHalfRange, double yGridHalfRange);
 
 	//Accessor methods
 	double getHWidth();

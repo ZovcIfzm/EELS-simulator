@@ -78,27 +78,6 @@ void print(PhaseSpace ps) {
 	cout << endl;
 }
 
-void phase_space_integration(double grid[modelingXRange][modelingYRange], PhaseSpace ps, double xHalfRange, double xAccuracy, double xOffset, double yHalfRange, double yAccuracy, double yOffset) {
-	double negTwohWidthsq = -2 * ps.getHWidth() * ps.getHWidth();
-	double twoVzIntDistsq = 2 * ps.getVzDist() * ps.getVzDist();
-	double twoPIhWidthVzIntDist = 2 * M_PI * (ps.getHWidth() * ps.getVzDist());
-	double x = -xHalfRange + xAccuracy / 2;
-	double y = -yHalfRange + yAccuracy / 2;
-	while (y < yHalfRange) {
-		while (x < xHalfRange) {
-			if (x + ps.getZC() > -xHalfRange && x + ps.getZC() < xHalfRange && y + ps.getVzC() > yHalfRange && y + ps.getVzC() < yHalfRange) {
-				grid[int(map(x, -xHalfRange, xHalfRange, 0, modelingXRange - 1) + 0.5)][int(map(y, -yHalfRange, yHalfRange, 0, modelingYRange - 1) + 0.5)] += (xAccuracy * yAccuracy * ps.intensity(x,y));
-				valueHolder1 += (xAccuracy * yAccuracy * ps.intensity(x,y));
-			}
-			x += xAccuracy;
-		}
-		y += yAccuracy;
-		x = -xHalfRange + xAccuracy / 2;
-	}
-}
-
-
-
 void summing(vector<PhaseSpace> spaces, double grid[modelingXRange][modelingYRange]) {
 	double ySearchLB = -3.0 * splitNumber * spaces[0].getHHeight() - (-1 * spaces[spaces.size() - 1].getVzC());
 	double ySearchUB = 3.0 * splitNumber * spaces[0].getHHeight() + (-1 * spaces[spaces.size() - 1].getVzC());
@@ -109,30 +88,19 @@ void summing(vector<PhaseSpace> spaces, double grid[modelingXRange][modelingYRan
 	double yPulseLB = -3.5 * spaces[0].getHHeight();
 	double xPulseUB = 3.5 * spaces[0].getHWidth();
 	double xPulseLB = -3.5 * spaces[0].getHWidth();
-
-	double yAccuracy = (yPulseUB - yPulseLB) / 199;
-	double xAccuracy = (xPulseUB - xPulseLB) / 199;
-
-	double negTwohWidthsq = -2 * spaces[0].getHWidth() * spaces[0].getHWidth();
-	double twoVzIntDistsq = 2 * spaces[0].getVzDist() * spaces[0].getVzDist();
-	double twoPIhWidthVzIntDist = 2 * M_PI * (spaces[0].getHWidth() * spaces[0].getVzDist());
-
-	double x = xPulseLB + xAccuracy / 2;
-	double y = yPulseLB + yAccuracy / 2;
+	
 	for (PhaseSpace pulse : spaces) {
-		x = xPulseLB + xAccuracy / 2;
-		y = yPulseLB + yAccuracy / 2;
-		while (y < yPulseUB) {
-			while (x < xPulseUB) {
-				if (x + pulse.getZC() > xSearchLB && x + pulse.getZC() < xSearchUB && y + pulse.getVzC() > ySearchLB && y + pulse.getVzC() < ySearchUB) {
-					grid[int(map(x + pulse.getZC(), xSearchLB, xSearchUB, 0, double(modelingXRange) - 1) + 0.5)][int(map(y + pulse.getVzC(), ySearchLB, ySearchUB, 0, double(modelingYRange) - 1) + 0.5)] += pulse.getIntensityMultiplier() * (xAccuracy * yAccuracy * pulse.intensity(x, y));
-					valueHolder2 += pulse.getIntensityMultiplier() * (xAccuracy * yAccuracy * pulse.intensity(x, y));
-				}
-				x += xAccuracy;
-			}
-			y += yAccuracy;
-			x = xPulseLB + xAccuracy / 2;
-		}
+		//Convert to grid_integration parameters
+		double xGridHalfRange = (xSearchUB - xSearchLB) / 2;
+		double yGridHalfRange = (ySearchUB - ySearchLB) / 2;
+
+		double xHalfRange = (xPulseUB - xPulseLB) / 2;
+		double yHalfRange = (yPulseUB - yPulseLB) / 2;
+
+		double xOffset = (xPulseUB + xPulseLB) / 2;
+		double yOffset = (yPulseUB + yPulseLB) / 2;
+
+		pulse.grid_integration(xHalfRange, yHalfRange, xOffset, yOffset, grid, xGridHalfRange, yGridHalfRange);
 	}
 }
 
@@ -141,24 +109,16 @@ void summing(PhaseSpace space, double grid[modelingXRange][modelingYRange]) {
 	double ySearchUB = 3.5 * space.getHHeight();
 	double xSearchLB = -3.5 * space.getHWidth();
 	double xSearchUB = 3.5 * space.getHWidth();
-	double accuracyY = (ySearchUB - ySearchLB) / 199;  // Cannot be 99 or else for some reason the middle (25th row out of 50) takes half that of all the other rows. Look into?
-	double accuracyX = (xSearchUB - xSearchLB) / 199;
-	double negTwohWidthsq = -2 * space.getHWidth() * space.getHWidth();
-	double twoVzIntDistsq = 2 * space.getVzDist() * space.getVzDist();
-	double twoPIhWidthVzIntDist = 2 * M_PI * (space.getHWidth() * space.getVzDist());
-	double x = xSearchLB + accuracyX / 2;
-	double y = ySearchLB + accuracyY / 2;
-	while (y < ySearchUB) {
-		while (x < xSearchUB) {
-			if (x > xSearchLB && x < xSearchUB && y > ySearchLB && y < ySearchUB) {
-				grid[int(map(x, xSearchLB, xSearchUB, 0, double(modelingXRange) - 1) + 0.5)][int(map(y, ySearchLB, ySearchUB, 0, double(modelingYRange) - 1) + 0.5)] += (accuracyX * accuracyY * space.intensity(x,y));
-				valueHolder1 += (accuracyX * accuracyY * space.intensity(x,y));
-			}
-			x += accuracyX;
-		}
-		y += accuracyY;
-		x = xSearchLB + accuracyX / 2;
-	}
+
+	//Convert to grid_integration parameters
+	double xHalfRange = (xSearchUB - xSearchLB) / 2;
+	double yHalfRange = (ySearchUB - ySearchLB) / 2;
+
+	//There are no offsets, phase space summing is centered around 0.
+	double xOffset = 0;
+	double yOffset = 0;
+
+	space.grid_integration(xHalfRange, yHalfRange, xOffset, yOffset, grid, xHalfRange, yHalfRange);
 }
 
 void grid_subtraction(double grid1[modelingXRange][modelingYRange], double grid2[modelingXRange][modelingYRange], double grid3[modelingXRange][modelingYRange]) {
