@@ -28,7 +28,9 @@ public:
 
 	//Debugging methods
 	double intensity(double x, double y);
-	double integration(double numSections, double sectionNum);
+	double get_intensity(double numSections, double sectionNum);
+	double intensity_integration(double xHalfRange, double yHalfRange, double xOffset, double yOffset);
+	void grid_integration(double xHalfRange, double yHalfRange, double xOffset, double yOffset, double grid[modelingXRange][modelingYRange]);
 
 	//Accessor methods
 	double getHWidth();

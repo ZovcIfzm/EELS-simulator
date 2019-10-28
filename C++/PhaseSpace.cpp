@@ -2,7 +2,7 @@
 #include "PhaseSpace.h"
 #include <math.h>
 #include <vector>
-#include "constants.h"
+#include "statistics.h"
 //#include "data_processing.h"
 //#include "using_gnuplot.h"
 //#include "cpp_dec_float.hpp"
@@ -64,7 +64,7 @@ vector<PhaseSpace> PhaseSpace::split(){
 	//phaseSpaces.length = to!int(spaces);
 	double intensityMultipliers [splitNumber];
 	for (int i = 0; i < splitNumber; i++){
-		intensityMultipliers[i] = integration(splitNumber, i+1);
+		intensityMultipliers[i] = get_intensity(splitNumber, i+1);
 	}
 	double splitHHeight = 0;
 	double splitVzDist = 0;
@@ -108,32 +108,62 @@ double PhaseSpace::intensity(double x, double y) {
 	return exp((x * x / (negTwohWidthsq)) - ((y - chirp * x) * (y - chirp * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist);
 }
 
-double PhaseSpace::integration(double numSections, double sectionNum){
+double PhaseSpace::get_intensity(double numSections, double sectionNum){
 	//Gets intensity % proportionally to 1 (like if its gets .5 its 50% of total intensity)
 	//search with xSearch & ySearch = +- 5.803*hWidth or hHeight to get the total intensity of the phase space (equal to 1)	
 	double ySearchLB = -catchFactor*hHeight + ((catchFactor*hHeight*2.0/numSections)*(sectionNum-1));
 	double ySearchUB = catchFactor*hHeight - (catchFactor*hHeight*2.0/numSections)*(numSections - sectionNum);
 	double xSearchLB = -catchFactor*hWidth;
 	double xSearchUB = catchFactor*hWidth;
-	double accuracyY = (ySearchUB-ySearchLB)/199;
-	double accuracyX = (xSearchUB-xSearchLB)/199;
-	double x = xSearchLB+accuracyX/2;
-	double y = ySearchLB+accuracyY/2;
 
-	double intensityMultiplier = 0;
-	if(numSections==sectionNum){
-		ySearchUB += 0.000000000001;
-	}
-	while(y < ySearchUB-0.000000000001){
-		while(x < xSearchUB){
-			intensityMultiplier += accuracyX*accuracyY*intensity(x, y);
+	//Convert to intensity_integration parameters
+	double xHalfRange = (xSearchUB - xSearchLB) / 2;
+	double yHalfRange = (ySearchUB - ySearchLB) / 2;
+
+	double xOffset = (xSearchUB + xSearchLB) / 2;
+	double yOffset = (ySearchUB + ySearchLB) / 2;
+
+	return intensity_integration(xHalfRange, yHalfRange, xOffset, yOffset);
+}
+
+double PhaseSpace::intensity_integration(double xHalfRange, double yHalfRange, double xOffset, double yOffset){
+	double accuracyY = 2*yHalfRange / 199;
+	double accuracyX = 2*xHalfRange / 199;
+	double x = -xHalfRange + xOffset + accuracyX / 2;
+	double y = -yHalfRange + yOffset + accuracyY / 2;
+
+	double intensityValue = 0;
+
+	while (y < yHalfRange + yOffset) {
+		while (x < xHalfRange + xOffset) {
+			intensityValue += accuracyX * accuracyY * intensity(x, y);
 			x += accuracyX;
 		}
 		y += accuracyY;
-		x = xSearchLB+accuracyX/2;
+		x = -xHalfRange + xOffset + accuracyX / 2;
 	}
-	return intensityMultiplier;		
+	return intensityValue;
 }
+
+void PhaseSpace::grid_integration(double xHalfRange, double yHalfRange, double xOffset, double yOffset, double grid[modelingXRange][modelingYRange]) {
+	double accuracyY = 2 * yHalfRange / 199;
+	double accuracyX = 2 * xHalfRange / 199;
+	double x = -xHalfRange + accuracyX / 2;
+	double y = -yHalfRange + accuracyY / 2;
+
+	double intensityValue = 0;
+
+	while (y < yHalfRange) {
+		while (x < xHalfRange) {
+			grid[int(map(x, -xHalfRange, xHalfRange, 0, double(modelingXRange) - 1) + 0.5)][int(map(y, -yHalfRange, yHalfRange, 0, double(modelingYRange) - 1) + 0.5)]
+				+= accuracyX * accuracyY * intensity(x, y);
+			x += accuracyX;
+		}
+		y += accuracyY;
+		x = -xHalfRange + accuracyX / 2;
+	}
+}
+
 
 PhaseSpace PhaseSpace::evolution(double time){//--To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 	//A divided by 1E6 was found in D code. Reason is unknown.

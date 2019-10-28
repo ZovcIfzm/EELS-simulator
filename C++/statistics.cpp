@@ -110,28 +110,28 @@ void summing(vector<PhaseSpace> spaces, double grid[modelingXRange][modelingYRan
 	double xPulseUB = 3.5 * spaces[0].getHWidth();
 	double xPulseLB = -3.5 * spaces[0].getHWidth();
 
-	double accuracyY = (yPulseUB - yPulseLB) / 199;
-	double accuracyX = (xPulseUB - xPulseLB) / 199;
+	double yAccuracy = (yPulseUB - yPulseLB) / 199;
+	double xAccuracy = (xPulseUB - xPulseLB) / 199;
 
 	double negTwohWidthsq = -2 * spaces[0].getHWidth() * spaces[0].getHWidth();
 	double twoVzIntDistsq = 2 * spaces[0].getVzDist() * spaces[0].getVzDist();
 	double twoPIhWidthVzIntDist = 2 * M_PI * (spaces[0].getHWidth() * spaces[0].getVzDist());
 
-	double x = xPulseLB + accuracyX / 2;
-	double y = yPulseLB + accuracyY / 2;
+	double x = xPulseLB + xAccuracy / 2;
+	double y = yPulseLB + yAccuracy / 2;
 	for (PhaseSpace pulse : spaces) {
-		x = xPulseLB + accuracyX / 2;
-		y = yPulseLB + accuracyY / 2;
+		x = xPulseLB + xAccuracy / 2;
+		y = yPulseLB + yAccuracy / 2;
 		while (y < yPulseUB) {
 			while (x < xPulseUB) {
 				if (x + pulse.getZC() > xSearchLB && x + pulse.getZC() < xSearchUB && y + pulse.getVzC() > ySearchLB && y + pulse.getVzC() < ySearchUB) {
-					
-					valueHolder2 += pulse.getIntensityMultiplier() * (accuracyX * accuracyY * pulse.intensity(x, y));
+					grid[int(map(x + pulse.getZC(), xSearchLB, xSearchUB, 0, double(modelingXRange) - 1) + 0.5)][int(map(y + pulse.getVzC(), ySearchLB, ySearchUB, 0, double(modelingYRange) - 1) + 0.5)] += pulse.getIntensityMultiplier() * (xAccuracy * yAccuracy * pulse.intensity(x, y));
+					valueHolder2 += pulse.getIntensityMultiplier() * (xAccuracy * yAccuracy * pulse.intensity(x, y));
 				}
-				x += accuracyX;
+				x += xAccuracy;
 			}
-			y += accuracyY;
-			x = xPulseLB + accuracyX / 2;
+			y += yAccuracy;
+			x = xPulseLB + xAccuracy / 2;
 		}
 	}
 }
@@ -150,9 +150,8 @@ void summing(PhaseSpace space, double grid[modelingXRange][modelingYRange]) {
 	double y = ySearchLB + accuracyY / 2;
 	while (y < ySearchUB) {
 		while (x < xSearchUB) {
-			if (x + space.getZC() > xSearchLB && x + space.getZC() < xSearchUB && y + space.getVzC() > ySearchLB && y + space.getVzC() < ySearchUB) {
-				grid[int(map(x, xSearchLB, xSearchUB, 0, modelingXRange - 1) + 0.5)][int(map(y, ySearchLB, ySearchUB, 0, modelingYRange - 1) + 0.5)] += (accuracyX * accuracyY * space.intensity(x,y));
-				//valueHolder += accuracyX*accuracyY*(1 / (2 * M_PI))*exp((x*x + y * y) / (-2));
+			if (x > xSearchLB && x < xSearchUB && y > ySearchLB && y < ySearchUB) {
+				grid[int(map(x, xSearchLB, xSearchUB, 0, double(modelingXRange) - 1) + 0.5)][int(map(y, ySearchLB, ySearchUB, 0, double(modelingYRange) - 1) + 0.5)] += (accuracyX * accuracyY * space.intensity(x,y));
 				valueHolder1 += (accuracyX * accuracyY * space.intensity(x,y));
 			}
 			x += accuracyX;
