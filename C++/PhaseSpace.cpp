@@ -64,8 +64,7 @@ vector<PhaseSpace> PhaseSpace::split(){
 	//phaseSpaces.length = to!int(spaces);
 	double intensityMultipliers [splitNumber];
 	for (int i = 0; i < splitNumber; i++){
-		intensityMultipliers[i] = get_split_intensity_multiplier(splitNumber, i+1, hHeight, hWidth);
-		//intensityMultipliers[i] = 0.01;
+		intensityMultipliers[i] = integration(splitNumber, i+1);
 	}
 	double splitHHeight = 0;
 	double splitVzDist = 0;
@@ -102,37 +101,32 @@ vector<PhaseSpace> PhaseSpace::shatter(vector<vector<double>> spectroTable) {
 	return shatteredPulses;
 }
 
-double PhaseSpace::get_split_intensity_multiplier(double numSections, double sectionNum, double hHeight, double hWidth){
+double PhaseSpace::intensity(double x, double y) {
+	double negTwohWidthsq = -2 * hWidth * hWidth;
+	double twoVzIntDistsq = 2 * VzDist * VzDist;
+	double twoPIhWidthVzIntDist = 2 * M_PI * (hWidth * VzDist);
+	return exp((x * x / (negTwohWidthsq)) - ((y - chirp * x) * (y - chirp * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist);
+}
+
+double PhaseSpace::integration(double numSections, double sectionNum){
 	//Gets intensity % proportionally to 1 (like if its gets .5 its 50% of total intensity)
 	//search with xSearch & ySearch = +- 5.803*hWidth or hHeight to get the total intensity of the phase space (equal to 1)	
 	double ySearchLB = -catchFactor*hHeight + ((catchFactor*hHeight*2.0/numSections)*(sectionNum-1));
 	double ySearchUB = catchFactor*hHeight - (catchFactor*hHeight*2.0/numSections)*(numSections - sectionNum);
 	double xSearchLB = -catchFactor*hWidth;
 	double xSearchUB = catchFactor*hWidth;
-	double accuracyY = (ySearchUB-ySearchLB)/99;
-	double accuracyX = (xSearchUB-xSearchLB)/99;
-	//double x = xSearchLB;
-	//double y = ySearchLB;
+	double accuracyY = (ySearchUB-ySearchLB)/199;
+	double accuracyX = (xSearchUB-xSearchLB)/199;
 	double x = xSearchLB+accuracyX/2;
 	double y = ySearchLB+accuracyY/2;
+
 	double intensityMultiplier = 0;
-	double negTwohWidthsq = -2*hWidth*hWidth;
-	double twoVzIntDistsq = 2*VzDist*VzDist;
-	double twoPIhWidthVzIntDist = 2*M_PI*(hWidth*VzDist);
 	if(numSections==sectionNum){
 		ySearchUB += 0.000000000001;
 	}
 	while(y < ySearchUB-0.000000000001){
 		while(x < xSearchUB){
-			intensityMultiplier += accuracyX*accuracyY*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthVzIntDist);
-			/*DEBUGGING to test how testMax (which is the maximum value for each of the coordinates that intensityMultiplier checks for) 
-				compares to valueHolder (the value at [0,0]- the absolute maximum of the gaussian function)
-			if(accuracyX*accuracyY*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq) > testMax){
-				testMax = accuracyX*accuracyY*exp((x*x/(negTwohWidthsq))-((y-chirp*x)*(y-chirp*x)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq);
-				testMaxXCoordinate = x;
-				testMaxYCoordinate = y;
-				valueHolder = accuracyX*accuracyY*exp((0/(negTwohWidthsq))-((0-chirp*0)*(0-chirp*0)/(twoVzIntDistsq)))/(twoPIhWidthsqVzIntDistsq);
-			}*/
+			intensityMultiplier += accuracyX*accuracyY*intensity(x, y);
 			x += accuracyX;
 		}
 		y += accuracyY;

@@ -27,7 +27,8 @@ public:
 	PhaseSpace spectroscopy_function();
 
 	//Debugging methods
-	double get_split_intensity_multiplier(double numSections, double sectionNum, double hHeight, double hWidth);
+	double intensity(double x, double y);
+	double integration(double numSections, double sectionNum);
 
 	//Accessor methods
 	double getHWidth();

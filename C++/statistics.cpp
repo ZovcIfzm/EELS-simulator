@@ -78,10 +78,28 @@ void print(PhaseSpace ps) {
 	cout << endl;
 }
 
-void summing(vector<PhaseSpace> spaces, double grid[modelingXRange][modelingYRange]) {
-	if (printStarts) {
-		cout << "summing multiple phase spaces started" << endl;
+void phase_space_integration(double grid[modelingXRange][modelingYRange], PhaseSpace ps, double xHalfRange, double xAccuracy, double xOffset, double yHalfRange, double yAccuracy, double yOffset) {
+	double negTwohWidthsq = -2 * ps.getHWidth() * ps.getHWidth();
+	double twoVzIntDistsq = 2 * ps.getVzDist() * ps.getVzDist();
+	double twoPIhWidthVzIntDist = 2 * M_PI * (ps.getHWidth() * ps.getVzDist());
+	double x = -xHalfRange + xAccuracy / 2;
+	double y = -yHalfRange + yAccuracy / 2;
+	while (y < yHalfRange) {
+		while (x < xHalfRange) {
+			if (x + ps.getZC() > -xHalfRange && x + ps.getZC() < xHalfRange && y + ps.getVzC() > yHalfRange && y + ps.getVzC() < yHalfRange) {
+				grid[int(map(x, -xHalfRange, xHalfRange, 0, modelingXRange - 1) + 0.5)][int(map(y, -yHalfRange, yHalfRange, 0, modelingYRange - 1) + 0.5)] += (xAccuracy * yAccuracy * ps.intensity(x,y));
+				valueHolder1 += (xAccuracy * yAccuracy * ps.intensity(x,y));
+			}
+			x += xAccuracy;
+		}
+		y += yAccuracy;
+		x = -xHalfRange + xAccuracy / 2;
 	}
+}
+
+
+
+void summing(vector<PhaseSpace> spaces, double grid[modelingXRange][modelingYRange]) {
 	double ySearchLB = -3.0 * splitNumber * spaces[0].getHHeight() - (-1 * spaces[spaces.size() - 1].getVzC());
 	double ySearchUB = 3.0 * splitNumber * spaces[0].getHHeight() + (-1 * spaces[spaces.size() - 1].getVzC());
 	double xSearchLB = -3.5 * spaces[0].getHWidth();
@@ -107,8 +125,8 @@ void summing(vector<PhaseSpace> spaces, double grid[modelingXRange][modelingYRan
 		while (y < yPulseUB) {
 			while (x < xPulseUB) {
 				if (x + pulse.getZC() > xSearchLB && x + pulse.getZC() < xSearchUB && y + pulse.getVzC() > ySearchLB && y + pulse.getVzC() < ySearchUB) {
-					grid[int(map(x + pulse.getZC(), xSearchLB, xSearchUB, 0, double(modelingXRange) - 1) + 0.5)][int(map(y + pulse.getVzC(), ySearchLB, ySearchUB, 0, double(modelingYRange) - 1) + 0.5)] += pulse.getIntensityMultiplier() * (accuracyX * accuracyY * exp((x * x / (negTwohWidthsq)) - ((y - spaces[0].getChirp() * x) * (y - spaces[0].getChirp() * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist));
-					valueHolder2 += pulse.getIntensityMultiplier() * (accuracyX * accuracyY * exp((x * x / (negTwohWidthsq)) - ((y - spaces[0].getChirp() * x) * (y - spaces[0].getChirp() * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist));
+					
+					valueHolder2 += pulse.getIntensityMultiplier() * (accuracyX * accuracyY * pulse.intensity(x, y));
 				}
 				x += accuracyX;
 			}
@@ -116,15 +134,9 @@ void summing(vector<PhaseSpace> spaces, double grid[modelingXRange][modelingYRan
 			x = xPulseLB + accuracyX / 2;
 		}
 	}
-	if (printEnds) {
-		cout << "summing multiple phase spaces finished" << endl;
-	}
 }
 
 void summing(PhaseSpace space, double grid[modelingXRange][modelingYRange]) {
-	if (printStarts) {
-		cout << "summing single phase space started" << endl;
-	}
 	double ySearchLB = -3.5 * space.getHHeight();
 	double ySearchUB = 3.5 * space.getHHeight();
 	double xSearchLB = -3.5 * space.getHWidth();
@@ -139,17 +151,14 @@ void summing(PhaseSpace space, double grid[modelingXRange][modelingYRange]) {
 	while (y < ySearchUB) {
 		while (x < xSearchUB) {
 			if (x + space.getZC() > xSearchLB && x + space.getZC() < xSearchUB && y + space.getVzC() > ySearchLB && y + space.getVzC() < ySearchUB) {
-				grid[int(map(x, xSearchLB, xSearchUB, 0, modelingXRange - 1) + 0.5)][int(map(y, ySearchLB, ySearchUB, 0, modelingYRange - 1) + 0.5)] += (accuracyX * accuracyY * exp((x * x / (negTwohWidthsq)) - ((y - space.getChirp() * x) * (y - space.getChirp() * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist));
+				grid[int(map(x, xSearchLB, xSearchUB, 0, modelingXRange - 1) + 0.5)][int(map(y, ySearchLB, ySearchUB, 0, modelingYRange - 1) + 0.5)] += (accuracyX * accuracyY * space.intensity(x,y));
 				//valueHolder += accuracyX*accuracyY*(1 / (2 * M_PI))*exp((x*x + y * y) / (-2));
-				valueHolder1 += (accuracyX * accuracyY * exp((x * x / (negTwohWidthsq)) - ((y - space.getChirp() * x) * (y - space.getChirp() * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist));
+				valueHolder1 += (accuracyX * accuracyY * space.intensity(x,y));
 			}
 			x += accuracyX;
 		}
 		y += accuracyY;
 		x = xSearchLB + accuracyX / 2;
-	}
-	if (printEnds) {
-		cout << "summing single phase space finished" << endl;
 	}
 }
 

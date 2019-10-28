@@ -7,7 +7,7 @@
 #include "data_processing.h"
 #include "statistics.h"
 #include "main_sequence.h"
-#include <fstream>;
+#include <fstream>
 using namespace std;
 
 double counter = 0.0;
@@ -46,7 +46,7 @@ void mainSequence() {
 		}
 		print(allPulses[5][5]);
 			
-		cout << "energy total: " << check_energy_conservation(allPulses);
+		//cout << "energy total: " << check_energy_conservation(allPulses);
 		//vector<PhaseSpace> shatteredPulses = initialPulse.shatter(v);
 		
 
