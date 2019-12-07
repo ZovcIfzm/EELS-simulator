@@ -20,35 +20,49 @@ PhaseSpace finalPulse = initialPulse;
 void mainSequence() {
 	if (loadData != true) {
 		PhaseSpace modifiedPulse = initialPulse;
-		//vector<PhaseSpace> pulses = initialPulse.split();
 		finalPulse = modifiedPulse;
 
-		vector<vector<double>> v;
-		readSpec("Data files/hexogon BN-powder-eels.sl0", v);
-		
-		vector<PhaseSpace> splitPulses = initialPulse.split();
+		vector<vector<double>> specimen;
+		readSpec("Data files/hexogon BN-powder-eels.sl0", specimen);
+		normalizeSpecimen(specimen);
 
+		vector<PhaseSpace> splitPulses = initialPulse.split();
 		vector<vector<PhaseSpace>> allPulses;
-		
 		for (PhaseSpace p : splitPulses) {
-			allPulses.push_back(p.shatter(v));
-		}/*
+			allPulses.push_back(p.shatter(specimen));
+		}
+
+		initialPulse = initialPulse.evolution(100000);
+		vector<PhaseSpace> singleShatteredPulse = initialPulse.shatter(specimen);
+		
+		singleShatteredPulse = analyzer(singleShatteredPulse);
+		allPulses = analyzer(allPulses);
+		
+		vector<double> pixelArray(pixels);
+		vector<double> base(pixels);
+		pixelSum(pixelArray, singleShatteredPulse);
+		pixelSum(base, -113.5, -625, specimen);
+		specModeling(pixelArray);
+		specModeling(base);
+		cout <<"deviation: " << measureDeviation(base, pixelArray);
+		
+		/*
 		for (vector<PhaseSpace> a : allPulses) {
 			for (PhaseSpace p : a) {
 				p.evolution(1000);
 			}
 		}*/
-		print(allPulses[5][5]);
+		/*print(allPulses[5][5]);
 		for (int i = 0; i < allPulses.size(); i++) {
 			for (int j = 0; j < allPulses[i].size(); j++) {
 				allPulses[i][j] = allPulses[i][j].evolution(10000000000);
 			}
 		}
-		print(allPulses[5][5]);
-			
+		print(allPulses[5][5]);*/
+
 		//cout << "energy total: " << check_energy_conservation(allPulses);
 		//vector<PhaseSpace> shatteredPulses = initialPulse.shatter(v);
-		
+
 
 		//summing(shatteredPulses, graphingMap3);
 		//summing(initialPulse, graphingMap);
@@ -63,19 +77,14 @@ void mainSequence() {
 		//	}
 		//}
 
-		vector<vector<PhaseSpace>> end = analyzer(allPulses);
-		
-		vector<double> pixelArray(pixels);
-		pixelSum(pixelArray, end);
 		//pixelSum(pixelArray, shatteredPulses);
-		//pixelSum(pixelArray, -113.5, -625, v);
-		specModeling(pixelArray);
+		//specModeling(pixelArray);
 
 	}
-	else if (loadData)//Redundant - else would do just as fine as else if, but else if makes the logic easier to understand
+	else if (loadData) {//Redundant - else would do just as fine as else if, but else if makes the logic easier to understand
 		read_from_file("modeling_data.txt");
 		finalDataOutput();
-
+	}
 	// DEBUGGING in conjuction with code inside get_split_intensity_multiplier that assigns values to the printed variables
 	//cout << testMax << endl;
 	//cout << testMaxXCoordinate << endl;

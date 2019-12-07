@@ -139,18 +139,17 @@ double measureDeviation(double grid1[modelingXRange][modelingYRange], double gri
 	return sqrt(deviation / (double(modelingXRange) * double(modelingYRange) - 1.0));
 }
 
-/*void analyzer(vector<vector<PhaseSpace>> spaces) {
-	//for (vector<PhaseSpace> space : spaces) {
-	//	for (PhaseSpace pulse : space) {
-	//		pulse.spectroscopy_function();
-	//	}
-	//}
-	for (int i = 0; i < spaces.size(); i++) {
-		for (int j = 0; j < spaces[0].size(); j++) {
-			spaces[i][j].spectroscopy_function();
-		}
+double measureDeviation(vector<double> base, vector<double> compare) {//Compares two pixel sum vectors
+	if (base.size() != compare.size()) {
+		return -1;//Error code for debugging
 	}
-}*/
+	int size = base.size();
+	double deviation = 0;
+	for (int i = 0; i < size; ++i) {
+		deviation += pow(base[i] - compare[i], 2);
+	}
+	return sqrt(deviation / size);
+}
 
 vector<vector<PhaseSpace>> analyzer(vector<vector<PhaseSpace>> spaces) {
 	//for (vector<PhaseSpace> space : spaces) {
@@ -158,18 +157,30 @@ vector<vector<PhaseSpace>> analyzer(vector<vector<PhaseSpace>> spaces) {
 	//		pulse.spectroscopy_function();
 	//	}
 	//}
-	vector<vector<PhaseSpace>> pulses;
 
-	for (int i = 0; i < spaces.size(); i++) {
-		vector<PhaseSpace> a;
-		for (int j = 0; j < spaces[0].size(); j++) {
-			a.push_back(spaces[i][j].spectroscopy_function());
+	/*for (vector<PhaseSpace> &spaceSet : spaces) {
+		for (PhaseSpace &space: spaceSet){
+			space.spectroscopy_function();
 		}
-		pulses.push_back(a);
+	}*/
+	vector<vector<PhaseSpace>> returnSpaces;
+	for (int i = 0; i < spaces.size(); i++) {
+		vector<PhaseSpace> spaceSet;
+		for (int j = 0; j < spaces[0].size(); j++) {
+			spaceSet.push_back(spaces[i][j].spectroscopy_function());
+		}
+		returnSpaces.push_back(spaceSet);
 	}
-	return pulses;
+	return returnSpaces;
 }
 
+vector<PhaseSpace> analyzer(vector<PhaseSpace> spaces) {
+	vector<PhaseSpace> returnSpaces;
+	for (int i = 0; i < spaces.size(); ++i) {
+		returnSpaces.push_back(spaces[i].spectroscopy_function());
+	}
+	return returnSpaces;
+}
 
 void pixelSum(vector<double>& pixelArray, vector<vector<PhaseSpace>> spaces) {
 	double lowestXC = spaces[spaces.size() - 1][spaces[0].size() - 1].getXC();
@@ -187,10 +198,10 @@ void pixelSum(vector<double>& pixelArray, vector<PhaseSpace> spaces) {
 	double highestXC = spaces[0].getXC();
 	double counter = 0;
 	for (int i = 0; i < spaces.size(); i++) {
-		pixelArray[int(map(spaces[i].getXC(), lowestXC - 0.01, highestXC, 0, double(pixels) - 1) + 0.5)] += spaces[i].getXC() * spaces[i].getIntensityMultiplier();
+		pixelArray[int(map(spaces[i].getXC(), lowestXC - 0.01, highestXC, 0, double(pixels) - 1) + 0.5)] += spaces[i].getIntensityMultiplier();
 		counter += spaces[i].getXC();// *spaces[i].getIntensityMultiplier();
 	}
-	cout << counter << endl;
+	//cout << counter << endl;
 }
 
 void pixelSum(vector<double>& pixelArray, double highest, double lowest, vector<vector<double>> v) {

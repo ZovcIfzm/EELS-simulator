@@ -5,8 +5,8 @@
 	//Printing
 #define printStarts false
 #define printEnds false
-#define printInitialPhaseSpace true
-#define printFinalPhaseSpace true
+#define printInitialPhaseSpace false
+#define printFinalPhaseSpace false
 #define modelFinalPhaseSpace false
 #define modelRecombinantPhaseSpace false
 #define modelSplitSpaces false
@@ -25,6 +25,8 @@
 #define modelingYRange 51 //Is 51 so that there is a middle number i.e. 0-24, 25, 26-50
 #define pixels 500
 #define magFactor 1.1
+
+#define baseTotal 2890661135
 
 //Phase space parameters
 #define  base_hWidth 1.82534513746

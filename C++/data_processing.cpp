@@ -111,7 +111,6 @@ void readSpec(string filename, vector<vector<double>> &v) {
 	string w1, w2;
 	double v1, v2, v3;
 	dataFile >> w1 >> w2;//removing the first two lines (first line is one character, second has no spaces)
-	cout << "words: " << w1 << " " << w2 << endl;
 	while (dataFile >> w1 >> w2 >> v3) {
 		w1.pop_back();
 		w2.pop_back();
@@ -154,5 +153,10 @@ void outputPhaseSpace(ofstream& file, PhaseSpace pulse, string name) {
 			"		<td> " << get<4>(response) << " </td>" << endl <<
 			"		<td> " << get<5>(response) << " </td>" << endl <<
 			"	</tr>" << endl;
+	}
+}
+void normalizeSpecimen(vector<vector<double>> &specimen) {
+	for (int i = 0; i < specimen.size(); ++i) {
+		specimen[i][1] = specimen[i][1] / baseTotal;
 	}
 }

@@ -95,7 +95,7 @@ vector<PhaseSpace> PhaseSpace::shatter(vector<vector<double>> spectroTable) {
 	double newB = newChirp * pow(zDist / newVzDist, 2);
 	for (int i = 0; i < spaces; i++) {
 		//cout << spectroTable[i][1] << endl;
-		shatteredPulses.push_back(PhaseSpace(hWidth, hHeight / spaces, newVzDist, zDist, newChirp, newB, pulseEnergy * spectroTable[i][1], intensityMultiplier * spectroTable[i][1]/ 2890661135.000000, //TEMP
+		shatteredPulses.push_back(PhaseSpace(hWidth, hHeight / spaces, newVzDist, zDist, newChirp, newB, pulseEnergy * spectroTable[i][1/baseTotal], intensityMultiplier * spectroTable[i][1],
 			hDepth, hDepthVel, VxDist, xDist, chirpT, bT, hHeight + (spectroTable[i][0] / 1117), zC, xC));
 	}
 	return shatteredPulses;
@@ -165,23 +165,15 @@ void PhaseSpace::grid_integration(double xHalfRange, double yHalfRange, double x
 }
 
 
-PhaseSpace PhaseSpace::evolution(double time){//--To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
+PhaseSpace PhaseSpace::evolution(double dist){//--To deal with processing we might need to make our own math functions. (less/more digits of accuracy)
 	//A divided by 1E6 was found in D code. Reason is unknown.
-	double postTime = time / 164.35;
+	double postTime = dist / 164.35;
 	b += postTime;
 	bT += postTime;
-	if(chirp>0){
-		VzDist = sqrt(1/((1/pow(hHeight,2))+pow((b/zDist),2)));
-	}
-	if(chirpT>0){
-		VxDist = sqrt(1/((1/pow(hDepthVel,2))+pow((bT/xDist),2)));
-	}
-	if(chirp<0){
-		zDist = b/(sqrt((1/pow(VzDist,2))-(1/pow(hHeight,2))));
-	}
-	if(chirpT<0){
-		xDist = bT/(sqrt((1/pow(VxDist,2))-(1/pow(hDepthVel,2))));
-	}
+	
+	VzDist = sqrt(1/((1/pow(hHeight,2))+pow((b/zDist),2)));
+	VxDist = sqrt(1/((1/pow(hDepthVel,2))+pow((bT/xDist),2)));
+	
 	chirp = b*pow(VzDist/zDist,2);
 	chirpT = bT*pow(VxDist/xDist,2);
 	hWidth = sqrt(1/((1/pow(zDist,2))-pow(chirp/VzDist,2)));

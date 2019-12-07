@@ -11,6 +11,10 @@ void summing(PhaseSpace space, double graphingGrid[modelingXRange][modelingYRang
 
 void grid_subtraction(double grid1[modelingXRange][modelingYRange], double grid2[modelingXRange][modelingYRange], double grid3[modelingXRange][modelingYRange]);
 double measureDeviation(double grid1[modelingXRange][modelingYRange], double grid2[modelingXRange][modelingYRange]);
+double measureDeviation(vector<double> base, vector<double> compare);//Compares two pixel sum vectors
+
+vector<vector<PhaseSpace>> analyzer(vector<vector<PhaseSpace>> spaces);
+vector<PhaseSpace> analyzer(vector<PhaseSpace> spaces);
 
 void pixelSum(vector<double>& pixelArray, vector<vector<PhaseSpace>> spaces);
 void pixelSum(vector<double>& pixelArray, vector<PhaseSpace> spaces);
