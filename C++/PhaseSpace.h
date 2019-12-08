@@ -7,14 +7,14 @@ using namespace std;
 class PhaseSpace{
 private:
 	double hWidth, hHeight, VzDist, zDist, chirp, b, pulseEnergy, intensityMultiplier,
-	hDepth, hDepthVel, VxDist, xDist, chirpT, bT, VzC, zC, xC;
+	hDepth, hDepthVel, VxDist, xDist, chirpT, bT, VzC, zC, VxC, xC;
 	//double spectroTable[][];
 	//double modelingSpace[400][400];
 	double totalEnergy, electronAmount;
 
 public:
 	PhaseSpace(double hWidthC, double hHeightC, double VzDistC, double zDistC, double chirpC, double bC, double pulseEnergyC, double intensityMultiplierC,
-		double hDepthC, double hDepthVelC, double VxDistC, double xDistC, double chirpTC, double bTC, double VzCC, double zCC, double xCC);
+		double hDepthC, double hDepthVelC, double VxDistC, double xDistC, double chirpTC, double bTC, double VzCC, double zCC, double VxCC, double xCC);
 	//PhaseSpace(PhaseSpace[splitNumber]);
 	PhaseSpace(vector<PhaseSpace> spaces);
 	vector<PhaseSpace> split();
@@ -41,6 +41,16 @@ public:
 	double getB();
 	double getIntensityMultiplier();
 	double getVzC();
-	double getXC();
 	double getZC();
+
+
+	//Longitudinal accessor methods
+	double PhaseSpace::getHDepth();
+	double PhaseSpace::getHDepthVel();
+	double PhaseSpace::getVxDist();
+	double PhaseSpace::getXDist();
+	double PhaseSpace::getChirpT();
+	double PhaseSpace::getBT();
+	double PhaseSpace::getVxC();
+	double PhaseSpace::getXC();
 };

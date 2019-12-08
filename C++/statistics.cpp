@@ -197,9 +197,12 @@ void pixelSum(vector<double>& pixelArray, vector<PhaseSpace> spaces) {
 	double lowestXC = spaces[spaces.size() - 1].getXC();
 	double highestXC = spaces[0].getXC();
 	double counter = 0;
-	for (int i = 0; i < spaces.size(); i++) {
-		pixelArray[int(map(spaces[i].getXC(), lowestXC - 0.01, highestXC, 0, double(pixels) - 1) + 0.5)] += spaces[i].getIntensityMultiplier();
-		counter += spaces[i].getXC();// *spaces[i].getIntensityMultiplier();
+	for (int i = 0; i < spaces.size(); i++) {//Iterate over pixels
+		//for (int j = 0; j < spaces.size(); ++j) {//Iterate over spaces
+			//if(-3*i*spaces[0].getVxDist() < )
+			pixelArray[int(map(spaces[i].getXC(), lowestXC - 0.01, highestXC, 0, double(pixels) - 1) + 0.5)] += spaces[i].getIntensityMultiplier();
+			//counter += spaces[i].getXC();// *spaces[i].getIntensityMultiplier();
+		//}
 	}
 	//cout << counter << endl;
 }

@@ -43,8 +43,9 @@
 #define  base_xDist 0.60650040415
 #define  base_chirpT 0.00065
 #define  base_bT 9.83513928219
-#define  base_vZC 0.0
+#define  base_VzC 0.0
 #define  base_zC 0.0
+#define  base_VxC 0.0
 #define  base_xC 0.0
 
 //1/(2*3.14159*1.82534513746^2*0.00027392079^2)*e^(	(-(x^2)/(2*1.82534513746))-(y-0.00035*x)^2/(2*0.71930270898))

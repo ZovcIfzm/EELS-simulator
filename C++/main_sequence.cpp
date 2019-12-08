@@ -12,8 +12,8 @@ using namespace std;
 
 double counter = 0.0;
 
-PhaseSpace initialPulse( base_hWidth, base_hHeight, base_VzDist, base_zDist, base_chirp, base_b, base_pulseEnergy, base_intensityMultiplier,
-	base_hDepth, base_hDepthVelocity, base_VxDist, base_xDist, base_chirpT, base_bT, 0.0, 0.0, 0.0);
+PhaseSpace initialPulse(base_hWidth, base_hHeight, base_VzDist, base_zDist, base_chirp, base_b, base_pulseEnergy, base_intensityMultiplier,
+	base_hDepth, base_hDepthVelocity, base_VxDist, base_xDist, base_chirpT, base_bT, 0.0, 0.0, 0.0, 0.0);
 
 PhaseSpace finalPulse = initialPulse;
 
@@ -32,7 +32,7 @@ void mainSequence() {
 			allPulses.push_back(p.shatter(specimen));
 		}
 
-		initialPulse = initialPulse.evolution(100000);
+		//initialPulse = initialPulse.evolution(100000);
 		vector<PhaseSpace> singleShatteredPulse = initialPulse.shatter(specimen);
 		
 		singleShatteredPulse = analyzer(singleShatteredPulse);
