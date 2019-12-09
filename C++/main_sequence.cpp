@@ -35,6 +35,12 @@ void mainSequence() {
 			allPulses.push_back(p.shatter(specimen));
 		}
 
+		/*for (vector<PhaseSpace> &pulses : allPulses) {
+			for (PhaseSpace &pulse : pulses) {
+
+			}
+		}*/
+
 		/*	TESTING EVOLUTION
 		summing(initialPulse, graphingMap);
 		double width = initialPulse.getHWidth();
@@ -69,6 +75,7 @@ void mainSequence() {
 		vector<double> base(pixels);
 		pixelSumMulti(pixelArray, allPulses);
 		pixelSum(base, -113.5, -625, specimen);
+		cout << pixelArray[0] << endl;
 		specModeling(pixelArray);
 		specModeling(base);
 		cout <<"deviation: " << measureDeviation(base, pixelArray);

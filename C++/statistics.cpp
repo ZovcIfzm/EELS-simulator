@@ -184,7 +184,7 @@ vector<PhaseSpace> analyzer(vector<PhaseSpace> spaces) {
 }
 
 
-void pixelSum(vector<double>& pixelArray, vector<vector<PhaseSpace>> spaces) {
+void pixelSum(vector<double>& pixelArray, vector<vector<PhaseSpace>> &spaces) {
 	double lowestXC = spaces[spaces.size() - 1][spaces[0].size() - 1].getXC();
 	double highestXC = spaces[0][0].getXC();
 	double xCDist = abs(highestXC - lowestXC) / pixels;
@@ -194,11 +194,12 @@ void pixelSum(vector<double>& pixelArray, vector<vector<PhaseSpace>> spaces) {
 
 	for (int p = 0; p < pixels; ++p) {
 		cout << "calculating pixel no " << p << " of " << pixels << endl;
-		pixelSumHelper(pixelArray, spaces, p, lowestXC, xCDist);
+		auto a = pixelSumHelper(pixelArray, spaces, p, lowestXC, xCDist);
+		pixelArray[a.first] += a.second;
 	}
 }
 
-void pixelSumMulti(vector<double>& pixelArray, vector<vector<PhaseSpace>> spaces) {
+void pixelSumMulti(vector<double>& pixelArray, vector<vector<PhaseSpace>> &spaces) {
 	double lowestXC = spaces[spaces.size() - 1][spaces[0].size() - 1].getXC();
 	double highestXC = spaces[0][0].getXC();
 	double xCDist = abs(highestXC - lowestXC) / pixels;
@@ -207,7 +208,7 @@ void pixelSumMulti(vector<double>& pixelArray, vector<vector<PhaseSpace>> spaces
 	vector<future<pair<int,double>>> futures;
 	auto start = std::chrono::steady_clock::now();
 	for (int p = 0; p < pixels; ++p) {
-		cout << "calculating pixel no " << p << " of " << pixels << endl;
+		//cout << "calculating pixel no " << p << " of " << pixels << endl;
 		futures.push_back(async(pixelSumHelper, pixelArray, spaces, p, lowestXC, xCDist));
 	}
 	int threadCount = 0;
@@ -215,7 +216,7 @@ void pixelSumMulti(vector<double>& pixelArray, vector<vector<PhaseSpace>> spaces
 	for (auto& e : futures) {
 		a = e.get();
 		pixelArray[a.first] += a.second;
-		cout << "Threads completed: " << ++threadCount << endl;
+		//cout << "Threads completed: " << ++threadCount << endl;
 	}
 
 	auto end = std::chrono::steady_clock::now();
@@ -225,20 +226,22 @@ void pixelSumMulti(vector<double>& pixelArray, vector<vector<PhaseSpace>> spaces
 	cout << "valueHolder6: " << valueHolder6 << endl;
 }
 
-pair<int, double> pixelSumHelper(vector<double>& pixelArray, vector<vector<PhaseSpace>> spaces, int p, double lowestXC, double xCDist) {
+pair<int, double> pixelSumHelper(vector<double>& pixelArray, vector<vector<PhaseSpace>> &spaces, const int &p, const double &lowestXC, const double &xCDist) {
 	double returnVal = 0;
 	for (int i = 0; i < spaces.size(); i++) {
 		for (int j = 0; j < spaces[0].size(); j++) {
-			double value = spaces[i][j].x_integration(lowestXC + p * xCDist, lowestXC + (p + 1.0) * xCDist) * spaces[i][j].getIntensityMultiplier();
-			returnVal += value;
-			valueHolder5 += value;
-			valueHolder6 += value;
+			if (lowestXC + p * xCDist < spaces[i][j].getXC() + 5 * spaces[i][j].getHDepth() && spaces[i][j].getXC() - 5 * spaces[i][j].getHDepth() < lowestXC + (p + 1.0) * xCDist) {
+				double value = spaces[i][j].x_integration(lowestXC + p * xCDist, lowestXC + (p + 1.0) * xCDist) * spaces[i][j].getIntensityMultiplier();
+				returnVal += value;
+				valueHolder5 += value;
+				valueHolder6 += value;
+			}
 		}
 	}
 	return { p, returnVal };
 }
 
-void pixelSum(vector<double>& pixelArray, vector<PhaseSpace> spaces) {
+void pixelSum(vector<double>& pixelArray, vector<PhaseSpace> &spaces) {
 	double lowestXC = spaces[spaces.size() - 1].getXC();
 	double highestXC = spaces[0].getXC();
 	double xCDist = abs(highestXC - lowestXC)/pixels;
@@ -257,7 +260,7 @@ void pixelSum(vector<double>& pixelArray, vector<PhaseSpace> spaces) {
 	cout << "corrected total intensity: " << counter << endl;
 }
 
-void pixelSum(vector<double>& pixelArray, double highest, double lowest, vector<vector<double>> v) {
+void pixelSum(vector<double>& pixelArray, double highest, double lowest, vector<vector<double>> &v) {
 	for (int i = 0; i < v.size(); i++) {
 		pixelArray[int(map(v[i][0], lowest, highest, 0, double(pixels) - 1) + 0.5)] += v[i][1];
 	}
