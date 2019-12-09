@@ -54,6 +54,8 @@ void specModeling(vector<double> &pixelArray) {
 			lowestPixelEnergy = energy;
 		}
 	}
+
+	cout << lowestPixelEnergy << " | " << highestPixelEnergy << endl;
 	//Write data to file for modeling
 	ofstream spectrum;
 	spectrum.open("spectrum.tsv");

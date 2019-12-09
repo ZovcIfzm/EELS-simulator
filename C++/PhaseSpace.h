@@ -29,6 +29,7 @@ public:
 	//Debugging methods
 	double intensity(double x, double y);
 	double get_intensity(double numSections, double sectionNum);
+	double PhaseSpace::x_integration(double xLeftLim, double xRightLim);
 	double intensity_integration(double xHalfRange, double yHalfRange, double xOffset, double yOffset);
 	void PhaseSpace::grid_integration(double xHalfRange, double yHalfRange, double xOffset, double yOffset, double grid[modelingXRange][modelingYRange], double xGridHalfRange, double yGridHalfRange);
 

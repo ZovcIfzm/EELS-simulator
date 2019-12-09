@@ -126,6 +126,25 @@ double PhaseSpace::get_intensity(double numSections, double sectionNum){
 	return intensity_integration(xHalfRange, yHalfRange, xOffset, yOffset);
 }
 
+double PhaseSpace::x_integration(double xLeftLim, double xRightLim) {
+	double accuracyY = 2*hHeight/199;
+	double accuracyX = (xRightLim - xLeftLim) / 199;
+	double x = xLeftLim;
+	double y = -hHeight + accuracyY / 2;
+
+	double intensityValue = 0;
+
+	while (y < hHeight) {
+		while (x < xRightLim) {
+			intensityValue += accuracyX * accuracyY * intensity(x - xC, y);
+			x += accuracyX;
+		}
+		y += accuracyY;
+		double x = xLeftLim;
+	}
+	return intensityValue;
+}
+
 double PhaseSpace::intensity_integration(double xHalfRange, double yHalfRange, double xOffset, double yOffset){
 	double accuracyY = 2*yHalfRange / 199;
 	double accuracyX = 2*xHalfRange / 199;

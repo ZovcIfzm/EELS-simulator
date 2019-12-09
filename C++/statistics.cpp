@@ -196,15 +196,20 @@ void pixelSum(vector<double>& pixelArray, vector<vector<PhaseSpace>> spaces) {
 void pixelSum(vector<double>& pixelArray, vector<PhaseSpace> spaces) {
 	double lowestXC = spaces[spaces.size() - 1].getXC();
 	double highestXC = spaces[0].getXC();
+	double xCDist = abs(highestXC - lowestXC)/pixels;
 	double counter = 0;
-	for (int i = 0; i < spaces.size(); i++) {//Iterate over pixels
-		//for (int j = 0; j < spaces.size(); ++j) {//Iterate over spaces
-			//if(-3*i*spaces[0].getVxDist() < )
-			pixelArray[int(map(spaces[i].getXC(), lowestXC - 0.01, highestXC, 0, double(pixels) - 1) + 0.5)] += spaces[i].getIntensityMultiplier();
-			//counter += spaces[i].getXC();// *spaces[i].getIntensityMultiplier();
-		//}
+	double weightCorrection = 0.0024468;
+	for (int i = 0; i < pixels; i++) {//Iterate over pixels
+		for (int j = 0; j < spaces.size(); ++j) {//Iterate over spaces
+			//The right edge of the dist, has to be greater than the left pixel boundary, and the left edge has to be less than the right pixel boundary
+			if (lowestXC + i * xCDist < spaces[j].getXC() + 5 * spaces[j].getHDepth() && spaces[j].getXC() - 5 * spaces[j].getHDepth() < lowestXC + (i + 1.0)*xCDist) {
+				pixelArray[i] += spaces[j].x_integration(lowestXC + i*xCDist, lowestXC + (i+1.0)*xCDist)*spaces[j].getIntensityMultiplier() / weightCorrection;
+				counter += spaces[j].x_integration(lowestXC + i * xCDist, lowestXC + (i + 1.0) * xCDist) * spaces[j].getIntensityMultiplier() / weightCorrection;
+			}									 
+		}
 	}
-	//cout << counter << endl;
+	cout << "used weightCorrection: " << weightCorrection << endl;
+	cout << "corrected total intensity: " << counter << endl;
 }
 
 void pixelSum(vector<double>& pixelArray, double highest, double lowest, vector<vector<double>> v) {
