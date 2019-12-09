@@ -35,11 +35,38 @@ void mainSequence() {
 			allPulses.push_back(p.shatter(specimen));
 		}
 
-		/*for (vector<PhaseSpace> &pulses : allPulses) {
-			for (PhaseSpace &pulse : pulses) {
+		vector<PhaseSpace> singleShatteredPulse = initialPulse.shatter(specimen);
 
+		//cout << "chirpT: " << allPulses[0][0].getChirpT() << endl;
+		//cout << "HDepthVel: " << allPulses[0][0].getHDepthVel() << endl;
+		//cout << "HDepth: " << allPulses[0][0].getHDepth() << endl;
+		//cout << "bT: " << allPulses[0][0].getBT() << endl;
+
+		double power = pow(2*allPulses[0][0].getChirpT() / MAG_LENS_COEFFICIENT, 0.5);
+		for (vector<PhaseSpace> &pulses : allPulses) {
+			for (PhaseSpace &pulse : pulses) {
+				//pulse.mag_lens(power);
+		//		pulse.evolution(1.615E2);
 			}
-		}*/
+		}
+		double power2 = pow(2 * singleShatteredPulse[0].getChirpT() / MAG_LENS_COEFFICIENT, 0.5);
+		for (PhaseSpace& pulse : singleShatteredPulse) {
+			//pulse.mag_lens(power2);
+		}
+
+		double lowestXC;
+		double highestXC;
+
+		lowestXC = allPulses[allPulses.size() - 1][allPulses[0].size() - 1].getXC();
+		highestXC = allPulses[0][0].getXC();
+
+		cout << "chirpT: " << allPulses[0][0].getChirpT() << endl;
+		cout << "true chirpT?: " << allPulses[0][0].getHDepthVel() / allPulses[0][0].getHDepth() << endl;
+		cout << "VxDist: " << allPulses[0][0].getVxDist() << endl;
+		cout << "HDepth: " << allPulses[0][0].getHDepth() << endl;
+		cout << "bT: " << allPulses[0][0].getBT() << endl;
+		cout << "lowest and highest xC: " << lowestXC << " | " << highestXC << endl;
+	
 
 		/*	TESTING EVOLUTION
 		summing(initialPulse, graphingMap);
@@ -62,14 +89,44 @@ void mainSequence() {
 		//cout << "deviation: " << measureDeviation(graphingMap, graphingMap2) << endl;
 
 		
-		cout << "intialPulse B: " << initialPulse.getB() << endl;
-		initialPulse = initialPulse.evolution(1E5);
-		cout << "intialPulse B: " << initialPulse.getB() << endl;
-
-		vector<PhaseSpace> singleShatteredPulse = initialPulse.shatter(specimen);
+		//cout << "intialPulse B: " << initialPulse.getB() << endl;
+		//initialPulse = initialPulse.evolution(1E5);
+		//cout << "intialPulse B: " << initialPulse.getB() << endl;
 		
 		singleShatteredPulse = analyzer(singleShatteredPulse);
 		allPulses = analyzer(allPulses);
+
+		lowestXC = allPulses[allPulses.size() - 1][allPulses[0].size() - 1].getXC();
+		highestXC = allPulses[0][0].getXC();
+
+		cout << "chirpT: " << allPulses[0][0].getChirpT() << endl;
+		cout << "true chirpT?: " << allPulses[0][0].getHDepthVel() / allPulses[0][0].getHDepth() << endl;
+		cout << "VxDist: " << allPulses[0][0].getVxDist() << endl;
+		cout << "HDepth: " << allPulses[0][0].getHDepth() << endl;
+		cout << "bT: " << allPulses[0][0].getBT() << endl;
+		cout << "lowest and highest xC: " << lowestXC << " | " << highestXC << endl;
+
+		for (vector<PhaseSpace>& pulses : allPulses) {
+			for (PhaseSpace& pulse : pulses) {
+				pulse.mag_lens(power);
+				pulse.evolution(1.6164E3);
+			}
+		}
+
+		for (PhaseSpace& pulse : singleShatteredPulse) {
+			//pulse.evolution(1.6165E3);
+		}
+
+		lowestXC = allPulses[allPulses.size() - 1][allPulses[0].size() - 1].getXC();
+		highestXC = allPulses[0][0].getXC();
+
+		cout << "chirpT: " << allPulses[0][0].getChirpT() << endl;
+		cout << "true chirpT?: " << allPulses[0][0].getHDepthVel() / allPulses[0][0].getHDepth() << endl;
+		cout << "VxDist: " << allPulses[0][0].getVxDist() << endl;
+		cout << "HDepth: " << allPulses[0][0].getHDepth() << endl;
+		cout << "bT: " << allPulses[0][0].getBT() << endl;
+		cout << "lowest and highest xC: " << lowestXC << " | " << highestXC << endl;
+
 		cout << "point reached: " << endl;
 		vector<double> pixelArray(pixels);
 		vector<double> base(pixels);

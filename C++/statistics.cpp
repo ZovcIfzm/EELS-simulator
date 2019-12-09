@@ -191,12 +191,15 @@ void pixelSum(vector<double>& pixelArray, vector<vector<PhaseSpace>> &spaces) {
 	double counter = 0;
 
 	std::vector<std::future<void>> futures;
-
+	auto start = std::chrono::steady_clock::now();
 	for (int p = 0; p < pixels; ++p) {
-		cout << "calculating pixel no " << p << " of " << pixels << endl;
+		//cout << "calculating pixel no " << p << " of " << pixels << endl;
 		auto a = pixelSumHelper(pixelArray, spaces, p, lowestXC, xCDist);
 		pixelArray[a.first] += a.second;
 	}
+	auto end = std::chrono::steady_clock::now();
+	auto diff = end - start;
+	std::cout << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
 }
 
 void pixelSumMulti(vector<double>& pixelArray, vector<vector<PhaseSpace>> &spaces) {
@@ -219,6 +222,10 @@ void pixelSumMulti(vector<double>& pixelArray, vector<vector<PhaseSpace>> &space
 		//cout << "Threads completed: " << ++threadCount << endl;
 	}
 
+	for (auto &i : pixelArray) {
+		i = i / valueHolder5;
+	}
+
 	auto end = std::chrono::steady_clock::now();
 	auto diff = end - start;
 	std::cout << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
@@ -231,10 +238,10 @@ pair<int, double> pixelSumHelper(vector<double>& pixelArray, vector<vector<Phase
 	for (int i = 0; i < spaces.size(); i++) {
 		for (int j = 0; j < spaces[0].size(); j++) {
 			if (lowestXC + p * xCDist < spaces[i][j].getXC() + 5 * spaces[i][j].getHDepth() && spaces[i][j].getXC() - 5 * spaces[i][j].getHDepth() < lowestXC + (p + 1.0) * xCDist) {
+			//if (lowestXC + p * xCDist < spaces[i][j].getXC() && spaces[i][j].getXC()  < lowestXC + (p + 1.0) * xCDist) {
 				double value = spaces[i][j].x_integration(lowestXC + p * xCDist, lowestXC + (p + 1.0) * xCDist) * spaces[i][j].getIntensityMultiplier();
 				returnVal += value;
 				valueHolder5 += value;
-				valueHolder6 += value;
 			}
 		}
 	}
@@ -251,6 +258,7 @@ void pixelSum(vector<double>& pixelArray, vector<PhaseSpace> &spaces) {
 		for (int j = 0; j < spaces.size(); ++j) {//Iterate over spaces
 			//The right edge of the dist, has to be greater than the left pixel boundary, and the left edge has to be less than the right pixel boundary
 			if (lowestXC + i * xCDist < spaces[j].getXC() + 5 * spaces[j].getHDepth() && spaces[j].getXC() - 5 * spaces[j].getHDepth() < lowestXC + (i + 1.0)*xCDist) {
+			//if (lowestXC + i * xCDist < spaces[j].getXC() && spaces[j].getXC() < lowestXC + (i + 1.0) * xCDist) {
 				pixelArray[i] += spaces[j].x_integration(lowestXC + i*xCDist, lowestXC + (i+1.0)*xCDist)*spaces[j].getIntensityMultiplier() / weightCorrection;
 				counter += spaces[j].x_integration(lowestXC + i * xCDist, lowestXC + (i + 1.0) * xCDist) * spaces[j].getIntensityMultiplier() / weightCorrection;
 			}									 

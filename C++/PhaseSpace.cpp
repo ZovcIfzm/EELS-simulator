@@ -190,8 +190,21 @@ PhaseSpace PhaseSpace::evolution(double dist){//--To deal with processing we mig
 	b += postTime;
 	bT += postTime;
 	
-	VzDist = sqrt(1/((1/pow(hHeight,2))+pow((b/zDist),2)));
-	VxDist = sqrt(1/((1/pow(hDepthVel,2))+pow((bT/xDist),2)));
+	if (chirp > 0) {
+		VzDist = sqrt(1 / ((1 / pow(hHeight, 2)) + pow((b / zDist), 2)));
+	}
+	if (chirpT > 0) {
+		VxDist = sqrt(1 / ((1 / pow(hDepthVel, 2)) + pow((bT / xDist), 2)));
+	}
+	if (chirp < 0) {
+		zDist = b / (sqrt((1 / pow(VzDist, 2)) - (1 / pow(hHeight, 2))));
+	}
+	if (chirpT < 0) {
+		xDist = bT / (sqrt((1 / pow(VxDist, 2)) - (1 / pow(hDepthVel, 2))));
+	}
+
+	//VzDist = sqrt(1/((1/pow(hHeight,2))+pow((b/zDist),2)));
+	//VxDist = sqrt(1/((1/pow(hDepthVel,2))+pow((bT/xDist),2)));
 	
 	chirp = b*pow(VzDist/zDist,2);
 	chirpT = bT*pow(VxDist/xDist,2);
@@ -205,10 +218,10 @@ PhaseSpace PhaseSpace::evolution(double dist){//--To deal with processing we mig
 
 PhaseSpace PhaseSpace::RFLens(double power){
 	double tempSlope = VzC / zC;
-	tempSlope += sqrt(power) * RF_LENS_COEFFICIENT;
+	tempSlope -= sqrt(power) * RF_LENS_COEFFICIENT;
 	VzC = tempSlope * zC;
 
-	chirp += sqrt(power)*RF_LENS_COEFFICIENT;
+	chirp -= sqrt(power)*RF_LENS_COEFFICIENT;
 	zDist = sqrt(1/((1/pow(hWidth,2))+pow(chirp/VzDist,2)));
 	b = chirp*pow(zDist/VzDist,2);
 	hHeight = sqrt(1/((1/pow(VzDist,2))-pow(b/zDist,2)));
@@ -217,11 +230,12 @@ PhaseSpace PhaseSpace::RFLens(double power){
 
 PhaseSpace PhaseSpace::mag_lens(double power){
 	//A divided by 1E12 for power was found in D code. Reason is unknown.
-	double tempSlope = VxC / xC;
-	tempSlope += pow(power, 2) * MAG_LENS_COEFFICIENT;
-	VxC = tempSlope * xC;
+	//double tempSlope = VxC / xC;
+	//tempSlope -= pow(power, 2) * MAG_LENS_COEFFICIENT;
+	//VxC = tempSlope * xC;
+	//xC = VxC / tempSlope;
 
-	chirpT += pow(power,2)*MAG_LENS_COEFFICIENT;
+	chirpT -= pow(power,2)*MAG_LENS_COEFFICIENT;
 	xDist = sqrt(1/((1/pow(hDepth,2))+pow(chirpT/VxDist,2)));
 	bT = chirpT*pow(xDist/VxDist,2);
 	hDepthVel = sqrt(1/((1/pow(VxDist,2))-pow(bT/xDist,2)));
