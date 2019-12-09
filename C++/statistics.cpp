@@ -197,6 +197,11 @@ void pixelSum(vector<double>& pixelArray, vector<vector<PhaseSpace>> &spaces) {
 		auto a = pixelSumHelper(pixelArray, spaces, p, lowestXC, xCDist);
 		pixelArray[a.first] += a.second;
 	}
+
+	for (auto& i : pixelArray) {
+		i = i / valueHolder5;
+	}
+
 	auto end = std::chrono::steady_clock::now();
 	auto diff = end - start;
 	std::cout << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
@@ -219,7 +224,6 @@ void pixelSumMulti(vector<double>& pixelArray, vector<vector<PhaseSpace>> &space
 	for (auto& e : futures) {
 		a = e.get();
 		pixelArray[a.first] += a.second;
-		//cout << "Threads completed: " << ++threadCount << endl;
 	}
 
 	for (auto &i : pixelArray) {

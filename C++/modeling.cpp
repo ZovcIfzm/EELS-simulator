@@ -40,6 +40,67 @@ void modeling(double modelMatrix[modelingXRange][modelingYRange]) {
 	modeling.cmd("exit");
 }
 
+void deviationModeling(vector<pair<double, double>>& pixelArray, double xMin, double xMax, string title, string xAxis, string yAxis) {
+	//Find highestPixelEnergy
+	double highestPixelEnergy = 0;
+	double lowestPixelEnergy = 0;
+	double energy = 0;
+	for (int i = 0; i < pixelArray.size(); i++) {
+		energy = pixelArray[i].second;
+		if (energy > highestPixelEnergy) {
+			highestPixelEnergy = energy;
+		}
+		if (energy < lowestPixelEnergy) {
+			lowestPixelEnergy = energy;
+		}
+	}
+
+	//cout << "lowest and highest pixelEnergies: " << lowestPixelEnergy << " | " << highestPixelEnergy << endl;
+	//Write data to file for modeling
+	ofstream spectrum;
+	spectrum.open("spectrum.tsv");
+	for (int i = 0; i < pixelArray.size(); i++) {
+		spectrum << pixelArray[i].first << "\t" << pixelArray[i].second << endl;
+	}
+	spectrum.close();
+
+	//Model
+	Gnuplot modeling("model");
+	// Clear up any existing plots.
+	modeling.cmd("clear");
+	// Reset all variables to default values.
+	modeling.cmd("reset");
+
+	//We don't need a key.
+	modeling.cmd("set key off");
+
+	//Draw only the left - hand and bottom borders.
+	modeling.cmd("set border 3");
+
+	//There are 21 sample points.
+	modeling.cmd("set xrange[" + to_string(xMin) + ":" + to_string(xMax) + "]");
+
+	//Show tickmarks at increments of one, and don't show (mirror) them
+	//at the top of the graph.
+	modeling.cmd("set xtic "+ to_string((xMax-xMin)/10) + " nomirror");
+
+	//The largest value in the data set is 11.
+	modeling.cmd("set yrange[" + to_string(lowestPixelEnergy * magFactor) + ":" + to_string(highestPixelEnergy * magFactor) + "]");
+	//Don't show any tickmarks on the Y axis.
+	modeling.cmd("unset ytics");
+
+	//Make some suitable labels.
+	modeling.cmd("set title '" + title + "'");
+	modeling.cmd("set xlabel '" + xAxis + "'");
+	modeling.cmd("set ylabel '" + yAxis + "'");
+
+	//Draw three curves in this graph.
+	modeling.cmd("plot 'spectrum.tsv' using 1:2 with impulses lt 1, \
+		'spectrum.tsv' using 1:2 with points pt 3 lc rgb '#FF0000', \
+		'spectrum.tsv' using 1:2 smooth csplines lt 2");
+	pause();
+}
+
 void specModeling(vector<double> &pixelArray) {
 	//Find highestPixelEnergy
 	double highestPixelEnergy = 0;
