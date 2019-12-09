@@ -16,7 +16,10 @@ double measureDeviation(vector<double> base, vector<double> compare);//Compares 
 vector<vector<PhaseSpace>> analyzer(vector<vector<PhaseSpace>> spaces);
 vector<PhaseSpace> analyzer(vector<PhaseSpace> spaces);
 
+pair<int, double> pixelSumHelper(vector<double>& pixelArray, vector<vector<PhaseSpace>> spaces, int p, double lowestXC, double xCDist);
+
 void pixelSum(vector<double>& pixelArray, vector<vector<PhaseSpace>> spaces);
+void pixelSumMulti(vector<double>& pixelArray, vector<vector<PhaseSpace>> spaces);
 void pixelSum(vector<double>& pixelArray, vector<PhaseSpace> spaces);
 void pixelSum(vector<double>& pixelArray, double highest, double lowest, vector<vector<double>> v);
 

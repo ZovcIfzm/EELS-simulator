@@ -25,12 +25,17 @@ void mainSequence() {
 		readSpec("Data files/hexogon BN-powder-eels.sl0", specimen);
 		normalizeSpecimen(specimen);
 
-		/*vector<PhaseSpace> splitPulses = initialPulse.split();
+		
+		vector<PhaseSpace> splitPulses = initialPulse.split();
 		vector<vector<PhaseSpace>> allPulses;
+		cout << "shatter count: ";
+		int a = 0;
 		for (PhaseSpace p : splitPulses) {
+			cout << ++a << ", ";
 			allPulses.push_back(p.shatter(specimen));
-		}*/
+		}
 
+		/*	TESTING EVOLUTION
 		summing(initialPulse, graphingMap);
 		double width = initialPulse.getHWidth();
 		double height = initialPulse.getHHeight();
@@ -41,6 +46,7 @@ void mainSequence() {
 		double b = initialPulse.intensity_integration(width, height, 0, 0);
 
 		cout << "lah: " << a - b << endl;
+		*/
 
 		//summing(initialPulse, graphingMap2);
 		
@@ -50,20 +56,22 @@ void mainSequence() {
 		//cout << "deviation: " << measureDeviation(graphingMap, graphingMap2) << endl;
 
 		
+		cout << "intialPulse B: " << initialPulse.getB() << endl;
+		initialPulse = initialPulse.evolution(1E5);
+		cout << "intialPulse B: " << initialPulse.getB() << endl;
 
-
-		/*vector<PhaseSpace> singleShatteredPulse = initialPulse.shatter(specimen);
+		vector<PhaseSpace> singleShatteredPulse = initialPulse.shatter(specimen);
 		
 		singleShatteredPulse = analyzer(singleShatteredPulse);
 		allPulses = analyzer(allPulses);
-		
+		cout << "point reached: " << endl;
 		vector<double> pixelArray(pixels);
 		vector<double> base(pixels);
-		pixelSum(pixelArray, singleShatteredPulse);
+		pixelSumMulti(pixelArray, allPulses);
 		pixelSum(base, -113.5, -625, specimen);
 		specModeling(pixelArray);
 		specModeling(base);
-		cout <<"deviation: " << measureDeviation(base, pixelArray);*/
+		cout <<"deviation: " << measureDeviation(base, pixelArray);
 		
 		/*
 		for (vector<PhaseSpace> a : allPulses) {
