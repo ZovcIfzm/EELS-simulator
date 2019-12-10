@@ -33,7 +33,6 @@ void mainSequence() {
 		for (int q = 0; q < 50; ++q) {
 			valueHolder5 = 0;
 			initialPulse = modifiedPulse;
-			cout << "beginning bT" << initialPulse.getBT() << endl;
 
 			vector<PhaseSpace> splitPulses = initialPulse.split();
 			vector<vector<PhaseSpace>> allPulses;
@@ -43,16 +42,10 @@ void mainSequence() {
 			}
 
 			double power = pow(2 * allPulses[0][0].getChirpT() / MAG_LENS_COEFFICIENT, 0.5);
-			for (vector<PhaseSpace>& pulses : allPulses) {
-				for (PhaseSpace& pulse : pulses) {
-					//pulse.mag_lens(power);
-			//		pulse.evolution(1.615E2);
-				}
-			}
 			
 			allPulses = analyzer(allPulses);
-			double evolutionValue = 75*q;
 
+			double evolutionValue = 75*q;
 			for (vector<PhaseSpace>& pulses : allPulses) {
 				for (PhaseSpace& pulse : pulses) {
 					pulse.mag_lens(power);
@@ -60,26 +53,24 @@ void mainSequence() {
 				}
 			}
 
-			cout << "point reached: " << endl;
 			vector<double> pixelArray(pixels);
 			vector<double> base(pixels);
-			pixelSumMulti(pixelArray, allPulses);
+			pixelSum(pixelArray, allPulses);
 			pixelSum(base, -113.5, -625, specimen);
-			//specModeling(pixelArray);
-			//specModeling(base);
-			cout << "deviation: " << measureDeviation(base, pixelArray) << endl;
-			deviations.push_back({ evolutionValue, measureDeviation(base, pixelArray) });
-			//cout << "chirps: " << allPulses[0][0].getChirpT() << endl;
-			chirps.insert({ allPulses[0][0].getHDepthVel() / allPulses[0][0].getHDepth(), measureDeviation(base, pixelArray) });
-			cout << "iteration: " << q << endl;
+			energyModeling(pixelArray);
+			//specModeling(base, -625, -113.5);
+
+			deviations.push_back({ allPulses[0][0].getChirpT(), measureDeviation(base, pixelArray) });
+			chirps.insert({ allPulses[0][0].getHDepth(), measureDeviation(base, pixelArray) });
 		}
 				
 		vector<pair<double, double>> chirpsInput;
 		for (auto itr = chirps.begin(); itr != chirps.end(); ++itr) {
 			chirpsInput.push_back({ itr->first, itr->second });
 		}
-		//deviationModeling(deviations, deviations.[0], deviations[deviations.size() - 1].first, "", "", "");
-		deviationModeling(chirpsInput, chirpsInput[0].first, chirpsInput[chirpsInput.size()-1].first, "Slope vs. Deviation", "Slope", "Deviation");
+		deviationModeling(deviations, deviations[0].first, deviations[deviations.size() - 1].first, "Slope vs Deviation", "Slope", "Deviation (eV)");
+		deviationModeling(chirpsInput, chirpsInput[0].first, chirpsInput[chirpsInput.size()-1].first, "Width vs. Deviation", "Width (micrometer)", "Deviation (eV)");
+		
 	}
 	else if (loadData) {//Redundant - else would do just as fine as else if, but else if makes the logic easier to understand
 		read_from_file("modeling_data.txt");

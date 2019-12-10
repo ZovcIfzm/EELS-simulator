@@ -101,7 +101,7 @@ void deviationModeling(vector<pair<double, double>>& pixelArray, double xMin, do
 	pause();
 }
 
-void specModeling(vector<double> &pixelArray) {
+void specModeling(vector<double> &pixelArray, double xMin, double xMax) {
 	//Find highestPixelEnergy
 	double highestPixelEnergy = 0;
 	double lowestPixelEnergy = 0;
@@ -121,7 +121,7 @@ void specModeling(vector<double> &pixelArray) {
 	ofstream spectrum;
 	spectrum.open("spectrum.tsv");
 	for (int i = 0; i < pixelArray.size(); i++) {
-		spectrum << i << "\t" << pixelArray[i] / 6.421 << endl;
+		spectrum << xMin + i*(xMax-xMin)/pixels << "\t" << pixelArray[i] / 6.421 << endl;
 	}
 	spectrum.close();
 
@@ -139,11 +139,11 @@ void specModeling(vector<double> &pixelArray) {
 	modeling.cmd("set border 3");
 
 		//There are 21 sample points.
-	modeling.cmd("set xrange[0:" + to_string(pixelArray.size()) + "]");
+	modeling.cmd("set xrange[" + to_string(xMin) + ":" + to_string(xMax) + "]");
 
 		//Show tickmarks at increments of one, and don't show (mirror) them
 		//at the top of the graph.
-	modeling.cmd("set xtic 10 nomirror");
+	modeling.cmd("set xtic " + to_string((xMax - xMin) / 10) + " nomirror");
 
 		//The largest value in the data set is 11.
 	modeling.cmd("set yrange[" + to_string(lowestPixelEnergy*magFactor) + ":" + to_string(highestPixelEnergy*magFactor) + "]");
@@ -152,10 +152,71 @@ void specModeling(vector<double> &pixelArray) {
 
 		//Make some suitable labels.
 	modeling.cmd("set title 'Frequency spectrum'");
-	modeling.cmd("set xlabel 'Frequency'");
-	modeling.cmd("set ylabel 'Power'");
+	modeling.cmd("set xlabel 'Energy loss'");
+	modeling.cmd("set ylabel 'Frequency'");
 
 		//Draw three curves in this graph.
+	modeling.cmd("plot 'spectrum.tsv' using 1:2 with impulses lt 1, \
+		'spectrum.tsv' using 1:2 with points pt 3 lc rgb '#FF0000', \
+		'spectrum.tsv' using 1:2 smooth csplines lt 2");
+	pause();
+}
+
+void energyModeling(vector<double>& pixelArray) {
+	//Find highestPixelEnergy
+	double highestPixelEnergy = 0;
+	double lowestPixelEnergy = 0;
+	double energy = 0;
+	for (int i = 0; i < pixelArray.size(); i++) {
+		energy = pixelArray[i] / 6.421;
+		if (energy > highestPixelEnergy) {
+			highestPixelEnergy = energy;
+		}
+		if (energy < lowestPixelEnergy) {
+			lowestPixelEnergy = energy;
+		}
+	}
+
+	cout << "lowest and highest pixelEnergies: " << lowestPixelEnergy << " | " << highestPixelEnergy << endl;
+	//Write data to file for modeling
+	ofstream spectrum;
+	spectrum.open("spectrum.tsv");
+	for (int i = 0; i < pixelArray.size(); i++) {
+		spectrum << i << "\t" << pixelArray[i] / 6.421 << endl;
+	}
+	spectrum.close();
+
+	//Model
+	Gnuplot modeling("model");
+	// Clear up any existing plots.
+	modeling.cmd("clear");
+	// Reset all variables to default values.
+	modeling.cmd("reset");
+
+	//We don't need a key.
+	modeling.cmd("set key off");
+
+	//Draw only the left - hand and bottom borders.
+	modeling.cmd("set border 3");
+
+	//There are 21 sample points.
+	modeling.cmd("set xrange[0:" + to_string(pixelArray.size()) + "]");
+
+	//Show tickmarks at increments of one, and don't show (mirror) them
+	//at the top of the graph.
+	modeling.cmd("set xtic " + to_string((625-113.5) / 10) + " nomirror");
+
+	//The largest value in the data set is 11.
+	modeling.cmd("set yrange[" + to_string(lowestPixelEnergy * magFactor) + ":" + to_string(highestPixelEnergy * magFactor) + "]");
+	//Don't show any tickmarks on the Y axis.
+	modeling.cmd("unset ytics");
+
+	//Make some suitable labels.
+	modeling.cmd("set title 'Frequency spectrum'");
+	modeling.cmd("set xlabel 'Energy loss (eV)'");
+	modeling.cmd("set ylabel 'Frequency'");
+
+	//Draw three curves in this graph.
 	modeling.cmd("plot 'spectrum.tsv' using 1:2 with impulses lt 1, \
 		'spectrum.tsv' using 1:2 with points pt 3 lc rgb '#FF0000', \
 		'spectrum.tsv' using 1:2 smooth csplines lt 2");

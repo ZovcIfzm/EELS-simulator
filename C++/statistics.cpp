@@ -265,7 +265,7 @@ void pixelSum(vector<double>& pixelArray, vector<PhaseSpace> &spaces) {
 			//if (lowestXC + i * xCDist < spaces[j].getXC() && spaces[j].getXC() < lowestXC + (i + 1.0) * xCDist) {
 				pixelArray[i] += spaces[j].x_integration(lowestXC + i*xCDist, lowestXC + (i+1.0)*xCDist)*spaces[j].getIntensityMultiplier() / weightCorrection;
 				counter += spaces[j].x_integration(lowestXC + i * xCDist, lowestXC + (i + 1.0) * xCDist) * spaces[j].getIntensityMultiplier() / weightCorrection;
-			}									 
+			}		
 		}
 	}
 	cout << "used weightCorrection: " << weightCorrection << endl;
