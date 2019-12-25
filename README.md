@@ -18,8 +18,7 @@ As the pulse travels through the microscope it undergoes several changes along t
 
 This is shown below in fig a and fig c.
 
-
-
+![alt text](https://github.com/ZovcIfzm/EELS-simulator/blob/master/images/manipulations123.png)
 
 The second is lensing. As the distribution travels through the RF lenses, the field within the RF cavity is tuned so that electrons farther back receive a greater increase in energy than electrons further in front. The result of this is that the slope of the distribution is flipped, so that if previously the faster electrons were in the front of the distribution, they are now in the back, as shown in fig b above. As mentioned before, we can then take advantage of this to orient the distribution vertically if we want to as shown in fig c. The magnetic lenses work in the same way, just in the transverse direction rather than the RF's longitudinal manipulation.
 
@@ -27,7 +26,7 @@ The third is specimen energy loss. As the distribution travels through the speci
 
 This is shown in the figure below.
 
-
+![alt text](https://github.com/ZovcIfzm/EELS-simulator/blob/master/images/shattering.png)
 
 The last is an analyzer shift. As the distributions travel through the analyzer, which contains a magnetic field, they experience a Lorentz force in the transverse direction directly proportional to their velocity. This separates the distributions that experienced less energy loss from those that experienced more energy loss, allowing us to isolate the frequency of the different amounts of energy loss, allowing us to determine the composition of the material, as different elements of the composition cause different amounts of energy loss.
 
@@ -38,8 +37,7 @@ While the basic concepts have been previously implemented, now we must use them 
 ## Deviation
 The metric we will use to compare how closely our simulated spectrum is from the actual spectrum is standard deviation. While not a perfect statistical measurement for this situation, it will do as it increases in magnitude as the two spectrums deviate. This is calculated by comparing the populations at each corresponding point within each spectrum (the beginning lines, the second lines, the third lines, and so on). For example, the spectrum for the particular material we will be scanning, hexagonal Boron Nitride powder, is shown below and we would be comparing each of those distinct lines with that given by our simulation.
 
-	\textit{hexagonal BN powder spectrum}\\
-	\textit{Note: units and absolute magnitudes are irrelevant as we are finding a relative least value for deviation later on, and the particular specimen we are analyzing is variable}
+![alt text](https://github.com/ZovcIfzm/EELS-simulator/blob/master/images/spectrum.png)
 
 ## Pixel integration
 In order to see whether or not our configuration yields greater resolution or not, we need to model the camera itself. The camera for our model is a set of pixels in the transverse directions of a certain width that register all the energy within that transverse width. For example if we had 10 pixels of equal length, we would split them among the length of all the distributions, and they would receive all the energy within that particular column of the microscope.
@@ -55,8 +53,11 @@ However finding the optimum configuration of optics for space compression is not
 
 We begin with a simple 512 pixel setup, with specimen data provided for 1024 resultant mini-distributions as a result of shattering through the specimen. With this setup, we run simulations continuously for progressively smaller and smaller pulse widths as a result of free contraction, as well as eventually larger pulse widths as that free contraction becomes free expansion as the faster electrons cross over the slower electrons.
 
-	\textit{fig 1}
-	\textit{fig 2}
+![alt text](https://github.com/ZovcIfzm/EELS-simulator/blob/master/images/SlopeVsDeviation50.png)
+(fig 1)
+
+![alt text](https://github.com/ZovcIfzm/EELS-simulator/blob/master/images/widthDeviation.png)
+(fig 2)
 
 As seen above in fig 2, as the width decreases in size where width is the transverse standard deviation of the distribution, the deviation between the simulated spectrum and the actual spectrum decreases. This is further and perhaps more clearly illustrated with fig 1, the slope graph, where slope is inversely proportional to width.
 
@@ -64,10 +65,15 @@ However, if the pixel count and shatter number are not cleanly related by an int
 
 An example is given below with a 500 pixel system. Where fig 4 is the graph of width vs. deviation, and fig 5 is the spectrum of a focused distribution (one with minimal width)
 
-	\textit{fig 5}
+![alt text](https://github.com/ZovcIfzm/EELS-simulator/blob/master/images/abberatedDeviation.png)
+(fig 4)
+![alt text](https://github.com/ZovcIfzm/EELS-simulator/blob/master/images/abberatedSpecFocused.png)
+(fig 5)
 
 If we increase the pixel count (to say 5000) the overall graph has a reduced overall abberated shape, however the data between adjacent pixels is extremely variant, causing an overall unclean spectrum as seen below in fig 6. Similarly as the pixel count is now higher than the number of different frequencies given to us to compare to (1024), we can no longer measure deviation.
-fig 6
+
+![alt text](https://github.com/ZovcIfzm/EELS-simulator/blob/master/images/5000pixAbb.png)
+(fig 6)
 
 ## Conclusion
 While increasing time resolutions is trivially simple, increasing space resolution is not. Given that the number of shattered pulses given by a real-life specimen is not 1024, nor any other clean discrete number, we cannot remove the possibility that pixel abberation will be present in real microscopes due to the discrete number of pixels in the camera. We simply do not know if given a practically continuous* distribution of energy loss whether this pixel abberation will affect our results without further investigation. (*There is some discreteness in the distribution based on the fact energy is fundamentally discrete, but it is negligible as our energy values are far higher than the minimum discrete energy of the universe.)
@@ -94,7 +100,9 @@ Potential future work could be in creating an algorithm that calculates the exac
 The author acknowledges C.-Y Ruan for providing helpful references as well as assistance with conceptual understanding.
 
 1 J. Williams, F. Zhou, T. Sun, Z. Tao, K. Chang, K. Makino, M. Berz, P. M. Duxbury, and C.-Y. Ruan, Structural Dynamics 4, 044035 (2017)
+
 2 F. Zhou, J. Williams, and C.-Y. Ruan, Elsevier 0009-2614 (2017)
+
 3 C. -Y. Ruan, Science 354 (6310), 283-284
 
 
