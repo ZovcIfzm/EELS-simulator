@@ -4,7 +4,7 @@ In this project, we model high-brightness beams within an electron microscope as
 ## Introduction
 Traditionally, electron microscopes have used long sequences of small packets of electrons in order to scan their specimen in order to minimize the expansion of the packets as the electrons repulse each other. This however has the drawback of having limited time-resolution, as in order to fully scan a material, the entire sequence of packets must be sent.
 
-For observing systems that degrade under electron pulses (photoactive or nanoelectronic devices$^2$) or rapidly change (chemical reactions), all the information must be collected in as few pulses as possible in order to obtain accurate data.
+For observing systems that degrade under electron pulses (photoactive or nanoelectronic devices) or rapidly change (chemical reactions), all the information must be collected in as few pulses as possible in order to obtain accurate data.
 
 The solution to this problem is high-brightness beams with adaptive optics. With more electrons, more data is collected, where the optics serve to either compress the pulse in time before hitting the specimen or to compress the pulse in space before hitting the camera in order to achieve greater time and space resolution respectively.
 
@@ -32,7 +32,7 @@ The last is an analyzer shift. As the distributions travel through the analyzer,
 
 
 ## Finding the optimum phase space configuration
-While the basic concepts have been previously implemented, now we must use them to solve a problem: What is the optimum configuration of the pre-specimen/pre-camera phase space for optimal time and space resolution? To do this we must first establish certain statistical metrics and algorithms.
+While these are the basic concepts simulating the evolution of an electron pulse, now we must use them to solve a problem: What is the optimum configuration of the pre-specimen/pre-camera phase space for optimal time and space resolution? To do this we must first establish certain statistical metrics and algorithms.
 
 ## Deviation
 The metric we will use to compare how closely our simulated spectrum is from the actual spectrum is standard deviation. While not a perfect statistical measurement for this situation, it will do as it increases in magnitude as the two spectrums deviate. This is calculated by comparing the populations at each corresponding point within each spectrum (the beginning lines, the second lines, the third lines, and so on). For example, the spectrum for the particular material we will be scanning, hexagonal Boron Nitride powder, is shown below and we would be comparing each of those distinct lines with that given by our simulation.
