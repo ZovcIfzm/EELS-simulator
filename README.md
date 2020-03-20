@@ -97,7 +97,7 @@ Similarly the code will be made more concise due to the sheer amount of repetiti
 Potential future work could be in creating an algorithm that calculates the exact configuration needed of optics needed for specific real-life electron microscope systems, as well as creating a GUI that allows easier usage of the program for repeated use.
 
 ## Acknowledgments and references
-The author acknowledges C.-Y Ruan for providing helpful references as well as assistance with conceptual understanding.
+The author acknowledges C.-Y Ruan for providing helpful references as well as assistance with conceptual understanding, as well as Arham Jain for invaluable help in constructing and optimizing the early simulator.
 
 1 J. Williams, F. Zhou, T. Sun, Z. Tao, K. Chang, K. Makino, M. Berz, P. M. Duxbury, and C.-Y. Ruan, Structural Dynamics 4, 044035 (2017)
 
