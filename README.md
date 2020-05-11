@@ -2,7 +2,7 @@
 In this project, we model high-brightness beams within an electron microscope as 2D normal distributions within phase space and find the optimum configuration of optics for achieving maximum time and space resolution to be one that nearly maximizes the transverse slope of the distribution before entering the camera, and minimizes the longitudinal slope of the distribution before entering the specimen. 
 
 ## Introduction
-Traditionally, electron microscopes have used long sequences of small packets of electrons in order to scan their specimen in order to minimize the expansion of the packets as the electrons repulse each other. This however has the drawback of having limited time-resolution, as in order to fully scan a material, the entire sequence of packets must be sent.
+Traditionally, electron microscopes have used long sequences of small packets of electrons to scan their specimen in order to minimize the expansion of the packets as the electrons repulse each other. This however has the drawback of having limited time-resolution, as in order to fully scan a material, the entire sequence of packets must be sent.
 
 For observing systems that degrade under electron pulses (photoactive or nanoelectronic devices) or rapidly change (chemical reactions), all the information must be collected in as few pulses as possible in order to obtain accurate data.
 
