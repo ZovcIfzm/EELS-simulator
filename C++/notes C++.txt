@@ -85,3 +85,6 @@ LARGE PART NOT YET FIGURED OUT Figure out how to optimize the microscope through
 Outside resources used:
 gnuplot-iostream interface
 boost library
+
+Good reference sites
+http://psy.swansea.ac.uk/staff/carter/gnuplot/gnuplot_spectrum.htm
