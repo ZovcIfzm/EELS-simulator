@@ -1,4 +1,4 @@
-# EELS-simulator
+# EELS-simulator general overview
 In this project, we model high-brightness beams within an electron microscope as 2D normal distributions within phase space and find the optimum configuration of optics for achieving maximum time and space resolution to be one that nearly maximizes the transverse slope of the distribution before entering the camera, and minimizes the longitudinal slope of the distribution before entering the specimen. 
 
 ## Introduction
@@ -76,12 +76,10 @@ If we increase the pixel count (to say 5000) the overall graph has a reduced ove
 (fig 6)
 
 ## Conclusion
-While increasing time resolutions is trivially simple, increasing space resolution is not. Given that the number of shattered pulses given by a real-life specimen is not 1024, nor any other clean discrete number, we cannot remove the possibility that pixel abberation will be present in real microscopes due to the discrete number of pixels in the camera. We simply do not know if given a practically continuous* distribution of energy loss whether this pixel abberation will affect our results without further investigation. (*There is some discreteness in the distribution based on the fact energy is fundamentally discrete, but it is negligible as our energy values are far higher than the minimum discrete energy of the universe.)
-
-As a result while we cannot definitively conclude whether maximal space compression will maximally increase resolution, we can say that in general, at least up to a point that varies based on the specimen, space compression will increase space resolution.
+While increasing time resolution simply requires maximal time compression, maximizing space resolution is a little more tricky. As there are a discrete number of pixels on the camera taking information from a continous discribution, there is naturally an increasing amount of data loss with increasing space compression. As a result, it is safe to say that to maximize space resolution requires maximizing space compression up until data loss becomes detrimental.
 
 ## Possible sources of error
-As a result of this being a simulation, there is an inherent source of error in not accounting for all of the physical laws of the universe. For example, quantum mechanical effects such as position-momentum uncertainty is not accounted for, nor are the effect of changes to the specimen from being hit by a high-intensity electron pulse that causes data collected from the front of the pulse to be different than that of the back.
+As a result of this being a simulation, there is an inherent source of error in not accounting for real-life effects that have been excluded. For example, uncertainty is not accounted for, nor are the effect of changes to the specimen from being hit by a high-intensity electron pulse that causes data collected from the front of the pulse to be different than that of the back.
 
 Given the intense statistical nature of this simulator as well, errors may crop up in the implementation of statistical methods. For example, an edge case may not be accounted for in which some parts of a distribution may be double counted when summing, or perhaps an equation somewhere was implemented wrong.
 
