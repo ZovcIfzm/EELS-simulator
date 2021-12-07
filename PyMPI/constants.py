@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-SPLIT_NUM = 4
+SPLIT_NUM = 8
 NUM_CORES = 36
 CATCH_FACTOR = 4
 PULSE_ENERGY = 100
@@ -16,3 +16,5 @@ INIT_PS = pd.DataFrame([INIT_PARAMS], columns=COLUMNS).iloc[0]
 NN_LIMIT = pow(INIT_PS["pulseEnergy"]/SPLIT_NUM, 2) / \
     (pow(2*INIT_PS["hHeight"]/SPLIT_NUM, 2) +
      pow(2*INIT_PS["hWidth"]/SPLIT_NUM, 2))/50
+
+KC = 0.10000498703

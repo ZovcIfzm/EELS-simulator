@@ -1,10 +1,18 @@
 
 import multiprocessing
+import numpy as np
 
 import math
 import constants as k
+import decimal
 
 # takes in base (singular) phase space
+
+
+def drange(x, y, jump):
+    while x < y:
+        yield float(x)
+        x += jump
 
 
 def get_intensity(s, sectionNum):
@@ -51,3 +59,35 @@ def intensity(s, x, y):
     twoVzIntDistsq = 2 * s["VzDist"] * s["VzDist"]
     twoPIhWidthVzIntDist = 2 * math.pi * (s["hWidth"] * s["VzDist"])
     return math.exp((x * x / (negTwohWidthsq)) - ((y - s["chirp"] * x) * (y - s["chirp"] * x) / (twoVzIntDistsq))) / (twoPIhWidthVzIntDist)
+
+
+def force(q1, q2, x1, y1, x2, y2):
+    # 1 is particle, 2 is other dist
+    f = k.KC*q1*q2/(math.pow(x1-x2, 2)+math.pow(y1-y2, 2))
+    angle = math.atan((x2-x1)/(y2-y1))
+    return [math.sin(angle)*f, math.cos(angle)*f]
+
+
+def getForce(s, refX, refY, refEnergy):
+    ySearchLB = -k.CATCH_FACTOR * s["hHeight"]
+    ySearchUB = k.CATCH_FACTOR * s["hHeight"]
+    xSearchLB = -k.CATCH_FACTOR * s["hWidth"]
+    xSearchUB = k.CATCH_FACTOR * s["hWidth"]
+
+    # Convert to intensity_integration parameters
+    xHalfRange = (xSearchUB - xSearchLB) / 2
+    yHalfRange = (ySearchUB - ySearchLB) / 2
+
+    xOffset = (xSearchUB + xSearchLB) / 2
+    yOffset = (ySearchUB + ySearchLB) / 2
+
+    accuracyY = 2 * yHalfRange / 199
+    accuracyX = 2 * xHalfRange / 199
+    x = -xHalfRange + xOffset + accuracyX / 2
+    y = -yHalfRange + yOffset + accuracyY / 2
+
+    intensities = np.asarray([[force(refEnergy, accuracyX*accuracyY*intensity(s, i, j), refX, refY, s["zC"], s["VzC"]) for j in list(drange(
+        x, xHalfRange+xOffset, accuracyX))] for i in list(drange(y, yHalfRange + yOffset, accuracyY))])
+
+    netForce = np.sum(np.sum(intensities, axis=0), axis=0)
+    return netForce
