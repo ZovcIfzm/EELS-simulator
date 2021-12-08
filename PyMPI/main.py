@@ -37,6 +37,10 @@ buf, itemsize = win.Shared_query(0)
 assert itemsize == MPI.DOUBLE.Get_size()
 sharedMem = np.ndarray(buffer=buf, dtype='d', shape=(3*k.SPLIT_NUM,))
 
+# read spectrum
+spectrum = pd.read_csv("spectrum.csv")
+#print("spec:", spectrum)
+
 # split the phase space... unless more cores than splits
 # TODO, create the else statement... which starts after shatters I guess?
 if rank < k.SPLIT_NUM:
@@ -50,7 +54,7 @@ if rank < k.SPLIT_NUM:
     pulses = ps.split(initPulse, startSplit, numSplits, k.PULSE_ENERGY, pool)
 
     ps.evolutionWithInteraction(
-        sharedMem, pulses, startSplit, numSplits, splitSize, 50)
+        sharedMem, pulses, startSplit, numSplits, splitSize, 500)
 
     '''
     # map with space-filling curve
