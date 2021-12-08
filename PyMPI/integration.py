@@ -91,3 +91,45 @@ def getForce(s, refX, refY, refEnergy):
 
     netForce = np.sum(np.sum(intensities, axis=0), axis=0)
     return netForce
+
+
+def pixelSum(s):
+    pixelArray = np.zeros((k.NUM_PIXELS))
+    lowestXC = s.iloc[len(s)-1]["xC"]
+    highestXC = s.iloc[0]["xC"]
+    xCDist = abs(highestXC - lowestXC) / len(pixelArray)
+
+    pixelArray = np.asarray([pixelSumHelper(s, p, lowestXC, xCDist)
+                            for p in range(len(pixelArray))])
+    pixelArray = pixelArray / np.sqrt(np.sum(pixelArray**2))
+
+    return pixelArray
+
+
+def pixelSumHelper(s, p, lowestXC, xCDist):
+    print('pixel', p)
+    returnVal = 0
+    for i in range(len(s)):
+        if (lowestXC + p * xCDist < s.iloc[i]["xC"] + 5 * s.iloc[i]["hDepth"] and s.iloc[i]["xC"] - 5 * s.iloc[i]["hDepth"] < lowestXC + (p + 1.0) * xCDist):
+            returnVal += x_integration(s.iloc[i], lowestXC + p * xCDist, lowestXC + (
+                p + 1.0) * xCDist) * s.iloc[i]["intensityMultiplier"]
+
+    return p, returnVal
+
+
+def x_integration(s, xLeftLim, xRightLim):
+    # was 19 not 5
+    accuracyY = 2 * s["hHeight"] / 5
+    accuracyX = (xRightLim - xLeftLim) / 5
+    x = xLeftLim
+    y = -s["hHeight"] + accuracyY / 2
+    intensityValue = 0
+    while (y < s["hHeight"]):
+        while (x < xRightLim):
+            intensityValue += accuracyX * accuracyY * \
+                intensity(s, x - s["xC"], y)
+            x += accuracyX
+        y += accuracyY
+        x = xLeftLim
+
+    return intensityValue

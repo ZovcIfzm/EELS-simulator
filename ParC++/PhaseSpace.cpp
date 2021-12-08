@@ -100,7 +100,7 @@ vector<PhaseSpace> PhaseSpace::shatter(vector<vector<double>> spectroTable)
 	for (int i = 0; i < spaces; i++)
 	{
 		//cout << spectroTable[i][1] << endl;
-		shatteredPulses.push_back(PhaseSpace(hWidth, hHeight / spaces, newVzDist, zDist, newChirp, newB, pulseEnergy * spectroTable[i][1 / baseTotal], intensityMultiplier * spectroTable[i][1],
+		shatteredPulses.push_back(PhaseSpace(hWidth, hHeight / spaces, newVzDist, zDist, newChirp, newB, pulseEnergy * spectroTable[i][1] / baseTotal, intensityMultiplier * spectroTable[i][1],
 											 hDepth, hDepthVel, VxDist, xDist, chirpT, bT, hHeight + (spectroTable[i][0] / 1117), zC, VxC, xC));
 	}
 	return shatteredPulses;

@@ -1,5 +1,6 @@
 from mpi4py import MPI
 import multiprocessing
+import time
 
 import math
 import numpy as np
@@ -51,10 +52,39 @@ if rank < k.SPLIT_NUM:
         numSplits = k.SPLIT_NUM-startSplit
 
     initPulse = k.INIT_PS
+    timeStart = time.time()
+    # Split and shatter
     pulses = ps.split(initPulse, startSplit, numSplits, k.PULSE_ENERGY, pool)
+    timeSplit = time.time()
+    print("timeSplit:", timeSplit-timeStart)
 
+    pulses = ps.shatter(pulses, spectrum)
+    timeShatter = time.time()
+    print("timeShatter:", timeShatter-timeSplit)
+
+    # Run through analyzer:
+    pulses["xC"] = pulses["xC"] + 7172.99042634 * pulses["VzC"]
+
+    # Run through magLens
+    power = pow(2 * pulses["chirpT"].iloc[0] / k.MAG_LENS_COEFFICIENT, 0.5)
+    ps.magLens(pulses, power)
+
+    timeLens = time.time()
+    print("timeLens:", timeLens-timeShatter)
+
+    # Evolve
     ps.evolutionWithInteraction(
-        sharedMem, pulses, startSplit, numSplits, splitSize, 500)
+        sharedMem, pulses, startSplit, numSplits, splitSize, 50)
+
+    timeEvolution = time.time()
+    print("timeEvolution:", timeEvolution-timeLens)
+
+    # Reduce
+    pixelArray = integration.pixelSum(pulses)
+    print(pixelArray)
+
+    timeArray = time.time()
+    print("timeArray:", timeArray-timeEvolution)
 
     '''
     # map with space-filling curve

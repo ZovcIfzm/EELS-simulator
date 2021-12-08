@@ -41,10 +41,10 @@ def evolution(s, dist):
 
 def split(s, startSplit, numSplits, pulseEnergy, pool):
     splitSpaces = np.array(numSplits)
-    #pool.map(square, range(1000))
+    # pool.map(square, range(1000))
     args = [(s, i+1)
             for i in range(startSplit, startSplit+numSplits)]
-    #print("args", args)
+    # print("args", args)
     intensityMultipliers = np.asarray(
         pool.starmap(integration.get_intensity, args))
     # intensityMultipliers = np.asarray(
@@ -69,6 +69,20 @@ def split(s, startSplit, numSplits, pulseEnergy, pool):
 
     splitSpaces = pd.DataFrame(splitSpacesList, columns=k.COLUMNS)
     return splitSpaces
+
+
+def shatter(s, spectrum):
+    spaces = len(spectrum)
+    print("spaces", spaces)
+    print("s length", len(s))
+    newVzDist = s["VzDist"] / spaces
+    newChirp = newVzDist * \
+        ((1 / pow(s["zDist"], 2)) - (1 / pow(s["hWidth"], 2)))**0.5
+    newB = newChirp * pow(s["zDist"] / newVzDist, 2)
+    shatteredPulses = pd.concat([pd.concat([s["hWidth"], s["hHeight"] / spaces, newVzDist, s["zDist"], newChirp, newB, s["pulseEnergy"] * spectrum.iloc[i, 1] / k.BASE_TOTAL, s["intensityMultiplier"] * spectrum.iloc[i, 1],
+                                            s["hDepth"], s["hDepthVel"], s["VxDist"], s["xDist"], s["chirpT"], s["bT"], s["hHeight"] + (spectrum.iloc[i, 0] / 1117), s["zC"], s["VxC"], s["xC"]], axis=1, keys=k.COLUMNS) for i in range(spaces)], ignore_index=True)
+
+    return shatteredPulses
 
 
 def evolutionWithInteraction(sharedMem, pulses, startSplit, numSplits, splitSize, dist):
@@ -148,3 +162,12 @@ def evolutionWithInteraction(sharedMem, pulses, startSplit, numSplits, splitSize
         pulses["zC"] += forces["zC"]*timeInc/1E15
         pulses["VzC"] += forces["VzC"]*timeInc/1E15
         evolution(pulses, timeInc*164.35)
+
+
+def magLens(s, power):
+    s["chirpT"] -= pow(power, 2) * k.MAG_LENS_COEFFICIENT
+    s["xDist"] = (1 / ((1 / pow(s["hDepth"], 2)) +
+                  pow(s["chirpT"] / s["VxDist"], 2)))**0.5
+    s["bT"] = s["chirpT"] * pow(s["xDist"] / s["VxDist"], 2)
+    s["hDepthVel"] = (1 / ((1 / pow(s["VxDist"], 2)) -
+                      pow(s["bT"] / s["xDist"], 2)))**0.5
