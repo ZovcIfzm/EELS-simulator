@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-SPLIT_NUM = 8
+SPLIT_NUM = 36
 NUM_CORES = 36
 CATCH_FACTOR = 4
 PULSE_ENERGY = 100
@@ -15,10 +15,11 @@ INIT_PS = pd.DataFrame([INIT_PARAMS], columns=COLUMNS).iloc[0]
 #   is valued at 75.032594
 NN_LIMIT = pow(INIT_PS["pulseEnergy"]/SPLIT_NUM, 2) / \
     (pow(2*INIT_PS["hHeight"]/SPLIT_NUM, 2) +
-     pow(2*INIT_PS["hWidth"]/SPLIT_NUM, 2))/50
+     pow(2*INIT_PS["hWidth"]/SPLIT_NUM, 2))
 
 KC = 0.10000498703
 
 BASE_TOTAL = 2890661135
 MAG_LENS_COEFFICIENT = 2800000000
 NUM_PIXELS = 4
+HILBERT_THRESHOLD = 15000

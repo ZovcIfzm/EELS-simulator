@@ -26,19 +26,6 @@ print("num cpus:", cpus)
 
 pool = multiprocessing.Pool(processes=cpus)
 
-# create shared memory for initial split
-itemsize = MPI.DOUBLE.Get_size()
-if rank == 0:
-    nbytes = k.SPLIT_NUM*(itemsize)*18
-else:
-    nbytes = 0
-
-win = MPI.Win.Allocate_shared(nbytes, itemsize, comm=comm)
-
-buf, itemsize = win.Shared_query(0)
-assert itemsize == MPI.DOUBLE.Get_size()
-fullSharedMem = np.ndarray(buffer=buf, dtype='d', shape=(18*k.SPLIT_NUM,))
-
 # read spectrum
 spectrum = pd.read_csv("spectrum.csv")
 # print("spec:", spectrum)
@@ -62,8 +49,7 @@ if rank < k.SPLIT_NUM:
         timeLens = time.time()
 
     # Evolve
-    ps.evolutionWithFullInteraction(
-        fullSharedMem, pulses, startSplit, numSplits, splitSize, 50)
+    ps.evolutionWithNoSharing(pulses, startSplit, numSplits, splitSize, 50)
 
     comm.Barrier()
     if rank == 0:

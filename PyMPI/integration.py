@@ -64,7 +64,10 @@ def intensity(s, x, y):
 def force(q1, q2, x1, y1, x2, y2):
     # 1 is particle, 2 is other dist
     f = k.KC*q1*q2/(math.pow(x1-x2, 2)+math.pow(y1-y2, 2))
-    angle = math.atan((x2-x1)/(y2-y1))
+    if (y2-y1 == 0):
+        angle = math.atan((x2-x1)*math.inf)
+    else:
+        angle = math.atan((x2-x1)/(y2-y1))
     return [math.sin(angle)*f, math.cos(angle)*f]
 
 
